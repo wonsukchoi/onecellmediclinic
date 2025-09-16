@@ -55,26 +55,6 @@ function initializeCarousel() {
         });
     }
 
-    function updateSlideLabel() {
-        // Remove existing label if any
-        const existingLabel = carousel.querySelector('.carousel__label');
-        if (existingLabel) {
-            existingLabel.remove();
-        }
-
-        // Create new label
-        const label = document.createElement('div');
-        label.className = 'carousel__label';
-        label.innerHTML = `
-            <div class="carousel__label-content">
-                <h3 class="carousel__label-title">${slideData[index]?.label || ''}</h3>
-                <p class="carousel__label-description">${slideData[index]?.description || ''}</p>
-            </div>
-        `;
-        
-        carousel.appendChild(label);
-    }
-
     function go(newIndex, fromAuto = false) {
         if (newIndex === index) return;
         
@@ -89,7 +69,6 @@ function initializeCarousel() {
         
         // Update dots and label
         renderDots();
-        updateSlideLabel();
         
         // Restart auto-advance if not from auto
         if (!fromAuto) restartAuto();
@@ -181,7 +160,6 @@ function initializeCarousel() {
 
     // Initialize
     renderDots();
-    updateSlideLabel();
     startAuto();
 
     console.log('Carousel initialized successfully');
