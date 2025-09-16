@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		const cards = Array.from(shortsGrid.children);
 		console.log('Number of cards:', cards.length);
 		
-		const cardWidth = 400 + 12; // card width (400px) + margin-right (12px)
+		const cardWidth = 250 + 16; // card width (250px) + margin-right (16px)
 		let currentIndex = 0;
 		const visibleCards = Math.floor(shortsGrid.clientWidth / cardWidth);
 		console.log('Visible cards:', visibleCards);
@@ -75,9 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		}
 
-		// Add event listeners
-		nextBtn.addEventListener('click', nextSlide);
-		prevBtn.addEventListener('click', prevSlide);
+		// Add event listeners for button navigation
+		if (prevBtn && nextBtn) {
+			nextBtn.addEventListener('click', nextSlide);
+			prevBtn.addEventListener('click', prevSlide);
+		}
 
 		// Initialize position
 		updateShortsPosition(false);
@@ -94,6 +96,34 @@ document.addEventListener('DOMContentLoaded', function () {
 				updateShortsPosition(false);
 			}
 		});
+
+		// Touch events for mobile sliding
+		let touchStartX = 0;
+		let touchEndX = 0;
+		let isTouching = false;
+
+		// Check if we're on a mobile device
+		const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+		if (isMobile) {
+			// On mobile, we use native scrolling with snap points
+			console.log('Mobile device detected, using native scrolling');
+		} else {
+			// On desktop, we use our custom navigation
+			console.log('Desktop device detected, using custom navigation');
+			
+			// Prevent default scrolling behavior on the shorts grid
+			shortsGrid.addEventListener('wheel', (e) => {
+				e.preventDefault();
+				
+				// Scroll horizontally based on wheel direction
+				if (e.deltaY > 0) {
+					nextSlide();
+				} else {
+					prevSlide();
+				}
+			}, { passive: false });
+		}
 	}
 
 	// Carousel
@@ -152,8 +182,9 @@ document.addEventListener('DOMContentLoaded', function () {
 	function stopAuto() { if (timerId) clearInterval(timerId); }
 	function restartAuto() { stopAuto(); startAuto(); }
 
-	prev?.addEventListener('click', prevSlide);
-	next?.addEventListener('click', () => nextSlide(false));
+	// Make sure we have the carousel control buttons before adding event listeners
+	if (prev) prev.addEventListener('click', prevSlide);
+	if (next) next.addEventListener('click', () => nextSlide(false));
 	carousel.addEventListener('mouseenter', stopAuto);
 	carousel.addEventListener('mouseleave', startAuto);
 
