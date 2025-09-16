@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>온라인 예약문의 - OneCell Medi Clinic</title>
+	<link rel="stylesheet" href="/styles/main.css">
+	<style>
+		.resv-wrap { width: min(1100px, 92%); margin: 90px auto 40px; }
+		.resv-title { font-size: 28px; font-weight: 800; margin-bottom: 18px; }
+		.resv-desc { color: #6b7280; margin-bottom: 24px; }
+		.resv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+		.resv-field { display: grid; gap: 6px; }
+		.resv-label { font-weight: 700; font-size: 14px; }
+		.resv-input, .resv-select, .resv-textarea { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px; }
+		.resv-textarea { min-height: 160px; grid-column: 1 / -1; }
+		.resv-section { margin-top: 20px; }
+		.resv-badges { display: grid; grid-template-columns: repeat(6, max-content); gap: 8px 10px; }
+		.resv-badge { padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 999px; cursor: pointer; background: #fff; }
+		.resv-badge.is-active { background: #111; color: #fff; border-color: #111; }
+		.resv-flex { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+		.resv-calendar { border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+		.resv-times { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+		.resv-time { padding: 10px; text-align: center; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; background: #fff; }
+		.resv-time.is-selected { background: #111; color: #fff; border-color: #111; }
+		.resv-captcha { display: grid; grid-template-columns: 160px auto; align-items: center; gap: 12px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; }
+		.resv-actions { display: flex; justify-content: center; margin-top: 20px; }
+		.resv-submit { background: #b89a78; color: #111; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+		@media (max-width: 840px) {
+			.resv-grid { grid-template-columns: 1fr; }
+			.resv-flex { grid-template-columns: 1fr; }
+			.resv-times { grid-template-columns: repeat(3, 1fr); }
+		}
+	</style>
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header__inner">
+			<a href="/" class="logo" aria-label="OneCell Medi Clinic"><img class="logo__img" src="/assets/oc-logo.png" alt="One Cell Medi Clinic"></a>
+			<nav class="nav" aria-label="Primary">
+				<button class="nav__toggle" aria-controls="nav-menu" aria-expanded="false">메뉴</button>
+				<ul id="nav-menu" class="nav__menu">
+					<li><a href="/">홈</a></li>
+					<li><a class="btn-cta" href="/reservation.html">예약문의</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<main class="resv-wrap">
+		<h1 class="resv-title">온라인 예약</h1>
+		<p class="resv-desc">온라인 예약 시 전화 통화 후 확정될 경우에만 예약이 확정됩니다. 연락 번호, 카카오톡 ID를 정확히 입력해주세요.</p>
+
+		<div class="resv-grid">
+			<div class="resv-field">
+				<label class="resv-label">이름*</label>
+				<input class="resv-input" placeholder="성함을 입력해주세요.">
+			</div>
+			<div class="resv-field">
+				<label class="resv-label">휴대폰*</label>
+				<input class="resv-input" placeholder="연락처를 입력해주세요.">
+			</div>
+			<div class="resv-field" style="grid-column: 1 / -1;">
+				<label class="resv-label">비밀번호</label>
+				<input class="resv-input" placeholder="예약조회용 비밀번호를 입력해주세요.">
+			</div>
+		</div>
+
+		<div class="resv-section">
+			<label class="resv-label">진료과목*</label>
+			<div class="resv-badges">
+				<button class="resv-badge">안면윤곽</button>
+				<button class="resv-badge">코성형</button>
+				<button class="resv-badge">눈성형</button>
+				<button class="resv-badge">리프팅</button>
+				<button class="resv-badge">가슴성형</button>
+				<button class="resv-badge">지방이식</button>
+				<button class="resv-badge">피부과</button>
+				<button class="resv-badge">레이저</button>
+				<button class="resv-badge">뼈대</button>
+				<button class="resv-badge">기타</button>
+			</div>
+		</div>
+
+		<div class="resv-section resv-flex">
+			<div class="resv-calendar">
+				<strong>2025년 9월</strong>
+				<div style="margin-top:8px; color:#6b7280;">캘린더 영역 (구현 예정)</div>
+			</div>
+			<div class="resv-times">
+				<button class="resv-time">10시</button>
+				<button class="resv-time">10시 30분</button>
+				<button class="resv-time">11시</button>
+				<button class="resv-time">11시 30분</button>
+				<button class="resv-time">12시</button>
+				<button class="resv-time">12시 30분</button>
+				<button class="resv-time">1시</button>
+				<button class="resv-time">1시 30분</button>
+				<button class="resv-time">2시</button>
+				<button class="resv-time">2시 30분</button>
+				<button class="resv-time">3시</button>
+				<button class="resv-time">3시 30분</button>
+				<button class="resv-time">4시</button>
+				<button class="resv-time">4시 30분</button>
+				<button class="resv-time">5시</button>
+				<button class="resv-time">5시 30분</button>
+				<button class="resv-time">6시</button>
+			</div>
+		</div>
+
+		<div class="resv-section">
+			<label class="resv-label">상담내용*</label>
+			<textarea class="resv-textarea" placeholder="치료 목적 예약은 대표번호 02-518-2400으로 연락주세요."></textarea>
+		</div>
+
+		<div class="resv-section resv-captcha">
+			<div style="background:#f3f4f6; height:44px; display:grid; place-items:center; border-radius:6px;">보안문자</div>
+			<div style="color:#6b7280; font-size:13px;">자동등록방지 문자를 오른쪽에 입력해주세요.</div>
+		</div>
+
+		<div class="resv-actions">
+			<button class="resv-submit">예약하기</button>
+		</div>
+	</main>
+
+	<footer class="site-footer footer--dark">
+		<div class="container footer__top">
+			<div class="footer__brandWrap">
+				<img class="footer__logoImg" src="/assets/oc-logo.png" alt="One Cell Medi Clinic" />
+				<div class="footer__address">
+					<strong>오시는길</strong><br>
+					서울 강남구 학동로63길 4-1 청담 제이에스 빌딩<br>
+					(우편번호: 06069)
+				</div>
+				<div class="footer__hours">
+					<strong>진료시간</strong><br>
+					<div class="hour-row"><span class="day">월,화,수,금</span> AM 10:00 ~ PM 07:00 (수요일 격주 휴무)</div>
+					<div class="hour-note">* 평일 접수마감 : 오후 5시</div>
+					<div class="hour-row"><span class="day">목 요 일</span> AM 10:00 ~ PM 10:00 (20:00 접수마감)</div>
+					<div class="hour-row"><span class="day">토 요 일</span> AM 10:00 ~ PM 04:00 (격주 정기휴무)</div>
+					<div class="hour-note">* 토요일 접수마감 : 오후 1시 30분</div>
+					<div class="hour-note">* 일요일 & 공휴일 휴무</div>
+					<div class="hour-note">* 방문 전 운영 시간 내에 연락 주시면 친절히 안내해드립니다.</div>
+				</div>
+				<div class="footer__phones">
+					<div><span class="label">상담문의</span><strong>02. 515. 1114</strong></div>
+				</div>
+			</div>
+			<ul class="footer__social" aria-label="SNS">
+				<li><a href="#" aria-label="Instagram">📸</a></li>
+				<li><a href="#" aria-label="Facebook">f</a></li>
+				<li><a href="#" aria-label="YouTube">▶️</a></li>
+			</ul>
+		</div>
+		<div class="container footer__policies">
+			<ul>
+				<li><a href="#">개인정보처리방침</a></li>
+				<li><a href="#">이용약관</a></li>
+				<li><a href="#">비급여 진료비용 안내</a></li>
+			</ul>
+		</div>
+		<div class="container footer__meta">
+			<div>원셀메디의원 | 주소 : 서울 강남구 학동로63길 4-1 청담 제이에스 빌딩</div>
+			<div class="copyright">COPYRIGHT © 2025 ONECELL. ALL RIGHTS RESERVED.</div>
+		</div>
+	</footer>
+
+	<script>
+		// simple UI selection for demo
+		document.addEventListener('click', function(e){
+			if(e.target.classList.contains('resv-badge')){
+				Array.from(document.querySelectorAll('.resv-badge')).forEach(b=>b.classList.remove('is-active'));
+				e.target.classList.add('is-active');
+			}
+			if(e.target.classList.contains('resv-time')){
+				Array.from(document.querySelectorAll('.resv-time')).forEach(b=>b.classList.remove('is-selected'));
+				e.target.classList.add('is-selected');
+			}
+		});
+	</script>
+</body>
+</html> 
