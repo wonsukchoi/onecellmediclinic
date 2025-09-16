@@ -9,6 +9,93 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	}
 
+	// Shorts navigation
+	const shortsContainer = document.querySelector('.shorts-container');
+	if (shortsContainer) {
+		console.log('Shorts container found');
+		const shortsGrid = shortsContainer.querySelector('.shorts-grid');
+		const prevBtn = shortsContainer.querySelector('.shorts-nav--prev');
+		const nextBtn = shortsContainer.querySelector('.shorts-nav--next');
+		
+		console.log('Prev button:', prevBtn);
+		console.log('Next button:', nextBtn);
+		
+		const cards = Array.from(shortsGrid.children);
+		console.log('Number of cards:', cards.length);
+		
+		const cardWidth = 400 + 12; // card width (400px) + margin-right (12px)
+		let currentIndex = 0;
+		const visibleCards = Math.floor(shortsGrid.clientWidth / cardWidth);
+		console.log('Visible cards:', visibleCards);
+
+		// Function to update the shorts grid position
+		function updateShortsPosition(smooth = true) {
+			if (!cards.length) return;
+			
+			// Calculate position
+			let translateX = -currentIndex * cardWidth;
+			console.log('Updating position to:', translateX, 'Current index:', currentIndex);
+			
+			// Apply transform with or without transition
+			shortsGrid.style.transition = smooth ? 'transform 0.3s ease' : 'none';
+			shortsGrid.style.transform = `translateX(${translateX}px)`;
+		}
+
+		// Navigate to the next slide
+		function nextSlide() {
+			console.log('Next slide clicked');
+			currentIndex++;
+			// If we've gone past the end, loop back to the beginning
+			if (currentIndex > cards.length - visibleCards) {
+				currentIndex = 0;
+				// Disable transition for the wrap-around
+				shortsGrid.style.transition = 'none';
+				setTimeout(() => {
+					updateShortsPosition(true);
+				}, 10);
+			} else {
+				updateShortsPosition();
+			}
+		}
+
+		// Navigate to the previous slide
+		function prevSlide() {
+			console.log('Previous slide clicked');
+			currentIndex--;
+			// If we've gone before the start, loop to the end
+			if (currentIndex < 0) {
+				currentIndex = cards.length - visibleCards;
+				// Disable transition for the wrap-around
+				shortsGrid.style.transition = 'none';
+				setTimeout(() => {
+					updateShortsPosition(true);
+				}, 10);
+			} else {
+				updateShortsPosition();
+			}
+		}
+
+		// Add event listeners
+		nextBtn.addEventListener('click', nextSlide);
+		prevBtn.addEventListener('click', prevSlide);
+
+		// Initialize position
+		updateShortsPosition(false);
+
+		// Handle window resize
+		window.addEventListener('resize', () => {
+			// Recalculate visible cards
+			const newVisibleCards = Math.floor(shortsGrid.clientWidth / cardWidth);
+			if (newVisibleCards !== visibleCards && newVisibleCards > 0) {
+				// Adjust the current index if needed
+				if (currentIndex > cards.length - newVisibleCards) {
+					currentIndex = Math.max(0, cards.length - newVisibleCards);
+				}
+				updateShortsPosition(false);
+			}
+		});
+	}
+
 	// Carousel
 	const carousel = document.querySelector('[data-carousel]');
 	if (!carousel) return;
@@ -21,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	let index = slides.findIndex(s => s.classList.contains('is-active'));
 	if (index < 0) index = 0;
 	let timerId = null;
+	const slideInterval = 5000; // 5 seconds per slide
 
 	function renderDots() {
 		dotsEl.innerHTML = '';
@@ -28,7 +116,18 @@ document.addEventListener('DOMContentLoaded', function () {
 			const b = document.createElement('button');
 			b.type = 'button';
 			b.setAttribute('aria-label', `슬라이드 ${i + 1}`);
-			if (i === index) b.setAttribute('aria-current', 'true');
+			if (i === index) {
+				b.setAttribute('aria-current', 'true');
+				// Reset animation by removing and re-adding the element
+				setTimeout(() => {
+					const currentDot = dotsEl.querySelector('[aria-current="true"]');
+					if (currentDot) {
+						const parent = currentDot.parentNode;
+						const clone = currentDot.cloneNode(true);
+						parent.replaceChild(clone, currentDot);
+					}
+				}, 10);
+			}
 			b.addEventListener('click', () => go(i, false));
 			dotsEl.appendChild(b);
 		});
@@ -48,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	function startAuto() {
 		stopAuto();
-		timerId = setInterval(() => nextSlide(true), 5000);
+		timerId = setInterval(() => nextSlide(true), slideInterval);
 	}
 	function stopAuto() { if (timerId) clearInterval(timerId); }
 	function restartAuto() { stopAuto(); startAuto(); }
