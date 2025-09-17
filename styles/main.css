@@ -17,6 +17,7 @@ body {
 	color: var(--text);
 	background: var(--bg);
 	line-height: 1.5;
+	padding-top: 0; /* Remove padding to allow hero to start immediately after navbar */
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -28,18 +29,45 @@ a { color: inherit; text-decoration: none; }
 
 /* Header */
 .site-header {
-	position: sticky;
+	position: fixed;
 	top: 0;
-	z-index: 50;
-	background: rgba(255,255,255,0.9);
-	backdrop-filter: saturate(180%) blur(12px);
-	border-bottom: 1px solid var(--line);
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	background: transparent;
+	backdrop-filter: none;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	transition: all 0.3s ease;
+	width: 100%;
 }
-.site-header.is-transparent { background: transparent; border-bottom-color: transparent; backdrop-filter: none; }
-.header__inner { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+
+.site-header .header__inner {
+	width: 100%;
+}
+.site-header.is-transparent { 
+	background: transparent; 
+	border: none; 
+	backdrop-filter: none; 
+	box-shadow: none;
+}
+
+.site-header.scrolled {
+	border: 2px solid #ffffff;
+	background: rgba(255,255,255,0.95);
+	backdrop-filter: saturate(180%) blur(20px);
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.header__inner { 
+	display: flex; 
+	align-items: center; 
+	justify-content: space-between; 
+	padding: 8px 30px; 
+}
 .logo { font-weight: 800; letter-spacing: 0.5px; }
-.logo__img { height: 64px; width: auto; display: block; }
-@media (min-width: 840px) { .logo__img { height: 80px; } }
+.logo__img { height: 50px; width: auto; display: block; }
+@media (min-width: 840px) { .logo__img { height: 60px; } }
 @media (min-width: 840px) { :root { --header-h: 76px; } }
 .nav__toggle { display: none; }
 .nav__menu { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
@@ -48,16 +76,77 @@ a { color: inherit; text-decoration: none; }
 .btn-cta { background: none; color: #000 !important; padding: 0; border-radius: 0; font-weight: 400; border: none; outline: none; }
 .btn-cta:hover { background: none; color: #333; }
 
+/* Mobile responsive header */
 @media (max-width: 840px) {
-	.nav__toggle { display: inline-flex; background: none; border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px; }
-	.nav__menu { position: absolute; right: 4%; top: 48px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; flex-direction: column; gap: 8px; display: none; }
+	body {
+		padding-top: 0; /* Remove padding to allow hero to start immediately after navbar */
+	}
+	.site-header {
+		top: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		border-radius: 0;
+	}
+	.header__inner {
+		padding: 6px 20px;
+	}
+	.nav__toggle { 
+		display: inline-flex; 
+		background: rgba(255,255,255,0.8); 
+		border: 1px solid rgba(0,0,0,0.1); 
+		padding: 8px 12px; 
+		border-radius: 8px; 
+		backdrop-filter: blur(10px);
+	}
+	.nav__menu { 
+		position: absolute; 
+		right: 4%; 
+		top: 60px; 
+		background: rgba(255,255,255,0.95); 
+		border: 1px solid rgba(255,255,255,0.2); 
+		border-radius: 12px; 
+		padding: 12px; 
+		flex-direction: column; 
+		gap: 8px; 
+		display: none; 
+		backdrop-filter: blur(20px);
+		box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+	}
 	.nav__menu.is-open { display: flex; }
 }
 
 /* Hero */
-.hero { padding: 0; }
+.hero { 
+	padding: 0; 
+	margin: 0;
+	position: relative;
+	z-index: 1; /* Lower than header */
+}
 .hero .container { width: 100%; }
-.carousel { position: relative; }
+
+/* Home page specific - allow header to overlay hero */
+body.home-page {
+	padding-top: 0; /* Remove top padding on home page */
+}
+
+body.home-page .site-header {
+	background: transparent;
+	backdrop-filter: none;
+	border: none;
+}
+
+body.home-page .site-header.is-transparent {
+	background: transparent;
+	border: none;
+}
+
+body.home-page .site-header.scrolled {
+	border: 2px solid #ffffff;
+	background: rgba(255,255,255,0.95);
+	backdrop-filter: saturate(180%) blur(20px);
+}
+.carousel { position: relative; margin: 0; }
 .carousel__track { list-style: none; padding: 0; margin: 0; overflow: hidden; border-radius: 0; }
 .carousel__slide { display: none; }
 .carousel__slide.is-active { display: block; }
@@ -186,50 +275,60 @@ a { color: inherit; text-decoration: none; }
     width: 100%;
     height: 450px; /* Increased height for bigger boxes */
     margin: 0 auto;
-    padding: 0 60px; /* Increased padding for the arrows to prevent cut-off */
-    overflow: visible; /* Ensure the navigation buttons are visible outside the container */
+    padding: 0 20px; /* Reduced padding to prevent first item cut-off */
+    overflow: hidden; /* Hide overflow to prevent white spaces */
+    transform: translateZ(0); /* Force hardware acceleration and isolate */
+}
+
+/* Shorts wrapper - this stays fixed */
+.shorts-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0); /* Force hardware acceleration and isolate */
+    mask: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+    -webkit-mask: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
 }
 
 .shorts-grid { 
     width: 100%;
     height: 100%;
-    padding: 10px 0;
-    gap: 16px; /* Increased gap between items */
+    padding: 0;
+    gap: 8px; /* Reduced gap between items */
     display: flex;
-    position: relative;
-    overflow-x: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
     white-space: nowrap;
-    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    will-change: transform; /* Optimize for transforms */
+    transform: translateZ(0); /* Force hardware acceleration */
+    width: max-content; /* Allow grid to be wider than container */
 }
 
-/* Enable touch sliding on mobile */
+/* Mobile responsive adjustments */
 @media (max-width: 768px) {
     .shorts-container {
-        padding: 0 20px; /* Reduced side padding on mobile */
-        overflow-x: auto; /* Allow horizontal scrolling on container */
+        padding: 0 10px;
     }
     
     .shorts-grid {
-        overflow-x: auto; /* Allow horizontal scrolling */
-        scroll-snap-type: x mandatory; /* Enable snap points */
-        scroll-behavior: smooth; /* Smooth scrolling */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        padding: 10px 10px; /* Add padding to prevent items touching the edge */
+        padding: 10px 0 10px 20px;
     }
     
     .shorts-grid .media-card {
-        scroll-snap-align: start; /* Snap alignment */
-    }
-    
-    /* Hide navigation buttons on mobile as we'll use touch scrolling */
-    .shorts-nav {
-        display: none;
+        flex: 0 0 200px; /* Slightly bigger on mobile */
+        height: 320px;
     }
 }
 
-/* Add padding to the last card to ensure it's not cut off when scrolling */
-.shorts-grid .media-card:last-child {
-    margin-right: 20px; /* Add extra margin to the last card */
+/* Add padding to ensure last items are visible */
+.shorts-grid::after {
+    content: '';
+    flex: 0 0 20px; /* Add space at the end */
 }
 
 /* Ensure navigation arrows are positioned correctly and visible */
@@ -260,17 +359,18 @@ a { color: inherit; text-decoration: none; }
     right: 15px; /* Increased distance from edge */
 }
 
+/* Hide scrollbar for clean appearance */
 .shorts-grid::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
 }
 
 .shorts-grid .media-card {
-    flex: 0 0 250px; /* Increased width for each card */
-    height: 420px; /* Increased height for vertical format */
+    flex: 0 0 240px; /* Increased width for better visibility */
+    height: 360px; /* Reduced height */
     border-radius: 16px; /* Slightly larger border radius */
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Enhanced shadow for more prominence */
+    box-shadow: none; /* Removed shadow effects */
     transition: transform 0.3s ease;
-    margin-right: 16px; /* Increased margin between cards */
+    margin-right: 8px; /* Reduced margin between cards */
     overflow: hidden;
     position: relative;
 }

@@ -12,7 +12,7 @@
 	<link rel="apple-touch-icon" href="/assets/favicon.svg">
 	<link rel="stylesheet" href="/styles/main.css">
 </head>
-<body>
+<body class="home-page">
 	<!-- Header will be loaded here -->
 	<header class="site-header">
 	<div class="container header__inner">
@@ -102,12 +102,12 @@
 		<section id="shorts" class="section section--tight">
 	<div class="container">
 		<header class="section__header">
-			<h3><img src="/assets/logo.svg" alt="ONECELL" class="shorts-logo">원셀 숏폼 영상</h3>
+			<h3>원셀 숏폼 영상</h3>
 			<a class="link--more" href="#">VIEW MORE +</a>
 		</header>
 		<div class="shorts-container">
-			<button class="shorts-nav shorts-nav--prev" aria-label="Previous shorts"></button>
-			<ul class="media-grid media-grid--scroll shorts-grid">
+			<div class="shorts-wrapper">
+				<ul class="media-grid media-grid--scroll shorts-grid">
 				<li class="media-card">
 					<div class="color-block" style="background-color: #FF5733;"></div>
 				</li>
@@ -144,8 +144,8 @@
 				<li class="media-card">
 					<div class="color-block" style="background-color: #D1FF33;"></div>
 				</li>
-			</ul>
-			<button class="shorts-nav shorts-nav--next" aria-label="Next shorts"></button>
+				</ul>
+			</div>
 		</div>
 	</div>
 </section>

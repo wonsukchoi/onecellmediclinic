@@ -11,8 +11,6 @@ function initializeShorts() {
     console.log('Initializing shorts navigation...');
     
     const shortsGrid = shortsContainer.querySelector('.shorts-grid');
-    const prevBtn = shortsContainer.querySelector('.shorts-nav--prev');
-    const nextBtn = shortsContainer.querySelector('.shorts-nav--next');
     
     if (!shortsGrid) {
         console.log('Shorts grid not found');
@@ -27,9 +25,20 @@ function initializeShorts() {
         return;
     }
     
-    const cardWidth = 250 + 16; // card width (250px) + margin-right (16px)
+    const cardWidth = 240 + 8; // card width (240px) + margin-right (8px)
     let currentIndex = 0;
     const visibleCards = Math.floor(shortsGrid.clientWidth / cardWidth);
+    let autoScrollInterval = null;
+
+    // Create infinite loop by duplicating all cards
+    function createInfiniteLoop() {
+        // Clone all cards and append to the end for seamless infinite loop
+        const totalCards = cards.length;
+        for (let i = 0; i < totalCards; i++) {
+            const clone = cards[i].cloneNode(true);
+            shortsGrid.appendChild(clone);
+        }
+    }
 
     // Function to update the shorts grid position
     function updateShortsPosition(smooth = true) {
@@ -41,82 +50,79 @@ function initializeShorts() {
         
         // Apply transform with or without transition
         shortsGrid.style.transition = smooth ? 'transform 0.3s ease' : 'none';
-        shortsGrid.style.transform = `translateX(${translateX}px)`;
+        shortsGrid.style.transform = `translate3d(${translateX}px, 0, 0)`;
     }
 
     // Navigate to the next slide
     function nextSlide() {
         console.log('Next slide clicked');
         currentIndex++;
-        // If we've gone past the end, loop back to the beginning
-        if (currentIndex > cards.length - visibleCards) {
+        
+        // If we've reached the end of original cards, reset to beginning seamlessly
+        if (currentIndex >= cards.length) {
             currentIndex = 0;
+            // Reset position without animation
+            updateShortsPosition(false);
+            // Then animate to the correct position
+            setTimeout(() => {
+                updateShortsPosition(true);
+            }, 50);
+        } else {
+            updateShortsPosition();
         }
-        updateShortsPosition();
     }
 
     // Navigate to the previous slide
     function prevSlide() {
         console.log('Previous slide clicked');
         currentIndex--;
-        // If we've gone before the beginning, loop to the end
+        
+        // If we've gone before the beginning, loop to the end seamlessly
         if (currentIndex < 0) {
-            currentIndex = Math.max(0, cards.length - visibleCards);
+            currentIndex = cards.length - 1;
+            // Reset position without animation
+            updateShortsPosition(false);
+            // Then animate to the correct position
+            setTimeout(() => {
+                updateShortsPosition(true);
+            }, 50);
+        } else {
+            updateShortsPosition();
         }
-        updateShortsPosition();
     }
 
-    // Add event listeners
-    if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+    // Start auto-scroll
+    function startAutoScroll() {
+        if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+        }
+        autoScrollInterval = setInterval(() => {
             nextSlide();
-        });
-        console.log('Next button event listener added');
-    }
-    
-    if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            prevSlide();
-        });
-        console.log('Previous button event listener added');
+        }, 5000); // 5 seconds
     }
 
-    // Touch/swipe support for mobile
-    let startX = 0;
-    let isDragging = false;
-
-    shortsGrid.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-    });
-
-    shortsGrid.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-    });
-
-    shortsGrid.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const endX = e.changedTouches[0].clientX;
-        const diffX = startX - endX;
-        
-        if (Math.abs(diffX) > 50) {
-            if (diffX > 0) {
-                nextSlide();
-            } else {
-                prevSlide();
-            }
+    // Stop auto-scroll
+    function stopAutoScroll() {
+        if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
         }
-    });
+    }
 
+    // Disable user interaction - only auto-scroll allowed
+    // Touch/swipe disabled
+    // Manual navigation disabled
+
+    // Create infinite loop
+    createInfiniteLoop();
+    
     // Initialize position
     updateShortsPosition(false);
     
-    console.log('Shorts navigation initialized successfully');
+    // Start auto-scroll
+    startAutoScroll();
+    
+    console.log('Shorts section initialized - auto-scroll only with infinite loop');
 }
 
 // Initialize when DOM is ready

@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
+	// Header scroll behavior
+	const header = document.querySelector('.site-header');
+	let lastScrollY = window.scrollY;
+	
+	function updateHeader() {
+		if (!header) return;
+		
+		const currentScrollY = window.scrollY;
+		
+		if (currentScrollY > 10) {
+			header.classList.add('scrolled');
+		} else {
+			header.classList.remove('scrolled');
+		}
+		
+		lastScrollY = currentScrollY;
+	}
+	
+	window.addEventListener('scroll', updateHeader);
+	updateHeader(); // Initial call
+	
 	// Nav toggle
 	const toggle = document.querySelector('.nav__toggle');
 	const menu = document.getElementById('nav-menu');
@@ -192,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	startAuto();
 
 	// Header transparency over hero
-	const header = document.querySelector('.site-header');
 	function updateHeaderTransparency() {
 		if (!header) return;
 		const atTop = window.scrollY < 20;
