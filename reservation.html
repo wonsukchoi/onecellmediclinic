@@ -151,7 +151,7 @@
 		}
 
 		.dermatology-btn {
-			background: #8b4513;
+			background: #000;
 			color: white;
 			border: none;
 			padding: 12px 24px;
@@ -159,6 +159,11 @@
 			font-weight: 600;
 			cursor: pointer;
 			margin-left: 20px;
+			transition: background-color 0.2s;
+		}
+
+		.dermatology-btn:hover {
+			background: #333;
 		}
 
 		/* Calendar and Time Selection */
@@ -232,7 +237,7 @@
 		}
 
 		.time-slot {
-			background: #8b4513;
+			background: #000;
 			color: white;
 			border: none;
 			padding: 10px;
@@ -243,11 +248,12 @@
 		}
 
 		.time-slot:hover {
-			background: #6d3410;
+			background: #333;
 		}
 
 		.time-slot.selected {
-			background: #4a2409;
+			background: #fff;
+			color: #000;
 		}
 
 		/* Captcha */
@@ -273,8 +279,9 @@
 		}
 
 		.captcha-refresh {
-			background: none;
-			border: 1px solid #ddd;
+			background: #000;
+			color: white;
+			border: 1px solid #000;
 			padding: 8px;
 			border-radius: 4px;
 			cursor: pointer;
@@ -292,7 +299,7 @@
 		}
 
 		.submit-btn {
-			background: #8b4513;
+			background: #000;
 			color: white;
 			border: none;
 			padding: 15px 40px;
@@ -304,7 +311,7 @@
 		}
 
 		.submit-btn:hover {
-			background: #6d3410;
+			background: #333;
 		}
 
 		/* Right Side Menu */
@@ -385,7 +392,7 @@
 				<ul id="nav-menu" class="nav__menu">
 					<li><a href="/#about">병원소개</a></li>
 					<li><a href="/#services">진료과목</a></li>
-					<li><a href="/#shorts">브라운숏츠</a></li>
+					<li><a href="/#shorts">원셀숏츠</a></li>
 					<li><a href="/#events">이벤트</a></li>
 					<li><a href="/#reviews">셀카후기</a></li>
 					<li><a href="/#youtube">YOUTUBE</a></li>

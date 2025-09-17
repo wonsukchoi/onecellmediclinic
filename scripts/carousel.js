@@ -28,7 +28,7 @@ function initializeCarousel() {
 
     // Slide data with labels
     const slideData = [
-        { label: "브라운 코성형", description: "예쁨 급상승, 맞춤형 크라이믹" },
+        { label: "원셀 코성형", description: "예쁨 급상승, 맞춤형 크라이믹" },
         { label: "원셀 피부과", description: "VIP 프리미엄 케어 프로그램" },
         { label: "3D-CT 시스템", description: "안전이 만든 아름다움" },
         { label: "자연스러운 라인", description: "시간이 지나도 어색하지 않게" },
