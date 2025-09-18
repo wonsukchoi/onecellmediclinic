@@ -25,7 +25,7 @@ function initializeShorts() {
         return;
     }
     
-    const cardWidth = 240 + 8; // card width (240px) + margin-right (8px)
+    const cardWidth = 240 + 8; // card width (240px) + margin-right (8px) - consistent across all devices
     let currentIndex = 0;
     const visibleCards = Math.floor(shortsGrid.clientWidth / cardWidth);
     let autoScrollInterval = null;

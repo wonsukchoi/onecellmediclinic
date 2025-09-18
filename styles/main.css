@@ -311,8 +311,7 @@ body.home-page .site-header.scrolled {
     overflow: hidden;
     padding-top: 0; /* Ensure no top padding */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
-    mask: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
-    -webkit-mask: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+    /* Removed mask/gradient for clean edges without shadows */
 }
 
 .shorts-grid { 
@@ -345,8 +344,8 @@ body.home-page .site-header.scrolled {
     }
     
     .shorts-grid .media-card {
-        flex: 0 0 200px; /* Slightly bigger on mobile */
-        height: 320px;
+        flex: 0 0 240px; /* Same size as desktop */
+        height: 360px; /* Same size as desktop */
     }
 }
 
@@ -396,7 +395,7 @@ body.home-page .site-header.scrolled {
     box-shadow: none; /* Removed shadow effects */
     transition: transform 0.3s ease;
     margin-right: 8px; /* Reduced margin between cards */
-    overflow: hidden;
+    overflow: visible; /* Changed from hidden to visible to show full border */
     position: relative;
 }
 
@@ -410,27 +409,29 @@ body.home-page .site-header.scrolled {
 .shorts-grid .media-card .color-block {
     background: #f0f0f0;
     border: 1px solid #e0e0e0;
+    border-radius: 16px; /* Match the parent's border radius to fix cut-off corners */
+    box-sizing: border-box; /* Ensure border is included in the element's dimensions */
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments - keeping consistent sizing */
 @media (max-width: 1200px) {
     .shorts-grid .media-card {
-        flex: 0 0 220px;
-        height: 380px;
+        flex: 0 0 240px;
+        height: 360px;
     }
 }
 
 @media (max-width: 840px) {
     .shorts-grid .media-card {
-        flex: 0 0 180px;
-        height: 320px;
+        flex: 0 0 240px;
+        height: 360px;
     }
 }
 
 @media (max-width: 640px) {
     .shorts-grid .media-card {
-        flex: 0 0 160px;
-        height: 280px;
+        flex: 0 0 240px;
+        height: 360px;
     }
 }
 
@@ -520,30 +521,30 @@ body.home-page .site-header.scrolled {
     margin-right: 4px;
 }
 
-/* Remove the responsive grid adjustments since we're using a single row */
+/* Keep consistent sizing across all screen sizes */
 @media (max-width: 1200px) {
     .shorts-grid .media-card {
-        flex: 0 0 160px;
-        height: 160px;
+        flex: 0 0 240px;
+        height: 360px;
     }
 }
 
 @media (max-width: 840px) {
     .shorts-grid .media-card {
-        flex: 0 0 140px;
-        height: 140px;
+        flex: 0 0 240px;
+        height: 360px;
     }
 }
 
 @media (max-width: 640px) {
     .shorts-grid .media-card {
-        flex: 0 0 120px;
-        height: 120px;
+        flex: 0 0 240px;
+        height: 360px;
     }
 }
 
 /* Media card general styles */
-.media-card { position: relative; border-radius: 16px; overflow: hidden; background: #f3f4f6; aspect-ratio: 1 / 1.5; }
+.media-card { position: relative; border-radius: 16px; overflow: visible; background: #f3f4f6; aspect-ratio: 1 / 1.5; }
 .media-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
 .media-card:hover img { transform: scale(1.05); }
 .media-card span { position: absolute; left: 12px; bottom: 12px; color: #fff; font-weight: 600; text-shadow: 0 6px 16px rgba(0,0,0,0.45); font-size: 15px; }
