@@ -215,15 +215,35 @@ document.addEventListener('DOMContentLoaded', function () {
 	renderDots();
 	startAuto();
 
-	// Header transparency over hero
-	function updateHeaderTransparency() {
+	// Header shadow on scroll and sticky state
+	function updateHeaderState() {
 		if (!header) return;
-		const atTop = window.scrollY < 20;
-		if (atTop) header.classList.add('is-transparent');
-		else header.classList.remove('is-transparent');
+		const scrolled = window.scrollY > 20;
+		
+		// Update header class with throttling for better performance
+		if (scrolled && !header.classList.contains('scrolled')) {
+			header.classList.add('scrolled');
+			document.body.classList.add('header-sticky');
+		} else if (!scrolled && header.classList.contains('scrolled')) {
+			header.classList.remove('scrolled');
+			document.body.classList.remove('header-sticky');
+		}
 	}
-	updateHeaderTransparency();
-	window.addEventListener('scroll', updateHeaderTransparency, { passive: true });
+	
+	// Initialize header state
+	updateHeaderState();
+	
+	// Use requestAnimationFrame for smoother scrolling performance
+	let ticking = false;
+	window.addEventListener('scroll', function() {
+		if (!ticking) {
+			window.requestAnimationFrame(function() {
+				updateHeaderState();
+				ticking = false;
+			});
+			ticking = true;
+		}
+	}, { passive: true });
 
 	// Quick rail collapse/expand
 	const rail = document.querySelector('.quick-rail');
