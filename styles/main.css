@@ -120,7 +120,7 @@ a { color: inherit; text-decoration: none; }
 /* Hero */
 .hero { 
 	padding: 0; 
-	margin: 0;
+	margin: 0 0 20px 0; /* Add bottom margin */
 	position: relative;
 	z-index: 1; /* Lower than header */
 }
@@ -236,8 +236,22 @@ body.home-page .site-header.scrolled {
 
 /* Full width container for shorts */
 #shorts.section {
-    padding-top: 20px; /* Further reduce top padding */
+    padding-top: 50px; /* Increased padding to create gap after hero */
     padding-bottom: 30px; /* Keep bottom padding */
+    margin-top: 20px; /* Add margin for additional spacing */
+    position: relative; /* For pseudo-element positioning */
+}
+
+/* Add visual separator between hero and shorts section */
+#shorts.section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
 }
 
 #shorts .container {
