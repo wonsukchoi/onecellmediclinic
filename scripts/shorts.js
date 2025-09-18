@@ -1,5 +1,5 @@
 /**
- * Shorts navigation functionality
+ * Shorts navigation functionality - Manual scrolling without buttons
  */
 function initializeShorts() {
     const shortsContainer = document.querySelector('.shorts-container');
@@ -8,7 +8,7 @@ function initializeShorts() {
         return;
     }
 
-    console.log('Initializing shorts navigation...');
+    console.log('Initializing shorts with manual scrolling...');
     
     const shortsGrid = shortsContainer.querySelector('.shorts-grid');
     
@@ -25,107 +25,46 @@ function initializeShorts() {
         return;
     }
     
-    const cardWidth = 240 + 8; // card width (240px) + margin-right (8px) - consistent across all devices
+    // Add scroll snap functionality
+    shortsGrid.style.scrollSnapType = 'x mandatory';
     
-    // Position the grid to start at the left edge of the viewport
-    shortsGrid.style.left = "0";
-    let currentIndex = 0;
-    const visibleCards = Math.floor(shortsGrid.clientWidth / cardWidth);
-    let autoScrollInterval = null;
-
-    // Create infinite loop by duplicating all cards
-    function createInfiniteLoop() {
-        // Clone all cards and append to the end for seamless infinite loop
-        const totalCards = cards.length;
-        for (let i = 0; i < totalCards; i++) {
-            const clone = cards[i].cloneNode(true);
-            shortsGrid.appendChild(clone);
-        }
-    }
-
-    // Function to update the shorts grid position
-    function updateShortsPosition(smooth = true) {
-        if (!cards.length) return;
-        
-        // Calculate position
-        let translateX = -currentIndex * cardWidth;
-        console.log('Updating position to:', translateX, 'Current index:', currentIndex);
-        
-        // Apply transform with or without transition
-        shortsGrid.style.transition = smooth ? 'transform 0.3s ease' : 'none';
-        shortsGrid.style.transform = `translate3d(${translateX}px, 0, 0)`;
-    }
-
-    // Navigate to the next slide
-    function nextSlide() {
-        console.log('Next slide clicked');
-        currentIndex++;
-        
-        // If we've reached the end of original cards, reset to beginning seamlessly
-        if (currentIndex >= cards.length) {
-            currentIndex = 0;
-            // Reset position without animation
-            updateShortsPosition(false);
-            // Then animate to the correct position
-            setTimeout(() => {
-                updateShortsPosition(true);
-            }, 50);
-        } else {
-            updateShortsPosition();
-        }
-    }
-
-    // Navigate to the previous slide
-    function prevSlide() {
-        console.log('Previous slide clicked');
-        currentIndex--;
-        
-        // If we've gone before the beginning, loop to the end seamlessly
-        if (currentIndex < 0) {
-            currentIndex = cards.length - 1;
-            // Reset position without animation
-            updateShortsPosition(false);
-            // Then animate to the correct position
-            setTimeout(() => {
-                updateShortsPosition(true);
-            }, 50);
-        } else {
-            updateShortsPosition();
-        }
-    }
-
-    // Start auto-scroll
-    function startAutoScroll() {
-        if (autoScrollInterval) {
-            clearInterval(autoScrollInterval);
-        }
-        autoScrollInterval = setInterval(() => {
-            nextSlide();
-        }, 5000); // 5 seconds
-    }
-
-    // Stop auto-scroll
-    function stopAutoScroll() {
-        if (autoScrollInterval) {
-            clearInterval(autoScrollInterval);
-            autoScrollInterval = null;
-        }
-    }
-
-    // Disable user interaction - only auto-scroll allowed
-    // Touch/swipe disabled
-    // Manual navigation disabled
-
-    // Create infinite loop
-    createInfiniteLoop();
+    // Make each card a snap point
+    cards.forEach(card => {
+        card.style.scrollSnapAlign = 'start';
+    });
     
-    // Initialize position
-    updateShortsPosition(false);
+    // Add touch and mouse drag scrolling enhancement
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    shortsGrid.addEventListener('mousedown', (e) => {
+        isDown = true;
+        shortsGrid.style.cursor = 'grabbing';
+        startX = e.pageX - shortsGrid.offsetLeft;
+        scrollLeft = shortsGrid.scrollLeft;
+        e.preventDefault();
+    });
+
+    shortsGrid.addEventListener('mouseleave', () => {
+        isDown = false;
+        shortsGrid.style.cursor = 'grab';
+    });
+
+    shortsGrid.addEventListener('mouseup', () => {
+        isDown = false;
+        shortsGrid.style.cursor = 'grab';
+    });
+
+    shortsGrid.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - shortsGrid.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed multiplier
+        shortsGrid.scrollLeft = scrollLeft - walk;
+    });
     
-    // Start auto-scroll
-    startAutoScroll();
-    
-    console.log('Shorts section initialized - auto-scroll only with infinite loop');
+    console.log('Shorts section initialized with manual horizontal scrolling');
 }
 
 // Initialize when DOM is ready

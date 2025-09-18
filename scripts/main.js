@@ -8,16 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
 		
 		const currentScrollY = window.scrollY;
 		
-		if (currentScrollY > 10) {
-			header.classList.add('scrolled');
-		} else {
-			header.classList.remove('scrolled');
+		// Prevent negative scroll values
+		if (currentScrollY >= 0) {
+			if (currentScrollY > 10) {
+				header.classList.add('scrolled');
+			} else {
+				header.classList.remove('scrolled');
+			}
+			
+			lastScrollY = currentScrollY;
 		}
-		
-		lastScrollY = currentScrollY;
 	}
 	
-	window.addEventListener('scroll', updateHeader);
+	window.addEventListener('scroll', updateHeader, { passive: true });
 	updateHeader(); // Initial call
 	
 	// Nav toggle

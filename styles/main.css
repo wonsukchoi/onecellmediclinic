@@ -10,7 +10,11 @@
 	--header-h: 60px;
 }
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html, body { 
+    height: 100%; 
+    overflow-x: hidden; /* Prevent horizontal scrolling of the entire page */
+    overscroll-behavior-y: none; /* Prevent overscrolling at the top */
+}
 body {
 	margin: 0;
 	font-family: 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -41,10 +45,12 @@ a { color: inherit; text-decoration: none; }
 	box-shadow: none;
 	transition: all 0.3s ease;
 	width: 100%;
+	transform: translateZ(0); /* Force hardware acceleration */
 }
 
 .site-header .header__inner {
-	width: 100%;
+	width: min(1200px, 92%); /* Match container width */
+	margin: 0 auto;
 }
 .site-header.is-transparent { 
 	background: transparent; 
@@ -63,7 +69,7 @@ a { color: inherit; text-decoration: none; }
 	display: flex; 
 	align-items: center; 
 	justify-content: space-between; 
-	padding: 8px 30px; 
+	padding: 8px 0; /* Remove horizontal padding */
 }
 .logo { font-weight: 800; letter-spacing: 0.5px; }
 .logo__img { height: 50px; width: auto; display: block; }
@@ -89,7 +95,9 @@ a { color: inherit; text-decoration: none; }
 		border-radius: 0;
 	}
 	.header__inner {
-		padding: 6px 20px;
+		padding: 6px 0; /* Remove horizontal padding on mobile */
+		width: min(1200px, 92%); /* Match container width */
+		margin: 0 auto;
 	}
 	.nav__toggle { 
 		display: inline-flex; 
@@ -113,6 +121,7 @@ a { color: inherit; text-decoration: none; }
 		display: none; 
 		backdrop-filter: blur(20px);
 		box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+		z-index: 1001; /* Ensure menu appears above other elements */
 	}
 	.nav__menu.is-open { display: flex; }
 }
@@ -252,17 +261,7 @@ body.home-page .site-header.scrolled {
     position: relative;
 }
 
-/* Add visual separator between hero and shorts section */
-#shorts.section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-}
+/* Removed visual separator between hero and shorts section */
 
 #shorts .container {
     width: min(1200px, 92%);
@@ -305,10 +304,11 @@ body.home-page .site-header.scrolled {
 .shorts-container {
     position: relative;
     width: 100%;
-    height: 450px; /* Increased height for bigger boxes */
+    height: 380px; /* Adjusted height for the layout */
     margin-top: 0; /* Remove spacing after title */
     padding: 0; /* Remove padding for full width */
-    overflow: hidden; /* Prevent overflow */
+    overflow-x: hidden; /* Hide horizontal overflow at container level */
+    overflow-y: visible; /* Allow vertical overflow */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
 }
 
@@ -317,43 +317,45 @@ body.home-page .site-header.scrolled {
     width: 100%;
     height: 100%;
     position: relative;
-    overflow: hidden; /* Prevent overflow */
+    overflow: hidden; /* Contain overflow within this wrapper */
     padding-top: 0; /* Ensure no top padding */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
     /* Removed mask/gradient for clean edges without shadows */
 }
 
 .shorts-grid { 
-    width: max-content; /* Allow grid to be wider than container */
+    width: 100%; /* Use full width of container */
     height: 100%;
-    padding: 0;
-    margin-top: -5px; /* Add negative top margin to reduce gap */
-    gap: 8px; /* Reduced gap between items */
+    padding: 10px 0;
+    margin: 0;
+    gap: 0; /* Gap is handled by margin-right on items */
     display: flex;
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
-    overflow: hidden; /* Hide overflow */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical overflow */
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     align-items: center;
     will-change: transform; /* Optimize for transforms */
     transform: translateZ(0); /* Force hardware acceleration */
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+    max-width: 100%; /* Ensure it doesn't exceed container width */
+    overscroll-behavior-x: contain; /* Prevent overscrolling horizontally */
+    scroll-snap-type: x mandatory; /* Enable snap scrolling */
+    scroll-behavior: smooth; /* Smooth scrolling */
 }
 
-/* Mobile responsive adjustments */
+/* Mobile responsive adjustments for shorts container */
 @media (max-width: 768px) {
     .shorts-container {
         padding: 0;
+        height: 300px; /* Smaller height on mobile */
     }
     
     .shorts-grid {
         padding: 10px 0;
-    }
-    
-    .shorts-grid .media-card {
-        flex: 0 0 240px; /* Same size as desktop */
-        height: 360px; /* Same size as desktop */
     }
 }
 
@@ -363,50 +365,9 @@ body.home-page .site-header.scrolled {
     flex: 0 0 20px; /* Add space at the end */
 }
 
-/* Ensure navigation arrows are positioned correctly and visible */
+/* Navigation arrows hidden */
 .shorts-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 0; /* Square buttons */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    border: 1px solid #e0e0e0;
-    transition: all 0.2s ease;
-    pointer-events: auto;
-}
-
-.shorts-nav--prev {
-    left: 0; /* Align with container edge */
-}
-
-.shorts-nav--next {
-    right: 0; /* Align with container edge */
-}
-
-.shorts-nav span {
-    width: 10px;
-    height: 10px;
-    display: block;
-    border-top: 2px solid #333;
-    border-right: 2px solid #333;
-}
-
-.shorts-nav--prev span {
-    transform: rotate(-135deg);
-    margin-left: 4px;
-}
-
-.shorts-nav--next span {
-    transform: rotate(45deg);
-    margin-right: 4px;
+    display: none;
 }
 
 /* Hide scrollbar for clean appearance */
@@ -414,15 +375,21 @@ body.home-page .site-header.scrolled {
     display: none; /* Chrome, Safari, Opera */
 }
 
+/* Add padding to ensure last item is fully visible */
+.shorts-grid .media-card:last-child {
+    margin-right: 20px; /* Add right margin to the last item */
+}
+
 .shorts-grid .media-card {
-    flex: 0 0 240px; /* Increased width for better visibility */
+    flex: 0 0 calc((100% - 50px) / 6); /* Show exactly 6 items with some spacing */
     height: 360px; /* Reduced height */
     border-radius: 16px; /* Slightly larger border radius */
     box-shadow: none; /* Removed shadow effects */
     transition: transform 0.3s ease;
-    margin-right: 8px; /* Reduced margin between cards */
+    margin-right: 10px; /* Spacing between cards */
     overflow: visible; /* Changed from hidden to visible to show full border */
     position: relative;
+    cursor: grab; /* Show grab cursor to indicate draggable */
 }
 
 .shorts-grid .media-card .color-block {
@@ -439,25 +406,32 @@ body.home-page .site-header.scrolled {
     box-sizing: border-box; /* Ensure border is included in the element's dimensions */
 }
 
-/* Responsive adjustments - keeping consistent sizing */
+/* Responsive adjustments for shorts grid */
 @media (max-width: 1200px) {
     .shorts-grid .media-card {
-        flex: 0 0 240px;
-        height: 360px;
+        flex: 0 0 calc((100% - 50px) / 6); /* Show 6 items */
+        height: 320px;
     }
 }
 
-@media (max-width: 840px) {
+@media (max-width: 992px) {
     .shorts-grid .media-card {
-        flex: 0 0 240px;
-        height: 360px;
+        flex: 0 0 calc((100% - 40px) / 4); /* Show 4 items */
+        height: 320px;
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .shorts-grid .media-card {
-        flex: 0 0 240px;
-        height: 360px;
+        flex: 0 0 calc((100% - 30px) / 3); /* Show 3 items */
+        height: 280px;
+    }
+}
+
+@media (max-width: 576px) {
+    .shorts-grid .media-card {
+        flex: 0 0 calc((100% - 20px) / 2); /* Show 2 items */
+        height: 260px;
     }
 }
 
