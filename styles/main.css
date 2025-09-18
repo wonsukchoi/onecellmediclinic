@@ -242,6 +242,16 @@ body.home-page .site-header.scrolled {
     position: relative; /* For pseudo-element positioning */
 }
 
+/* Shorts header styling */
+#shorts .shorts-header {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    position: relative;
+}
+
 /* Add visual separator between hero and shorts section */
 #shorts.section::before {
     content: '';
@@ -255,12 +265,13 @@ body.home-page .site-header.scrolled {
 }
 
 #shorts .container {
-    width: 100%;
-    max-width: 100%;
-    padding: 0 20px;
-}
-#shorts .section__header {
     width: min(1200px, 92%);
+    margin: 0 auto;
+}
+#shorts .section__header,
+#shorts .shorts-header {
+    width: 100%;
+    padding: 0 20px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: -5px; /* Use negative margin to further reduce gap */
@@ -293,29 +304,28 @@ body.home-page .site-header.scrolled {
 /* Shorts container */
 .shorts-container {
     position: relative;
-    width: 100%;
+    width: 100vw;
     height: 450px; /* Increased height for bigger boxes */
-    margin-top: -10px; /* Further reduce gap with more negative margin */
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 20px; /* Reduced padding to prevent first item cut-off */
-    overflow: hidden; /* Hide overflow to prevent white spaces */
+    margin-top: 0; /* Remove spacing after title */
+    margin-left: calc(-50vw + 50%); /* Center the container and make it full width */
+    padding: 0; /* Remove padding for full width */
+    overflow-x: visible; /* Allow overflow to be visible */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
 }
 
 /* Shorts wrapper - this stays fixed */
 .shorts-wrapper {
-    width: 100%;
+    width: 100vw;
     height: 100%;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     padding-top: 0; /* Ensure no top padding */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
     /* Removed mask/gradient for clean edges without shadows */
 }
 
 .shorts-grid { 
-    width: 100%;
+    width: max-content; /* Allow grid to be wider than container */
     height: 100%;
     padding: 0;
     margin-top: -5px; /* Add negative top margin to reduce gap */
@@ -330,17 +340,16 @@ body.home-page .site-header.scrolled {
     align-items: center;
     will-change: transform; /* Optimize for transforms */
     transform: translateZ(0); /* Force hardware acceleration */
-    width: max-content; /* Allow grid to be wider than container */
 }
 
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     .shorts-container {
-        padding: 0 10px;
+        padding: 0;
     }
     
     .shorts-grid {
-        padding: 10px 0 10px 20px;
+        padding: 10px 0;
     }
     
     .shorts-grid .media-card {
