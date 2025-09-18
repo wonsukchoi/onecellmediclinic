@@ -304,21 +304,20 @@ body.home-page .site-header.scrolled {
 /* Shorts container */
 .shorts-container {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: 450px; /* Increased height for bigger boxes */
     margin-top: 0; /* Remove spacing after title */
-    margin-left: calc(-50vw + 50%); /* Center the container and make it full width */
     padding: 0; /* Remove padding for full width */
-    overflow-x: visible; /* Allow overflow to be visible */
+    overflow: hidden; /* Prevent overflow */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
 }
 
 /* Shorts wrapper - this stays fixed */
 .shorts-wrapper {
-    width: 100vw;
+    width: 100%;
     height: 100%;
     position: relative;
-    overflow: visible;
+    overflow: hidden; /* Prevent overflow */
     padding-top: 0; /* Ensure no top padding */
     transform: translateZ(0); /* Force hardware acceleration and isolate */
     /* Removed mask/gradient for clean edges without shadows */
@@ -334,7 +333,7 @@ body.home-page .site-header.scrolled {
     position: absolute;
     top: 0;
     left: 0;
-    overflow: visible;
+    overflow: hidden; /* Hide overflow */
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     align-items: center;
@@ -372,24 +371,42 @@ body.home-page .site-header.scrolled {
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
+    border-radius: 0; /* Square buttons */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 10;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 1px solid #e0e0e0;
     transition: all 0.2s ease;
     pointer-events: auto;
 }
 
 .shorts-nav--prev {
-    left: 15px; /* Increased distance from edge */
+    left: 0; /* Align with container edge */
 }
 
 .shorts-nav--next {
-    right: 15px; /* Increased distance from edge */
+    right: 0; /* Align with container edge */
+}
+
+.shorts-nav span {
+    width: 10px;
+    height: 10px;
+    display: block;
+    border-top: 2px solid #333;
+    border-right: 2px solid #333;
+}
+
+.shorts-nav--prev span {
+    transform: rotate(-135deg);
+    margin-left: 4px;
+}
+
+.shorts-nav--next span {
+    transform: rotate(45deg);
+    margin-right: 4px;
 }
 
 /* Hide scrollbar for clean appearance */
