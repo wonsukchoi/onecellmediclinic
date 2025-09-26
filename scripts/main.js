@@ -262,17 +262,52 @@ document.addEventListener('DOMContentLoaded', function () {
 	toggleBtn?.addEventListener('click', collapseRail);
 	trigger?.addEventListener('click', expandRail);
 
-	// Consult CTA (demo only)
+	// Initialize Supabase-powered features
+	initializeSupabaseFeatures();
+
+	// Enhanced Consult CTA with Supabase integration
 	const cta = document.querySelector('.consult-cta');
 	cta?.addEventListener('click', () => {
-		const nameInput = document.getElementById('c-name');
-		const phoneInput = document.getElementById('c-phone');
-		const name = nameInput && 'value' in nameInput ? String(nameInput.value).trim() : '';
-		const phone = phoneInput && 'value' in phoneInput ? String(phoneInput.value).trim() : '';
-		if (!name || !phone) {
-			alert('이름과 전화번호를 입력해주세요.');
-			return;
+		// Open contact form instead of basic alert
+		if (window.contactFormManager) {
+			window.contactFormManager.openForm();
+		} else {
+			// Fallback for when Supabase modules aren't loaded
+			const nameInput = document.getElementById('c-name');
+			const phoneInput = document.getElementById('c-phone');
+			const name = nameInput && 'value' in nameInput ? String(nameInput.value).trim() : '';
+			const phone = phoneInput && 'value' in phoneInput ? String(phoneInput.value).trim() : '';
+			if (!name || !phone) {
+				alert('이름과 전화번호를 입력해주세요.');
+				return;
+			}
+			alert('상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.');
 		}
-		alert('상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.');
 	});
-}); 
+});
+
+// Initialize Supabase-powered features
+async function initializeSupabaseFeatures() {
+	try {
+		// Dynamically import Supabase modules
+		const { default: contactFormManager } = await import('./contact-form.js');
+		const { default: appointmentBookingManager } = await import('./appointment-booking.js');
+		const { default: authManager } = await import('./auth.js');
+		const { default: eventBannerManager } = await import('./event-banners.js');
+		
+		// Make managers globally available
+		window.contactFormManager = contactFormManager;
+		window.appointmentBookingManager = appointmentBookingManager;
+		window.authManager = authManager;
+		window.eventBannerManager = eventBannerManager;
+		
+		console.log('Supabase features initialized successfully');
+		
+		// Initialize event banners on page load
+		eventBannerManager.checkAndDisplayBanners();
+		
+	} catch (error) {
+		console.warn('Some Supabase features could not be loaded:', error);
+		// Continue without Supabase features - site will still work
+	}
+} 
