@@ -7,12 +7,12 @@ const Footer: React.FC = () => {
       <div className={styles.footerContent}>
         <div className={styles.footerBrand}>
           <div className={styles.footerLogo}>
-            <span className={styles.logoText}>BRAUN</span>
-            <span className={styles.logoSubtitle}>PLASTIC SURGERY</span>
+            <span className={styles.logoText}>ONECELL</span>
+            <span className={styles.logoSubtitle}>MEDI CLINIC</span>
           </div>
           <div className={styles.footerAddress}>
-            서울특별시 서초구 강남대로 475, 브라운성형외과빌딩{' '}
-            <span className={styles.addressNote}>신논현역 2번출구 바로 앞</span>
+            서울특별시 강남구 테헤란로 123, 원셀메디클리닉빌딩{' '}
+            <span className={styles.addressNote}>강남역 3번출구 도보 5분</span>
           </div>
         </div>
 
@@ -36,12 +36,12 @@ const Footer: React.FC = () => {
 
         <div className={styles.footerContact}>
           <div className={styles.contactSection}>
-            <div className={styles.contactLabel}>성형외과</div>
-            <div className={styles.contactNumber}>02. 518. 2400</div>
+            <div className={styles.contactLabel}>대표번호</div>
+            <div className={styles.contactNumber}>02. 1234. 5678</div>
           </div>
           <div className={styles.contactSection}>
-            <div className={styles.contactLabel}>피부과</div>
-            <div className={styles.contactNumber}>02. 518. 2403</div>
+            <div className={styles.contactLabel}>카카오톡</div>
+            <div className={styles.contactNumber}>@onecell</div>
           </div>
         </div>
 
@@ -64,10 +64,10 @@ const Footer: React.FC = () => {
 
         <div className={styles.footerMeta}>
           <div className={styles.companyInfo}>
-            브라운성형외과의원 | 주소 : 서울특별시 서초구 강남대로 475, 브라운성형외과빌딩 | 대표 : 김태규, 이지현, 류동완 사업자등록번호 : 211-09-48285
+            원셀메디클리닉 | 주소 : 서울특별시 강남구 테헤란로 123, 원셀메디클리닉빌딩 | 대표원장 : 김원셀 | 사업자등록번호 : 123-45-67890
           </div>
           <div className={styles.copyright}>
-            COPYRIGHT © 2009 BRAUN. ALL RIGHTS RESERVED.
+            COPYRIGHT © 2024 ONECELL MEDI CLINIC. ALL RIGHTS RESERVED.
           </div>
         </div>
       </div>

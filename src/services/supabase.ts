@@ -23,24 +23,45 @@ export class DatabaseService {
   // Contact form submissions
   static async submitContactForm(formData: ContactFormData): Promise<ApiResponse<ContactSubmission>> {
     try {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            service_type: formData.serviceType,
-            message: formData.message,
-            preferred_contact: formData.preferredContact,
-            created_at: new Date().toISOString()
-          }
-        ])
-        .select()
-        .single()
+      const response = await fetch(`${supabaseUrl}/functions/v1/submit-contact-form`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          serviceType: formData.serviceType,
+          message: formData.message,
+          preferredContact: formData.preferredContact || 'email'
+        }),
+      })
 
-      if (error) throw error
-      return { success: true, data }
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTP error! status: ${response.status}`)
+      }
+
+      if (!result.success) {
+        throw new Error(result.error || 'Edge function returned failure')
+      }
+
+      // Map the edge function response to match our expected ContactSubmission type
+      const contactSubmission: ContactSubmission = {
+        id: result.trackingId,
+        name: result.submission.name,
+        email: result.submission.email,
+        phone: result.submission.phone,
+        service_type: result.submission.service_type,
+        message: result.submission.message,
+        preferred_contact: result.submission.preferred_contact,
+        created_at: result.submission.created_at
+      }
+
+      return { success: true, data: contactSubmission }
     } catch (error) {
       console.error('Error submitting contact form:', error)
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
@@ -61,8 +82,8 @@ export class DatabaseService {
             preferred_date: appointmentData.preferredDate,
             preferred_time: appointmentData.preferredTime,
             notes: appointmentData.notes,
-            status: 'pending' as const,
-            created_at: new Date().toISOString()
+            status: 'pending' as const
+            // Remove manual created_at - let the database handle it with DEFAULT NOW()
           }
         ])
         .select()

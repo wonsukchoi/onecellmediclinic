@@ -9,7 +9,13 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "db:setup": "echo 'Run the SQL commands in scripts/database-setup.sql in your Supabase SQL Editor'"
+    "db:setup": "echo 'Run the SQL commands in scripts/database-setup.sql in your Supabase SQL Editor'",
+    "db:enhance": "echo 'Run the SQL commands in scripts/database-enhancements.sql in your Supabase SQL Editor'",
+    "functions:deploy": "./scripts/deploy-functions.sh",
+    "functions:logs": "supabase functions logs",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status"
   },
   "keywords": [
     "clinic",
@@ -25,7 +31,8 @@
     "@supabase/supabase-js": "^2.58.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.1.4"
+    "react-router-dom": "^7.1.4",
+    "swiper": "^12.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
