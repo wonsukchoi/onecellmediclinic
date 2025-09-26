@@ -23,14 +23,41 @@ document.addEventListener('DOMContentLoaded', function () {
 	window.addEventListener('scroll', updateHeader, { passive: true });
 	updateHeader(); // Initial call
 	
-	// Nav toggle
+	// Simple nav toggle - BASIC VERSION
 	const toggle = document.querySelector('.nav__toggle');
 	const menu = document.getElementById('nav-menu');
+	
+	console.log('🔍 Debug Info:');
+	console.log('Toggle button found:', !!toggle);
+	console.log('Menu found:', !!menu);
+	console.log('Window width:', window.innerWidth);
+	
 	if (toggle && menu) {
-		toggle.addEventListener('click', () => {
-			const isOpen = menu.classList.toggle('is-open');
-			toggle.setAttribute('aria-expanded', String(isOpen));
+		console.log('✅ Setting up click handler');
+		
+		toggle.addEventListener('click', function(event) {
+			console.log('🎯 HAMBURGER CLICKED!');
+			event.preventDefault();
+			
+			// Simple toggle
+			if (menu.classList.contains('is-open')) {
+				console.log('📱 Closing menu');
+				menu.classList.remove('is-open');
+				toggle.classList.remove('is-active');
+				document.body.style.overflow = '';
+			} else {
+				console.log('📱 Opening menu');
+				menu.classList.add('is-open');
+				toggle.classList.add('is-active');
+				document.body.style.overflow = 'hidden';
+			}
+			
+			console.log('Menu classes after toggle:', menu.className);
 		});
+		
+		console.log('✅ Click handler attached');
+	} else {
+		console.log('❌ Failed to find toggle or menu elements');
 	}
 
 	// Shorts navigation

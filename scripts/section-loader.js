@@ -65,6 +65,48 @@ class SectionLoader {
     }
 
     /**
+     * Initialize mobile menu functionality
+     */
+    initializeMobileMenu() {
+        const toggle = document.querySelector('.nav__toggle');
+        const menu = document.getElementById('nav-menu');
+        
+        console.log('🔍 Mobile Menu Debug (Section Loader):');
+        console.log('Toggle button found:', !!toggle);
+        console.log('Menu found:', !!menu);
+        console.log('Window width:', window.innerWidth);
+        
+        if (toggle && menu) {
+            console.log('✅ Setting up mobile menu click handler');
+            
+            toggle.addEventListener('click', function(event) {
+                console.log('🎯 HAMBURGER CLICKED! (From Section Loader)');
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Simple toggle
+                if (menu.classList.contains('is-open')) {
+                    console.log('📱 Closing menu');
+                    menu.classList.remove('is-open');
+                    toggle.classList.remove('is-active');
+                    document.body.style.overflow = '';
+                } else {
+                    console.log('📱 Opening menu');
+                    menu.classList.add('is-open');
+                    toggle.classList.add('is-active');
+                    document.body.style.overflow = 'hidden';
+                }
+                
+                console.log('Menu classes after toggle:', menu.className);
+            });
+            
+            console.log('✅ Mobile menu click handler attached successfully');
+        } else {
+            console.log('❌ Failed to find mobile menu elements');
+        }
+    }
+
+    /**
      * Load header and footer components
      */
     async loadComponents() {
@@ -76,6 +118,11 @@ class SectionLoader {
                 const headerContainer = document.getElementById('header-container');
                 if (headerContainer) {
                     headerContainer.innerHTML = headerHtml;
+                    
+                    // Initialize mobile menu after header is loaded
+                    setTimeout(() => {
+                        this.initializeMobileMenu();
+                    }, 100);
                 }
             }
 
