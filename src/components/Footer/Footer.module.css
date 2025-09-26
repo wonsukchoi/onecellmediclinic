@@ -1,0 +1,259 @@
+.siteFooter {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
+  padding: 3rem 0 1rem;
+  margin-top: auto;
+}
+
+.footerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 2rem;
+  align-items: start;
+}
+
+.footerBrand {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footerLogo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.logoText {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1;
+  color: white;
+}
+
+.logoSubtitle {
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: #cbd5e1;
+  margin-left: 2px;
+}
+
+.footerAddress {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+.addressNote {
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+.footerSocial {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.footerSocial a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #cbd5e1;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.footerSocial a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.footerContact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contactSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contactLabel {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.contactNumber {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.footerHours {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hoursLabel {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.hoursText {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+}
+
+.footerBottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 1.5rem 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footerPolicies {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.footerPolicies a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.footerPolicies a:hover {
+  color: white;
+}
+
+.separator {
+  color: #64748b;
+}
+
+.footerMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.companyInfo {
+  font-size: 0.8rem;
+}
+
+.copyright {
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .siteFooter {
+    padding: 2rem 0 1rem;
+  }
+
+  .footerContent {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .logoText {
+    font-size: 1.75rem;
+  }
+
+  .logoSubtitle {
+    font-size: 0.8rem;
+  }
+
+  .footerAddress {
+    max-width: none;
+    font-size: 0.85rem;
+  }
+
+  .footerContact {
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .contactNumber {
+    font-size: 1.1rem;
+  }
+
+  .footerHours {
+    text-align: center;
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .hoursText {
+    font-size: 0.85rem;
+  }
+
+  .footerBottom {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    text-align: center;
+  }
+
+  .footerPolicies {
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+
+  .footerMeta {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerContact {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hoursText {
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .footerPolicies {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .separator {
+    display: none;
+  }
+}

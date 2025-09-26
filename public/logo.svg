@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" role="img" aria-label="One Cell Medi Clinic">
+	<title>One Cell Medi Clinic</title>
+	<defs>
+		<style>
+			.text { font: 700 48px 'Georgia', 'Times New Roman', serif; letter-spacing: 4px; }
+			.sub { font: 600 18px 'Georgia', 'Times New Roman', serif; letter-spacing: 10px; }
+		</style>
+	</defs>
+	<rect width="600" height="160" fill="none"/>
+	<g fill="#b89a78">
+		<path d="M60,80c0-34,16-62,36-62s36,28,36,62-16,62-36,62S60,114,60,80Zm62,0c0-30-12-54-26-54S70,50,70,80s12,54,26,54,26-24,26-54Z"/>
+		<path d="M108,28c6,13,10,31,10,52s-4,39-10,52c-6-13-10-31-10-52S102,41,108,28Z"/>
+	</g>
+	<g fill="#b89a78" transform="translate(150,68)">
+		<text class="text" y="0">ONE CELL</text>
+		<text class="sub" x="40" y="46">MEDICLINIC</text>
+	</g>
+</svg> 
