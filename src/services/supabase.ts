@@ -206,12 +206,19 @@ export class DatabaseService {
         return { success: true, data: null }
       }
 
+      // Check if user has admin role (for demo purposes, let's check email)
+      // In production, this should come from a user_profiles table or user metadata
+      const isAdmin = user.email === 'admin@onecellclinic.com' ||
+                     user.user_metadata?.role === 'admin' ||
+                     user.email?.includes('admin')
+
       // Transform auth user to UserProfile
       const userProfile: UserProfile = {
         id: user.id,
         email: user.email!,
         name: user.user_metadata?.name || user.user_metadata?.full_name,
         phone: user.user_metadata?.phone,
+        role: isAdmin ? 'admin' : 'user',
         created_at: user.created_at
       }
 

@@ -1,0 +1,289 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalEnter 0.2s ease-out;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal.sm {
+  max-width: 400px;
+}
+
+.modal.md {
+  max-width: 600px;
+}
+
+.modal.lg {
+  max-width: 800px;
+}
+
+.modal.xl {
+  max-width: 1200px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.closeButton:hover {
+  background-color: #f1f5f9;
+  color: #374151;
+}
+
+.modalBody {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modalFooter {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  background-color: #f8fafc;
+}
+
+/* Confirm Modal Styles */
+.confirmMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  text-align: left;
+}
+
+.confirmIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.confirmMessage p {
+  margin: 0;
+  color: #374151;
+  line-height: 1.6;
+  font-size: 0.875rem;
+}
+
+.confirmFooter {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  min-width: 80px;
+}
+
+.cancelButton {
+  background-color: white;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: #f8fafc;
+  color: #374151;
+  border-color: #cbd5e1;
+}
+
+.confirmButton {
+  color: white;
+}
+
+.confirmButton.info {
+  background-color: #0055a5;
+}
+
+.confirmButton.info:hover:not(:disabled) {
+  background-color: #004494;
+}
+
+.confirmButton.warning {
+  background-color: #d97706;
+}
+
+.confirmButton.warning:hover:not(:disabled) {
+  background-color: #b45309;
+}
+
+.confirmButton.danger {
+  background-color: #dc2626;
+}
+
+.confirmButton.danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.cancelButton:disabled,
+.confirmButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Scrollbar styling for modal body */
+.modalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 0.5rem;
+  }
+
+  .modal {
+    max-height: 95vh;
+  }
+
+  .modal.sm,
+  .modal.md,
+  .modal.lg,
+  .modal.xl {
+    max-width: 100%;
+  }
+
+  .modalHeader {
+    padding: 1rem 1.5rem;
+  }
+
+  .modalTitle {
+    font-size: 1.125rem;
+  }
+
+  .modalBody {
+    padding: 1.5rem;
+  }
+
+  .modalFooter {
+    padding: 1rem 1.5rem;
+  }
+
+  .confirmFooter {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .confirmButton {
+    width: 100%;
+  }
+}
+
+/* Focus management */
+.modal:focus {
+  outline: none;
+}
+
+.closeButton:focus {
+  outline: 2px solid #0055a5;
+  outline-offset: 2px;
+}
+
+/* Animation for closing */
+.modalOverlay.closing {
+  animation: modalExit 0.15s ease-in;
+}
+
+@keyframes modalExit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.modal.closing {
+  animation: modalContentExit 0.15s ease-in;
+}
+
+@keyframes modalContentExit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}

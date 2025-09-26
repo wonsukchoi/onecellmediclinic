@@ -29,6 +29,7 @@ export interface UserProfile {
   name?: string
   phone?: string
   date_of_birth?: string
+  role?: 'user' | 'admin' | 'provider'
   created_at?: string
   updated_at?: string
 }
@@ -167,4 +168,183 @@ export interface PaginationParams {
 export interface SortParams {
   field: string
   direction: 'asc' | 'desc'
+}
+
+// Admin Types
+export interface Procedure {
+  id: number
+  category_id: number
+  name: string
+  slug: string
+  description?: string
+  detailed_description?: string
+  duration_minutes?: number
+  price_range?: string
+  preparation_instructions?: string
+  recovery_time?: string
+  featured_image_url?: string
+  gallery_images?: string[]
+  active: boolean
+  display_order: number
+  tags?: string[]
+  created_at: string
+  updated_at: string
+  category?: ProcedureCategory
+}
+
+export interface ProcedureCategory {
+  id: number
+  name: string
+  description?: string
+  icon_name?: string
+  display_order: number
+  active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface Provider {
+  id: number
+  user_id?: string
+  full_name: string
+  title?: string
+  specialization?: string
+  bio?: string
+  profile_image_url?: string
+  years_experience?: number
+  education?: string[]
+  certifications?: string[]
+  languages?: string[]
+  consultation_fee?: number
+  active: boolean
+  availability_schedule?: Record<string, any>
+  created_at: string
+  updated_at: string
+}
+
+export interface ConsultationRequest {
+  id: number
+  patient_name: string
+  patient_email: string
+  patient_phone?: string
+  patient_age?: number
+  consultation_type: string
+  procedure_interest?: string
+  concerns?: string
+  medical_history?: string
+  current_medications?: string
+  preferred_contact_method: string
+  urgency_level: string
+  photos?: string[]
+  status: string
+  assigned_provider_id?: number
+  response_notes?: string
+  estimated_cost_range?: string
+  recommended_procedures?: string[]
+  follow_up_required: boolean
+  created_at: string
+  updated_at: string
+  provider?: Provider
+}
+
+export interface GalleryItem {
+  id: number
+  procedure_id?: number
+  provider_id?: number
+  title?: string
+  description?: string
+  before_image_url: string
+  after_image_url: string
+  additional_images?: string[]
+  patient_age_range?: string
+  procedure_date?: string
+  recovery_weeks?: number
+  patient_testimonial?: string
+  consent_given: boolean
+  featured: boolean
+  display_order: number
+  tags?: string[]
+  created_at: string
+  updated_at: string
+  procedure?: Procedure
+  provider?: Provider
+}
+
+export interface AvailabilitySlot {
+  id: number
+  provider_id: number
+  date: string
+  start_time: string
+  end_time: string
+  slot_duration_minutes: number
+  max_bookings: number
+  current_bookings: number
+  available: boolean
+  blocked_reason?: string
+  created_at: string
+  provider?: Provider
+}
+
+export interface AdminStats {
+  totalAppointments: number
+  pendingAppointments: number
+  todayAppointments: number
+  totalConsultations: number
+  newConsultations: number
+  totalProcedures: number
+  activeProcedures: number
+  totalProviders: number
+  activeProviders: number
+  totalGalleryItems: number
+  recentActivity: ActivityLog[]
+}
+
+export interface ActivityLog {
+  id: string
+  type: 'appointment' | 'consultation' | 'content' | 'user'
+  action: string
+  description: string
+  user_id?: string
+  user_name?: string
+  timestamp: string
+  metadata?: Record<string, any>
+}
+
+export interface AdminFormData {
+  email: string
+  password: string
+}
+
+export interface ContentFormData {
+  title: string
+  description?: string
+  content?: string
+  category?: string
+  tags?: string[]
+  active?: boolean
+  featured?: boolean
+}
+
+export interface FilterParams {
+  search?: string
+  status?: string
+  category?: string
+  provider?: string
+  dateFrom?: string
+  dateTo?: string
+}
+
+export interface TableColumn {
+  key: string
+  label: string
+  sortable?: boolean
+  width?: string
+  render?: (value: any, item: any) => React.ReactNode
+}
+
+export interface AdminContextType {
+  isAdmin: boolean
+  loading: boolean
+  stats: AdminStats | null
+  refreshStats: () => Promise<void>
 }

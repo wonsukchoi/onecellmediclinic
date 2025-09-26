@@ -1,0 +1,248 @@
+.form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  padding: 2rem;
+}
+
+.fieldsContainer {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.vertical .fieldsContainer {
+  grid-template-columns: 1fr;
+}
+
+.horizontal .fieldsContainer {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldGroup.full {
+  grid-column: 1 / -1;
+}
+
+.fieldGroup.half {
+  grid-column: span 1;
+}
+
+.fieldGroup.third {
+  grid-column: span 1;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.required {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.input,
+.textarea,
+.select,
+.fileInput {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  background-color: white;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus,
+.fileInput:focus {
+  outline: none;
+  border-color: #0055a5;
+  box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.1);
+}
+
+.input:disabled,
+.textarea:disabled,
+.select:disabled,
+.fileInput:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.fieldError {
+  border-color: #dc2626 !important;
+}
+
+.fieldError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #0055a5;
+  cursor: pointer;
+}
+
+.checkboxText {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.fileInput {
+  padding: 0.5rem;
+  border-style: dashed;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.errorMessage {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.submitButton {
+  background-color: #0055a5;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  min-width: 120px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #004494;
+}
+
+.submitButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Grid layout adjustments */
+@media (max-width: 768px) {
+  .form {
+    padding: 1.5rem;
+  }
+
+  .fieldsContainer {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .horizontal .fieldsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldGroup.half,
+  .fieldGroup.third {
+    grid-column: span 1;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .horizontal .fieldsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fieldGroup.third {
+    grid-column: span 1;
+  }
+}
+
+/* Focus styles for accessibility */
+.checkbox:focus {
+  outline: 2px solid #0055a5;
+  outline-offset: 2px;
+}
+
+.checkboxLabel:focus-within {
+  color: #0055a5;
+}
+
+/* Loading state */
+.submitButton:disabled {
+  position: relative;
+}
+
+.submitButton:disabled::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  top: 0;
+  bottom: 0;
+  left: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

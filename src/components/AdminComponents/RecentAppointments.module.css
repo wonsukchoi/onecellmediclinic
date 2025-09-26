@@ -1,0 +1,258 @@
+.recentAppointments {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.viewAllButton {
+  background: none;
+  border: none;
+  color: #0055a5;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.viewAllButton:hover {
+  background-color: rgba(0, 85, 165, 0.1);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid #0055a5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading p {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.emptyState {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.appointmentsList {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.appointmentItem {
+  display: grid;
+  grid-template-columns: 100px 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s;
+}
+
+.appointmentItem:hover {
+  background-color: #f8fafc;
+}
+
+.appointmentItem:last-child {
+  border-bottom: none;
+}
+
+.appointmentTime {
+  text-align: center;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.time {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.appointmentInfo {
+  min-width: 0;
+}
+
+.patientName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.serviceType {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.contact {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.appointmentStatus {
+  display: flex;
+  justify-content: center;
+}
+
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.statusBadge.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.statusBadge.confirmed {
+  background-color: #dcfce7;
+  color: #059669;
+}
+
+.statusBadge.cancelled {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.statusBadge.completed {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.statusBadge.gray {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.appointmentActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.detailButton {
+  background: none;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.detailButton:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pendingButton {
+  width: 100%;
+  background-color: #0055a5;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pendingButton:hover {
+  background-color: #004494;
+}
+
+/* Scrollbar styling */
+.appointmentsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.appointmentsList::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.appointmentsList::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.appointmentsList::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .appointmentItem {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .appointmentTime {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .appointmentStatus,
+  .appointmentActions {
+    justify-self: start;
+  }
+}
