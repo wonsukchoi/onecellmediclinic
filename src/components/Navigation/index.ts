@@ -1,2 +1,2 @@
-export { default } from './EnhancedNavigation'
-export { default as EnhancedNavigation } from './EnhancedNavigation'
+export { default } from './Navigation'
+export { default as Navigation } from './Navigation'

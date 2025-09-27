@@ -6,6 +6,24 @@ import Footer from "./components/Footer";
 import ConsultationSidebar from "./components/ConsultationSidebar";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/ReservationPage";
+import EventsGalleryPage from "./pages/EventsGalleryPage";
+import AboutPage from "./pages/AboutPage";
+import MedicalStaffPage from "./pages/MedicalStaffPage";
+import FacilityTourPage from "./pages/FacilityTourPage";
+import ProcedureCategoryPage from "./pages/ProcedureCategoryPage";
+
+// New public pages
+import ProceduresOverviewPage from "./pages/ProceduresOverviewPage";
+import ProcedureDetailPage from "./pages/ProcedureDetailPage";
+import SelfieReviewsPagePublic from "./pages/SelfieReviewsPage";
+import YouTubeChannelPage from "./pages/YouTubeChannelPage";
+import VideoShortsPagePublic from "./pages/VideoShortsPage";
+import OnlineConsultationPage from "./pages/OnlineConsultationPage";
+import ContactPage from "./pages/ContactPage";
+import NoticesPage from "./pages/NoticesPage";
+import FAQPage from "./pages/FAQPage";
+import ModelProgramPage from "./pages/ModelProgramPage";
+import PriceGuidePage from "./pages/PriceGuidePage";
 
 // Admin imports
 import { AdminProvider } from "./contexts/AdminContext";
@@ -99,6 +117,134 @@ const App: React.FC = () => {
                           element={
                             <ErrorBoundary>
                               <ReservationPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/events"
+                          element={
+                            <ErrorBoundary>
+                              <EventsGalleryPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/about"
+                          element={
+                            <ErrorBoundary>
+                              <AboutPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/staff"
+                          element={
+                            <ErrorBoundary>
+                              <MedicalStaffPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/facility"
+                          element={
+                            <ErrorBoundary>
+                              <FacilityTourPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/procedures/:category"
+                          element={
+                            <ErrorBoundary>
+                              <ProcedureCategoryPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/procedures"
+                          element={
+                            <ErrorBoundary>
+                              <ProceduresOverviewPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/procedures/:category/:procedure"
+                          element={
+                            <ErrorBoundary>
+                              <ProcedureDetailPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/reviews"
+                          element={
+                            <ErrorBoundary>
+                              <SelfieReviewsPagePublic />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/youtube"
+                          element={
+                            <ErrorBoundary>
+                              <YouTubeChannelPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/shorts"
+                          element={
+                            <ErrorBoundary>
+                              <VideoShortsPagePublic />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/consultation"
+                          element={
+                            <ErrorBoundary>
+                              <OnlineConsultationPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/contact"
+                          element={
+                            <ErrorBoundary>
+                              <ContactPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/notices"
+                          element={
+                            <ErrorBoundary>
+                              <NoticesPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/faq"
+                          element={
+                            <ErrorBoundary>
+                              <FAQPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/model-program"
+                          element={
+                            <ErrorBoundary>
+                              <ModelProgramPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/pricing"
+                          element={
+                            <ErrorBoundary>
+                              <PriceGuidePage />
                             </ErrorBoundary>
                           }
                         />

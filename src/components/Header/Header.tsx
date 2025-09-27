@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import EnhancedNavigation from '../Navigation/EnhancedNavigation'
+import Navigation from '../Navigation/Navigation'
 import styles from './Header.module.css'
 
 interface HeaderProps {
@@ -68,8 +68,8 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
           </button>
 
           <div id="nav-menu" className={menuClasses}>
-            <EnhancedNavigation
-              className={styles.enhancedNav}
+            <Navigation
+              className={styles.navigation}
               onNavigate={handleNavigationClose}
             />
 

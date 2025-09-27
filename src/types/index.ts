@@ -53,11 +53,24 @@ export interface EventBanner {
   description: string
   image_url?: string
   link_url?: string
+  button_text?: string
   active: boolean
   priority: number
   start_date: string
   end_date: string
+  target_audience?: string
+  event_type?: string
+  discount_percentage?: number
+  featured?: boolean
+  registration_link?: string
+  max_participants?: number
+  participants_count?: number
+  event_location?: string
+  registration_deadline?: string
+  terms_conditions?: string
+  view_count?: number
   created_at?: string
+  updated_at?: string
 }
 
 // Form Data Types

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import styles from './EnhancedNavigation.module.css'
+import styles from './Navigation.module.css'
 
 interface NavItem {
   label: string
@@ -18,7 +18,7 @@ interface NavCategory {
   megaMenu?: boolean
 }
 
-interface EnhancedNavigationProps {
+interface NavigationProps {
   className?: string
   onNavigate?: () => void
 }
@@ -128,10 +128,22 @@ const navigationCategories: NavCategory[] = [
     title: '이벤트',
     items: [
       {
-        label: '진행중 이벤트',
-        path: '#events',
-        description: '현재 진행 중인 특별 이벤트',
+        label: '이벤트 갤러리',
+        path: '/events',
+        description: '모든 이벤트 및 프로모션 보기',
         icon: '🎊'
+      },
+      {
+        label: '진행중 이벤트',
+        path: '/events?status=active',
+        description: '현재 진행 중인 특별 이벤트',
+        icon: '🔥'
+      },
+      {
+        label: '추천 이벤트',
+        path: '/events?status=featured',
+        description: '추천하는 인기 이벤트',
+        icon: '⭐'
       }
     ]
   },
@@ -170,7 +182,7 @@ const navigationCategories: NavCategory[] = [
   }
 ]
 
-const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({
+const Navigation: React.FC<NavigationProps> = ({
   className,
   onNavigate
 }) => {
@@ -228,7 +240,7 @@ const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({
   }
 
   const navigationClasses = [
-    styles.enhancedNavigation,
+    styles.navigation,
     className
   ].filter(Boolean).join(' ')
 
@@ -328,4 +340,4 @@ const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({
   )
 }
 
-export default EnhancedNavigation
+export default Navigation

@@ -90,12 +90,6 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
       throw new Error('Received HTML response instead of JSON. The API endpoint may not exist or the database tables may not be created.')
     }
 
-    // Enhance error messages for common database issues
-    if (error instanceof Error) {
-      if (error.message.includes('Could not find the table')) {
-        throw new Error('Database not set up: Missing required tables. Please run the database setup script in Supabase SQL Editor: /scripts/setup-features-database.sql')
-      }
-    }
 
     throw error
   }

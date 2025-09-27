@@ -72,8 +72,8 @@
   align-items: center;
 }
 
-.enhancedNav {
-  /* Enhanced navigation inherits styles from its own CSS module */
+.navigation {
+  /* Navigation inherits styles from its own CSS module */
 }
 
 .ctaContainer {

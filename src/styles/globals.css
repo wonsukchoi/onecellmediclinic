@@ -36,14 +36,6 @@
 	--color-border-dark: #9ca3af;
 	--color-border-accent: #dac4a5;
 
-	/* Legacy variables for backward compatibility */
-	--bg: var(--color-background-white);
-	--text: var(--color-text-primary);
-	--muted: var(--color-text-light);
-	--brand: var(--color-primary);
-	--brand-dark: var(--color-primary-dark);
-	--surface: var(--color-background-light);
-	--line: var(--color-border-light);
 
 	/* Admin panel specific colors */
 	--admin-bg: #f8fafc;

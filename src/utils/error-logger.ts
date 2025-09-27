@@ -91,34 +91,14 @@ class ErrorLoggerService {
   }
 
   private async sendToLoggingService(errorReport: ErrorReport): Promise<void> {
-    try {
-      // Example implementation - replace with your actual logging service
-      // await fetch('/api/logs', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(errorReport)
-      // })
-
-      // For now, just store in localStorage as fallback
-      const storedErrors = this.getStoredErrors()
-      storedErrors.unshift(errorReport)
-
-      // Keep only last 50 errors in storage
-      const limitedErrors = storedErrors.slice(0, 50)
-      localStorage.setItem('error_logs', JSON.stringify(limitedErrors))
-    } catch (err) {
-      console.warn('Failed to store error log:', err)
-    }
+    // Send to external logging service
+    await fetch('/api/logs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(errorReport)
+    })
   }
 
-  private getStoredErrors(): ErrorReport[] {
-    try {
-      const stored = localStorage.getItem('error_logs')
-      return stored ? JSON.parse(stored) : []
-    } catch {
-      return []
-    }
-  }
 
   getRecentErrors(limit = 10): ErrorReport[] {
     return this.errors.slice(0, limit)
@@ -130,7 +110,6 @@ class ErrorLoggerService {
 
   clearErrors(): void {
     this.errors = []
-    localStorage.removeItem('error_logs')
   }
 
   // Get error statistics
@@ -163,8 +142,7 @@ class ErrorLoggerService {
 
   // Download error logs as JSON file for debugging
   downloadErrorLogs(): void {
-    const allErrors = [...this.errors, ...this.getStoredErrors()]
-    const dataStr = JSON.stringify(allErrors, null, 2)
+    const dataStr = JSON.stringify(this.errors, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
 
     const url = URL.createObjectURL(dataBlob)

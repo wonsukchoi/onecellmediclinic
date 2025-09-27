@@ -1,0 +1,504 @@
+.container {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.loading {
+  padding: 60px 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+}
+
+.hero {
+  background: linear-gradient(135deg, #2d5016 0%, #38a169 100%);
+  color: white;
+  padding: 80px 20px 60px;
+  text-align: center;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.heroDescription {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.notice {
+  padding: 40px 20px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.noticeContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.noticeCard {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+  background: #f0fff4;
+  border: 2px solid #c6f6d5;
+  border-radius: 12px;
+  align-items: flex-start;
+}
+
+.noticeCard svg {
+  color: #38a169;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.noticeText h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d5016;
+  margin-bottom: 0.75rem;
+}
+
+.noticeText ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.noticeText li {
+  position: relative;
+  padding-left: 1rem;
+  margin-bottom: 0.5rem;
+  color: #2d5016;
+  line-height: 1.5;
+}
+
+.noticeText li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #38a169;
+  font-weight: bold;
+}
+
+.prices {
+  padding: 60px 20px;
+}
+
+.pricesContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.categoryTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.categoryTab {
+  padding: 12px 24px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 25px;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.categoryTab:hover {
+  border-color: #38a169;
+  color: #38a169;
+}
+
+.categoryTab.active {
+  background: #38a169;
+  border-color: #38a169;
+  color: white;
+}
+
+.priceTable {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #2d5016;
+  color: white;
+}
+
+.headerCell {
+  font-weight: 600;
+  text-align: center;
+}
+
+.headerCell:first-child {
+  text-align: left;
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.noProcedures {
+  padding: 3rem;
+  text-align: center;
+  color: #a0aec0;
+}
+
+.noProcedures svg {
+  margin-bottom: 1rem;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+  transition: background 0.3s ease;
+}
+
+.tableRow:hover {
+  background: #f7fafc;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tableCell:first-child {
+  justify-content: flex-start;
+}
+
+.procedureInfo {
+  text-align: left;
+}
+
+.procedureName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.25rem;
+}
+
+.procedureDescription {
+  font-size: 0.9rem;
+  color: #718096;
+  line-height: 1.4;
+}
+
+.priceValue {
+  font-weight: 600;
+  color: #38a169;
+  text-align: center;
+}
+
+.durationValue {
+  color: #4a5568;
+  text-align: center;
+}
+
+.detailButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 12px;
+  background: #f7fafc;
+  color: #38a169;
+  border: 1px solid #c6f6d5;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.detailButton:hover {
+  background: #38a169;
+  color: white;
+  border-color: #38a169;
+}
+
+.paymentInfo {
+  padding: 80px 20px;
+  background: white;
+}
+
+.paymentInfoContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #2d3748;
+}
+
+.paymentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.paymentCard {
+  background: #f7fafc;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.paymentCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: #38a169;
+}
+
+.paymentIcon {
+  color: #38a169;
+  margin-bottom: 1rem;
+}
+
+.paymentTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.paymentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.paymentList li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.paymentList li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #38a169;
+  font-weight: bold;
+}
+
+.consultation {
+  padding: 80px 20px;
+  background: #2d5016;
+  color: white;
+  text-align: center;
+}
+
+.consultationContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.consultationTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.consultationDescription {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.consultationActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.consultButton,
+.phoneButton,
+.reserveButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.consultButton {
+  background: #38a169;
+  color: white;
+  border: 2px solid #38a169;
+}
+
+.consultButton:hover {
+  background: #2f855a;
+  border-color: #2f855a;
+}
+
+.phoneButton {
+  background: #48bb78;
+  color: white;
+  border: 2px solid #48bb78;
+}
+
+.phoneButton:hover {
+  background: #38a169;
+  border-color: #38a169;
+}
+
+.reserveButton {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.reserveButton:hover {
+  background: white;
+  color: #2d5016;
+}
+
+.faq {
+  padding: 80px 20px;
+  background: #fafafa;
+}
+
+.faqContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.faqCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.faqQuestion {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.faqAnswer {
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .categoryTabs {
+    justify-content: flex-start;
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    text-align: left;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .tableCell {
+    justify-content: flex-start;
+    padding: 0.5rem 0;
+  }
+
+  .tableCell:not(:first-child)::before {
+    content: attr(data-label) ': ';
+    font-weight: 600;
+    color: #2d3748;
+    margin-right: 0.5rem;
+  }
+
+  .priceValue::before {
+    content: '가격: ';
+  }
+
+  .durationValue::before {
+    content: '소요시간: ';
+  }
+
+  .paymentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .consultationActions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .consultButton,
+  .phoneButton,
+  .reserveButton {
+    width: 200px;
+    justify-content: center;
+  }
+
+  .faqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .noticeCard {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

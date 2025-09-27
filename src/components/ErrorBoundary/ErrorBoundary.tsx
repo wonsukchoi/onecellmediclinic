@@ -4,7 +4,6 @@ import { ErrorLogger } from '../../utils/error-logger'
 
 interface Props {
   children: ReactNode
-  fallback?: ReactNode
   onError?: (error: Error, errorInfo: ErrorInfo) => void
   resetKeys?: Array<string | number>
   resetOnPropsChange?: boolean
@@ -96,10 +95,6 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback
-      }
-
       return (
         <ErrorFallback
           error={this.state.error}

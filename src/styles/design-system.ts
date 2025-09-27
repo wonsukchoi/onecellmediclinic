@@ -232,8 +232,7 @@ export const getColor = (path: string): string => {
   for (const part of parts) {
     current = current[part]
     if (current === undefined) {
-      console.warn(`Color path "${path}" not found in design system`)
-      return '#000000' // Fallback color
+      throw new Error(`Color path "${path}" not found in design system`)
     }
   }
 
