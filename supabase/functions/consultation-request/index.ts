@@ -31,6 +31,13 @@ serve(async (req) => {
   }
 
   try {
+    // Create service role client for bypassing RLS when inserting consultation data
+    const serviceRoleClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    // Create regular client with user auth for operations that need user context
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -173,7 +180,7 @@ serve(async (req) => {
       created_at: new Date().toISOString()
     };
 
-    const { data: consultation, error: insertError } = await supabaseClient
+    const { data: consultation, error: insertError } = await serviceRoleClient
       .from('consultation_requests')
       .insert([consultationData])
       .select(`
@@ -202,7 +209,7 @@ serve(async (req) => {
     }
 
     // Create initial tracking entry
-    const { data: trackingEntry } = await supabaseClient
+    const { data: trackingEntry } = await serviceRoleClient
       .from('consultation_tracking')
       .insert([{
         consultation_request_id: consultation.id,
