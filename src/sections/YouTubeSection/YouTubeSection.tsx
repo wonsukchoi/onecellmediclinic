@@ -73,7 +73,6 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
     document.body.appendChild(script)
 
     window.onYouTubeIframeAPIReady = () => {
-      console.log('YouTube API loaded')
     }
   }
 

@@ -1,46 +1,62 @@
 import { useState, useCallback } from 'react'
-import type { UseFormReturn } from '../types'
+
+type ValidationFunction<T> = (values: T) => Partial<Record<keyof T, string>>
+
+interface UseFormReturn<T> {
+  values: T
+  errors: Partial<Record<keyof T, string>>
+  touched: Partial<Record<keyof T, boolean>>
+  isSubmitting: boolean
+  handleChange: (field: keyof T, value: any) => void
+  handleSubmit: (onSubmit: (values: T) => Promise<void>) => (e: React.FormEvent) => Promise<void>
+  reset: () => void
+}
 
 export function useForm<T extends Record<string, any>>(
   initialValues: T,
-  validate?: (values: T) => Partial<Record<keyof T, string>>
+  validate?: ValidationFunction<T>
 ): UseFormReturn<T> {
   const [values, setValues] = useState<T>(initialValues)
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({})
   const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleChange = useCallback((name: keyof T, value: any) => {
-    setValues(prev => ({ ...prev, [name]: value }))
-    setTouched(prev => ({ ...prev, [name]: true }))
+  const handleChange = useCallback((field: keyof T, value: any) => {
+    setValues(prev => ({ ...prev, [field]: value }))
+    setTouched(prev => ({ ...prev, [field]: true }))
 
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }))
+    if (validate) {
+      const newValues = { ...values, [field]: value }
+      const newErrors = validate(newValues)
+      setErrors(newErrors)
     }
-  }, [errors])
+  }, [values, validate])
 
-  const handleSubmit = useCallback((onSubmit: (values: T) => void | Promise<void>) => {
+  const handleSubmit = useCallback((onSubmit: (values: T) => Promise<void>) => {
     return async (e: React.FormEvent) => {
       e.preventDefault()
-      setIsSubmitting(true)
 
-      // Run validation
-      const validationErrors = validate ? validate(values) : {}
-      setErrors(validationErrors)
+      if (validate) {
+        const validationErrors = validate(values)
+        setErrors(validationErrors)
 
-      // Check if there are any errors
-      const hasErrors = Object.keys(validationErrors).length > 0
+        const allFieldsTouched = Object.keys(values).reduce((acc, field) => ({
+          ...acc,
+          [field]: true
+        }), {} as Partial<Record<keyof T, boolean>>)
+        setTouched(allFieldsTouched)
 
-      if (!hasErrors) {
-        try {
-          await onSubmit(values)
-        } catch (error) {
-          console.error('Form submission error:', error)
+        if (Object.keys(validationErrors).length > 0) {
+          return
         }
       }
 
-      setIsSubmitting(false)
+      setIsSubmitting(true)
+      try {
+        await onSubmit(values)
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   }, [values, validate])
 
@@ -51,14 +67,11 @@ export function useForm<T extends Record<string, any>>(
     setIsSubmitting(false)
   }, [initialValues])
 
-  const isValid = Object.keys(errors).length === 0
-
   return {
     values,
     errors,
     touched,
     isSubmitting,
-    isValid,
     handleChange,
     handleSubmit,
     reset

@@ -311,7 +311,6 @@ export class DatabaseService {
         error: sessionError,
       } = await supabase.auth.getSession();
 
-      console.log("test", session);
       if (sessionError) {
         console.warn("Session error:", sessionError.message);
         // Don't throw immediately, try to refresh session

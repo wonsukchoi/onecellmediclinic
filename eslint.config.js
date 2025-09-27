@@ -19,5 +19,21 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Enforce proper dependency arrays to prevent infinite loops
+      'react-hooks/exhaustive-deps': 'error',
+
+      // Warn about missing dependencies
+      'react-hooks/rules-of-hooks': 'error',
+
+      // Prevent console.log in production
+      'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+
+      // Prevent infinite loops with missing dependencies
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_'
+      }],
+    },
   },
 ])
