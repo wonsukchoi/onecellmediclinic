@@ -22,7 +22,7 @@ interface ClinicFeaturesProps {
 
 const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
   title = "차이를 만드는 원셀만의 디테일",
-  subtitle = "환자 안전과 만족을 위한 원셀 메디클리닉만의 특별한 시스템",
+  subtitle = "환자 안전과 만족을 위한 원셀 메디의원만의 특별한 시스템",
   showCategories = true,
   maxItems = 8
 }) => {

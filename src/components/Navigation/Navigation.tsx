@@ -31,7 +31,7 @@ const navigationCategories: NavCategory[] = [
       {
         label: '원셀 소개',
         path: '#about',
-        description: '원셀 메디클리닉 소개',
+        description: '원셀 메디의원 소개',
         icon: '🏥'
       },
       {

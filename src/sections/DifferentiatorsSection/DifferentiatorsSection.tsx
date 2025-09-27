@@ -23,7 +23,7 @@ interface DifferentiatorsSectionProps {
 
 const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
   title = "원셀을 선택한 독보적인 이유",
-  subtitle = "다른 곳과는 차별화된 원셀 메디클리닉만의 특별함을 확인하세요",
+  subtitle = "다른 곳과는 차별화된 원셀 메디의원만의 특별함을 확인하세요",
   maxItems = 6
 }) => {
   const [differentiators, setDifferentiators] = useState<Differentiator[]>([])

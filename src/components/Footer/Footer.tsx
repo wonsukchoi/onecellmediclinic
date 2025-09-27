@@ -8,10 +8,10 @@ const Footer: React.FC = () => {
         <div className={styles.footerBrand}>
           <div className={styles.footerLogo}>
             <span className={styles.logoText}>ONECELL</span>
-            <span className={styles.logoSubtitle}>MEDI CLINIC</span>
+            <span className={styles.logoSubtitle}>MEDI</span>
           </div>
           <div className={styles.footerAddress}>
-            서울특별시 강남구 테헤란로 123, 원셀메디클리닉빌딩{' '}
+            서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩{' '}
             <span className={styles.addressNote}>강남역 3번출구 도보 5분</span>
           </div>
         </div>
@@ -64,10 +64,10 @@ const Footer: React.FC = () => {
 
         <div className={styles.footerMeta}>
           <div className={styles.companyInfo}>
-            원셀메디클리닉 | 주소 : 서울특별시 강남구 테헤란로 123, 원셀메디클리닉빌딩 | 대표원장 : 김원셀 | 사업자등록번호 : 123-45-67890
+            원셀메디의원 | 주소 : 서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩 | 대표원장 : 김원셀 | 사업자등록번호 : 123-45-67890
           </div>
           <div className={styles.copyright}>
-            COPYRIGHT © 2024 ONECELL MEDI CLINIC. ALL RIGHTS RESERVED.
+            COPYRIGHT © 2024 ONECELL MEDI. ALL RIGHTS RESERVED.
           </div>
         </div>
       </div>
