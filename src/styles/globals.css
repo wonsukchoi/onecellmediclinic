@@ -1,5 +1,7 @@
 /* OneCell Medi Clinic Design System Variables */
 :root {
+	/* Scrollbar width detection */
+	--scrollbar-width: 0px;
 	/* Primary colors */
 	--color-primary: #0055a5;
 	--color-primary-dark: #003d7a;
