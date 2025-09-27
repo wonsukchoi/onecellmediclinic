@@ -31,7 +31,7 @@ interface YouTubeSectionProps {
 
 const YouTubeSection: React.FC<YouTubeSectionProps> = ({
   title = "YouTube 영상",
-  subtitle = "원셀 메디클리닉의 다양한 정보와 노하우를 영상으로 만나보세요",
+  subtitle = "원셀 메디의원의 다양한 정보와 노하우를 영상으로 만나보세요",
   showCategories = true,
   maxItems = 8
 }) => {

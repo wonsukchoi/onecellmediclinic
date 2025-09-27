@@ -24,7 +24,7 @@ interface VideoShortsProps {
 
 const VideoShortsSection: React.FC<VideoShortsProps> = ({
   title = "비디오 쇼츠",
-  subtitle = "짧고 임팩트있는 영상으로 만나는 원셀 메디클리닉",
+  subtitle = "짧고 임팩트있는 영상으로 만나는 원셀 메디의원",
   showCategories = true,
   maxItems = 6
 }) => {
