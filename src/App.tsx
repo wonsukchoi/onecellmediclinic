@@ -21,6 +21,11 @@ import ProvidersPage from "./pages/admin/ProvidersPage";
 import BlogPostsPage from "./pages/admin/BlogPostsPage";
 import GalleryItemsPage from "./pages/admin/GalleryItemsPage";
 import VideoShortsPage from "./pages/admin/VideoShortsPage";
+import YouTubeVideosPage from "./pages/admin/YouTubeVideosPage";
+import SelfieReviewsPage from "./pages/admin/SelfieReviewsPage";
+import VideoShortsFormPage from "./pages/admin/VideoShortsFormPage";
+import YouTubeVideosFormPage from "./pages/admin/YouTubeVideosFormPage";
+import SelfieReviewsFormPage from "./pages/admin/SelfieReviewsFormPage";
 
 import "./styles/globals.css";
 
@@ -47,10 +52,16 @@ const App: React.FC = () => {
                       <Route path="/blog-posts" element={<BlogPostsPage />} />
                       <Route path="/gallery-items" element={<GalleryItemsPage />} />
                       <Route path="/video-shorts" element={<VideoShortsPage />} />
+                      <Route path="/video-shorts/new" element={<VideoShortsFormPage />} />
+                      <Route path="/video-shorts/:id/edit" element={<VideoShortsFormPage />} />
+                      <Route path="/youtube-videos" element={<YouTubeVideosPage />} />
+                      <Route path="/youtube-videos/new" element={<YouTubeVideosFormPage />} />
+                      <Route path="/youtube-videos/:id/edit" element={<YouTubeVideosFormPage />} />
+                      <Route path="/selfie-reviews" element={<SelfieReviewsPage />} />
+                      <Route path="/selfie-reviews/new" element={<SelfieReviewsFormPage />} />
+                      <Route path="/selfie-reviews/:id/edit" element={<SelfieReviewsFormPage />} />
                       {/* Additional admin routes can be added here for:
                           - procedure-categories
-                          - youtube-videos
-                          - selfie-reviews
                           - clinic-features
                           - differentiators
                           - event-banners

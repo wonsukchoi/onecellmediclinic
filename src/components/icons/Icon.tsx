@@ -56,11 +56,11 @@ const Icon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
       className={combinedClassName}
-      title={title}
       onClick={onClick}
       role={onClick ? 'button' : 'img'}
       aria-label={title || name}
     >
+      {title && <title>{title}</title>}
       <path d={path} fill={color || 'currentColor'} stroke="none" />
     </svg>
   );
