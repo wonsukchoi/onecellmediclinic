@@ -40,9 +40,16 @@ serve(async (req) => {
   }
 
   try {
+    // Create service role client for bypassing RLS
+    const serviceRoleClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    // Create regular client with user auth for operations that need user context
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
         global: {
           headers: { Authorization: req.headers.get("Authorization")! },
@@ -119,7 +126,7 @@ serve(async (req) => {
 
     switch (action) {
       case 'list': {
-        let query = supabaseClient
+        let query = serviceRoleClient
           .from('appointments')
           .select('*');
 
@@ -182,7 +189,7 @@ serve(async (req) => {
         const updateData: any = { status: appointmentData.status };
         if (appointmentData.notes) updateData.notes = appointmentData.notes;
 
-        const { data, error } = await supabaseClient
+        const { data, error } = await serviceRoleClient
           .from('appointments')
           .update(updateData)
           .eq('id', appointmentId)
@@ -219,7 +226,7 @@ serve(async (req) => {
           );
         }
 
-        const { error } = await supabaseClient
+        const { error } = await serviceRoleClient
           .from('appointments')
           .update({
             status: 'cancelled',
@@ -258,7 +265,7 @@ serve(async (req) => {
           );
         }
 
-        const { error } = await supabaseClient
+        const { error } = await serviceRoleClient
           .from('appointments')
           .update({
             preferred_date: appointmentData.newDate,
@@ -301,7 +308,7 @@ serve(async (req) => {
           );
         }
 
-        const { data, error } = await supabaseClient
+        const { data, error } = await serviceRoleClient
           .from('appointments')
           .insert([
             {
