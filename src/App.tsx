@@ -4,6 +4,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ConsultationSidebar from "./components/ConsultationSidebar";
+import StickyScrollBar from "./components/StickyScrollBar";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/ReservationPage";
 import EventsGalleryPage from "./pages/EventsGalleryPage";
@@ -255,6 +256,9 @@ const App: React.FC = () => {
                     </ErrorBoundary>
                     <ErrorBoundary>
                       <ConsultationSidebar position="right" />
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                      <StickyScrollBar />
                     </ErrorBoundary>
                   </div>
                 </ErrorBoundary>

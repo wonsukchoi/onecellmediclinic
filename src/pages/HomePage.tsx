@@ -10,7 +10,7 @@ import DifferentiatorsSection from '../sections/DifferentiatorsSection'
 
 const HomePage: React.FC = () => {
   return (
-    <main>
+    <main style={{ paddingBottom: '100px' }}>
       <HeroSection />
       <VideoShortsSection />
       <ClinicFeaturesSection />
