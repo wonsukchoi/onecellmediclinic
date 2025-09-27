@@ -120,7 +120,7 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     try {
       const appointmentData: AppointmentFormData = {
         patientName: appointmentForm.patientName.trim(),
-        patientEmail: '', // We'll use empty email for quick bookings
+        patientEmail: 'quickbooking@clinic.temp', // Placeholder email for quick bookings from homepage
         patientPhone: appointmentForm.patientPhone.trim(),
         serviceType: '상담', // Default to consultation
         preferredDate: appointmentForm.preferredDate,
