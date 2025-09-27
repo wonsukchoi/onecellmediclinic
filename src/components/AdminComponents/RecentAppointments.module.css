@@ -219,6 +219,29 @@
   background-color: #004494;
 }
 
+/* Error state styles */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.errorIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.error p {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* Scrollbar styling */
 .appointmentsList::-webkit-scrollbar {
   width: 6px;

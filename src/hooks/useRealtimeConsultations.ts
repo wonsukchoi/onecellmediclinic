@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../../config/supabase';
-import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { supabase } from '../services/supabase';
+import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import { useApiCall } from './useApiCall';
+import { ErrorLogger } from '../utils/error-logger';
 
 interface ConsultationRequest {
   id: number;
@@ -32,6 +34,7 @@ interface UseRealtimeConsultationsOptions {
   providerId?: number;
   status?: string[];
   urgencyLevel?: string[];
+  enabled?: boolean; // Allow disabling the hook
 }
 
 interface UseRealtimeConsultationsReturn {
@@ -40,166 +43,308 @@ interface UseRealtimeConsultationsReturn {
   error: string | null;
   refreshConsultations: () => Promise<void>;
   getConsultationById: (id: number) => ConsultationRequest | undefined;
+  connectionStatus: 'connected' | 'disconnected' | 'connecting' | 'error';
 }
+
+const SUPABASE_URL = 'https://weqqkknwpgremfugcbvz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXFra253cGdyZW1mdWdjYnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzAwNTAsImV4cCI6MjA3NDQ0NjA1MH0.llYPWCVtWr6OWI_zRFYkeYMzGqaw9nfAQKU3VUV-Fgg';
 
 export function useRealtimeConsultations(
   options: UseRealtimeConsultationsOptions = {}
 ): UseRealtimeConsultationsReturn {
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting' | 'error'>('disconnected');
 
-  const { userId, providerId, status, urgencyLevel } = options;
+  const { userId, providerId, status, urgencyLevel, enabled = true } = options;
+
+  // Refs for cleanup and preventing infinite loops
+  const mountedRef = useRef(true);
+  const subscriptionRef = useRef<any>(null);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const retryCountRef = useRef(0);
+
+  // Stable reference to filter options to prevent useEffect loops
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+
+  // API call for fetching consultations with retry logic
+  const fetchApi = useApiCall(
+    async (args: { patientEmail?: string; filters?: any }) => {
+      const { patientEmail, filters } = args;
+
+      const url = patientEmail
+        ? `${SUPABASE_URL}/functions/v1/manage-consultation-requests?patientEmail=${encodeURIComponent(patientEmail)}`
+        : `${SUPABASE_URL}/functions/v1/manage-consultation-requests`;
+
+      const requestConfig: RequestInit = {
+        method: patientEmail ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      };
+
+      if (!patientEmail) {
+        requestConfig.body = JSON.stringify({
+          action: 'list',
+          filters
+        });
+      }
+
+      const response = await fetch(url, requestConfig);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.consultations && !result.data) {
+        throw new Error('Invalid response format');
+      }
+
+      return result.consultations || result.data || [];
+    },
+    {
+      retryCount: 3,
+      retryDelay: 1000,
+      exponentialBackoff: true,
+      onError: (error, attempt) => {
+        ErrorLogger.logError(error, {
+          context: 'useRealtimeConsultations.fetchConsultations',
+          attempt,
+          userId,
+          providerId,
+          status,
+          urgencyLevel
+        });
+      },
+      onRetry: (attempt, delay) => {
+        console.log(`Retrying consultation fetch in ${delay}ms (attempt ${attempt})`);
+      }
+    }
+  );
+
+  // Get individual consultation by ID
+  const getConsultationByIdApi = useApiCall(
+    async (consultationId: number) => {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-consultation-requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          action: 'get_by_id',
+          consultationId
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.data) {
+        throw new Error('Consultation not found');
+      }
+
+      return result.data;
+    },
+    {
+      retryCount: 2,
+      retryDelay: 500,
+      onError: (error) => {
+        ErrorLogger.logError(error, {
+          context: 'useRealtimeConsultations.getConsultationById'
+        });
+      }
+    }
+  );
 
   // Fetch initial data
   const fetchConsultations = useCallback(async () => {
+    if (!enabled || !mountedRef.current) return;
+
     try {
-      setLoading(true);
-      setError(null);
+      setConnectionStatus('connecting');
 
-      let query = supabase
-        .from('consultation_requests')
-        .select(`
-          *,
-          assigned_provider:providers(
-            id,
-            full_name,
-            title,
-            specialization,
-            profile_image_url
-          )
-        `)
-        .order('created_at', { ascending: false });
+      // Prepare filters
+      const filters: any = {};
+      if (providerId) filters.provider = providerId;
+      if (status && status.length > 0) filters.status = status[0];
 
-      // Apply filters
+      // Check if we need user email
+      let patientEmail = '';
       if (userId) {
         const { data: { user } } = await supabase.auth.getUser();
         if (user?.email) {
-          query = query.eq('patient_email', user.email);
+          patientEmail = user.email;
         }
       }
 
-      if (providerId) {
-        query = query.eq('assigned_provider_id', providerId);
+      const result = await fetchApi.execute({ patientEmail, filters });
+
+      if (mountedRef.current && result) {
+        setConsultations(result);
+        setConnectionStatus('connected');
+        retryCountRef.current = 0; // Reset retry count on success
       }
-
-      if (status && status.length > 0) {
-        query = query.in('status', status);
+    } catch (error) {
+      if (mountedRef.current) {
+        setConnectionStatus('error');
+        ErrorLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+          context: 'useRealtimeConsultations.fetchConsultations'
+        });
       }
-
-      if (urgencyLevel && urgencyLevel.length > 0) {
-        query = query.in('urgency_level', urgencyLevel);
-      }
-
-      const { data, error: fetchError } = await query;
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      setConsultations(data || []);
-    } catch (err) {
-      console.error('Error fetching consultations:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch consultations');
-    } finally {
-      setLoading(false);
     }
-  }, [userId, providerId, status, urgencyLevel]);
-
-  // Set up real-time subscription
-  useEffect(() => {
-    fetchConsultations();
-
-    // Subscribe to changes
-    const subscription = supabase
-      .channel('consultation_requests_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'consultation_requests',
-        },
-        async (payload: RealtimePostgresChangesPayload<ConsultationRequest>) => {
-          console.log('Consultation change received:', payload);
-
-          if (payload.eventType === 'INSERT') {
-            // Fetch the complete record with relations
-            const { data: newConsultation } = await supabase
-              .from('consultation_requests')
-              .select(`
-                *,
-                assigned_provider:providers(
-                  id,
-                  full_name,
-                  title,
-                  specialization,
-                  profile_image_url
-                )
-              `)
-              .eq('id', payload.new.id)
-              .single();
-
-            if (newConsultation && shouldIncludeConsultation(newConsultation)) {
-              setConsultations((prev) => [newConsultation, ...prev]);
-            }
-          } else if (payload.eventType === 'UPDATE') {
-            // Fetch the updated record with relations
-            const { data: updatedConsultation } = await supabase
-              .from('consultation_requests')
-              .select(`
-                *,
-                assigned_provider:providers(
-                  id,
-                  full_name,
-                  title,
-                  specialization,
-                  profile_image_url
-                )
-              `)
-              .eq('id', payload.new.id)
-              .single();
-
-            if (updatedConsultation) {
-              setConsultations((prev) =>
-                prev.map((consultation) =>
-                  consultation.id === payload.new.id ? updatedConsultation : consultation
-                )
-              );
-            }
-          } else if (payload.eventType === 'DELETE') {
-            setConsultations((prev) =>
-              prev.filter((consultation) => consultation.id !== payload.old.id)
-            );
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [fetchConsultations]);
+  }, [enabled, userId, providerId, status, urgencyLevel, fetchApi]);
 
   // Helper function to check if consultation should be included based on filters
-  const shouldIncludeConsultation = (consultation: ConsultationRequest): boolean => {
-    if (status && status.length > 0 && !status.includes(consultation.status)) {
+  const shouldIncludeConsultation = useCallback((consultation: ConsultationRequest): boolean => {
+    const currentOptions = optionsRef.current;
+
+    if (currentOptions.status && currentOptions.status.length > 0 &&
+        !currentOptions.status.includes(consultation.status)) {
       return false;
     }
 
-    if (urgencyLevel && urgencyLevel.length > 0 && !urgencyLevel.includes(consultation.urgency_level)) {
+    if (currentOptions.urgencyLevel && currentOptions.urgencyLevel.length > 0 &&
+        !currentOptions.urgencyLevel.includes(consultation.urgency_level)) {
       return false;
     }
 
-    if (providerId && consultation.assigned_provider_id !== providerId) {
+    if (currentOptions.providerId && consultation.assigned_provider_id !== currentOptions.providerId) {
       return false;
     }
-
-    // For userId filter, we would need to check patient email against current user
-    // This is handled in the initial fetch and subscription setup
 
     return true;
-  };
+  }, []);
+
+  // Set up real-time subscription with better error handling
+  const setupSubscription = useCallback(() => {
+    if (!enabled || !mountedRef.current) return;
+
+    try {
+      setConnectionStatus('connecting');
+
+      const subscription = supabase
+        .channel('consultation_requests_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'consultation_requests',
+          },
+          async (payload: RealtimePostgresChangesPayload<ConsultationRequest>) => {
+            if (!mountedRef.current) return;
+
+            try {
+              console.log('Consultation change received:', payload.eventType, (payload.new as any)?.id || (payload.old as any)?.id);
+
+              if (payload.eventType === 'INSERT') {
+                const consultationData = await getConsultationByIdApi.execute((payload.new as any)?.id);
+                if (consultationData && shouldIncludeConsultation(consultationData)) {
+                  setConsultations((prev) => {
+                    // Prevent duplicates
+                    const exists = prev.some(c => c.id === consultationData.id);
+                    return exists ? prev : [consultationData, ...prev];
+                  });
+                }
+              } else if (payload.eventType === 'UPDATE') {
+                const consultationData = await getConsultationByIdApi.execute((payload.new as any)?.id);
+                if (consultationData && (payload.new as any)?.id) {
+                  setConsultations((prev) =>
+                    prev.map((consultation) =>
+                      consultation.id === (payload.new as any)?.id ? consultationData : consultation
+                    )
+                  );
+                }
+              } else if (payload.eventType === 'DELETE') {
+                setConsultations((prev) =>
+                  prev.filter((consultation) => consultation.id !== (payload.old as any)?.id)
+                );
+              }
+
+              setConnectionStatus('connected');
+            } catch (error) {
+              ErrorLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+                context: 'useRealtimeConsultations.realtimeUpdate',
+                eventType: payload.eventType,
+                recordId: (payload.new as any)?.id || (payload.old as any)?.id
+              });
+              setConnectionStatus('error');
+            }
+          }
+        )
+        .subscribe((status) => {
+          if (!mountedRef.current) return;
+
+          console.log('Subscription status:', status);
+
+          if (status === 'SUBSCRIBED') {
+            setConnectionStatus('connected');
+            retryCountRef.current = 0;
+          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+            setConnectionStatus('error');
+
+            // Retry subscription with exponential backoff
+            const retryDelay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
+            retryCountRef.current++;
+
+            if (retryCountRef.current <= 5) {
+              retryTimeoutRef.current = setTimeout(() => {
+                if (mountedRef.current) {
+                  console.log(`Retrying subscription in ${retryDelay}ms (attempt ${retryCountRef.current})`);
+                  setupSubscription();
+                }
+              }, retryDelay);
+            }
+          }
+        });
+
+      subscriptionRef.current = subscription;
+    } catch (error) {
+      ErrorLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+        context: 'useRealtimeConsultations.setupSubscription'
+      });
+      setConnectionStatus('error');
+    }
+  }, [enabled, shouldIncludeConsultation, getConsultationByIdApi]);
+
+  // Cleanup function
+  const cleanup = useCallback(() => {
+    if (subscriptionRef.current) {
+      subscriptionRef.current.unsubscribe();
+      subscriptionRef.current = null;
+    }
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
+    }
+  }, []);
+
+  // Main effect for initialization
+  useEffect(() => {
+    if (!enabled) return;
+
+    fetchConsultations();
+    setupSubscription();
+
+    return cleanup;
+  }, [enabled, fetchConsultations, setupSubscription, cleanup]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      cleanup();
+    };
+  }, [cleanup]);
 
   const refreshConsultations = useCallback(async () => {
     await fetchConsultations();
@@ -214,14 +359,15 @@ export function useRealtimeConsultations(
 
   return {
     consultations,
-    loading,
-    error,
+    loading: fetchApi.loading,
+    error: fetchApi.error,
     refreshConsultations,
     getConsultationById,
+    connectionStatus,
   };
 }
 
-// Hook for consultation tracking in real-time
+// Simplified hook for consultation tracking with improved error handling
 interface ConsultationTracking {
   id: number;
   consultation_request_id: number;
@@ -240,37 +386,90 @@ interface UseConsultationTrackingReturn {
 
 export function useConsultationTracking(consultationId: number): UseConsultationTrackingReturn {
   const [tracking, setTracking] = useState<ConsultationTracking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
+  const subscriptionRef = useRef<any>(null);
 
-  const fetchTracking = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // API call for fetching tracking data
+  const fetchTrackingApi = useApiCall(
+    async () => {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-consultation-requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          action: 'get_tracking',
+          consultationId
+        }),
+      });
 
-      const { data, error: fetchError } = await supabase
-        .from('consultation_tracking')
-        .select('*')
-        .eq('consultation_request_id', consultationId)
-        .order('created_at', { ascending: true });
-
-      if (fetchError) {
-        throw fetchError;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      setTracking(data || []);
-    } catch (err) {
-      console.error('Error fetching consultation tracking:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tracking');
-    } finally {
-      setLoading(false);
+      const result = await response.json();
+      return result.tracking || [];
+    },
+    {
+      retryCount: 2,
+      onError: (error) => {
+        ErrorLogger.logError(error, {
+          context: 'useConsultationTracking.fetchTracking',
+          consultationId
+        });
+      }
     }
-  }, [consultationId]);
+  );
 
+  // API call for adding tracking entries
+  const addTrackingApi = useApiCall(
+    async (entry: Omit<ConsultationTracking, 'id' | 'created_at'>) => {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-consultation-requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          action: 'add_tracking',
+          consultationId,
+          trackingData: {
+            status: entry.status,
+            notes: entry.notes
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+    {
+      retryCount: 1,
+      onError: (error) => {
+        ErrorLogger.logError(error, {
+          context: 'useConsultationTracking.addTrackingEntry',
+          consultationId
+        });
+      }
+    }
+  );
+
+  // Fetch tracking data
+  const fetchTracking = useCallback(async () => {
+    const result = await fetchTrackingApi.execute();
+    if (mountedRef.current && result) {
+      setTracking(result);
+    }
+  }, [fetchTrackingApi]);
+
+  // Set up real-time subscription
   useEffect(() => {
     fetchTracking();
 
-    // Subscribe to tracking changes
     const subscription = supabase
       .channel(`consultation_tracking_${consultationId}`)
       .on(
@@ -282,54 +481,55 @@ export function useConsultationTracking(consultationId: number): UseConsultation
           filter: `consultation_request_id=eq.${consultationId}`,
         },
         (payload: RealtimePostgresChangesPayload<ConsultationTracking>) => {
-          if (payload.eventType === 'INSERT') {
-            setTracking((prev) => [...prev, payload.new]);
-          } else if (payload.eventType === 'UPDATE') {
-            setTracking((prev) =>
-              prev.map((entry) => (entry.id === payload.new.id ? payload.new : entry))
-            );
-          } else if (payload.eventType === 'DELETE') {
-            setTracking((prev) => prev.filter((entry) => entry.id !== payload.old.id));
+          if (!mountedRef.current) return;
+
+          try {
+            if (payload.eventType === 'INSERT') {
+              setTracking((prev) => [...prev, payload.new]);
+            } else if (payload.eventType === 'UPDATE') {
+              setTracking((prev) =>
+                prev.map((entry) => (entry.id === payload.new.id ? payload.new : entry))
+              );
+            } else if (payload.eventType === 'DELETE') {
+              setTracking((prev) => prev.filter((entry) => entry.id !== payload.old.id));
+            }
+          } catch (error) {
+            ErrorLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+              context: 'useConsultationTracking.realtimeUpdate',
+              consultationId,
+              eventType: payload.eventType
+            });
           }
         }
       )
       .subscribe();
 
+    subscriptionRef.current = subscription;
+
     return () => {
-      subscription.unsubscribe();
+      mountedRef.current = false;
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+      }
     };
   }, [consultationId, fetchTracking]);
 
-  const addTrackingEntry = async (entry: Omit<ConsultationTracking, 'id' | 'created_at'>) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase.from('consultation_tracking').insert([
-        {
-          ...entry,
-          consultation_request_id: consultationId,
-          created_by: user?.id,
-          created_at: new Date().toISOString(),
-        },
-      ]);
-
-      if (error) {
-        throw error;
-      }
-    } catch (err) {
-      console.error('Error adding tracking entry:', err);
-      throw err;
-    }
-  };
+  const addTrackingEntry = useCallback(
+    async (entry: Omit<ConsultationTracking, 'id' | 'created_at'>) => {
+      await addTrackingApi.execute(entry);
+    },
+    [addTrackingApi]
+  );
 
   return {
     tracking,
-    loading,
-    error,
+    loading: fetchTrackingApi.loading,
+    error: fetchTrackingApi.error,
     addTrackingEntry,
   };
 }
 
-// Hook for real-time consultation statistics
+// Hook for real-time consultation statistics with error handling
 interface ConsultationStats {
   total: number;
   newRequests: number;
@@ -342,6 +542,7 @@ export function useRealtimeConsultationStats(): {
   stats: ConsultationStats;
   loading: boolean;
   error: string | null;
+  connectionStatus: 'connected' | 'disconnected' | 'error';
 } {
   const [stats, setStats] = useState<ConsultationStats>({
     total: 0,
@@ -350,49 +551,57 @@ export function useRealtimeConsultationStats(): {
     completed: 0,
     urgentRequests: 0,
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'error'>('disconnected');
+  const mountedRef = useRef(true);
+  const subscriptionRef = useRef<any>(null);
+
+  // API call for fetching stats
+  const fetchStatsApi = useApiCall(
+    async () => {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-consultation-requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          action: 'get_stats'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result.stats || {
+        total: 0,
+        newRequests: 0,
+        inProgress: 0,
+        completed: 0,
+        urgentRequests: 0,
+      };
+    },
+    {
+      retryCount: 3,
+      retryDelay: 2000,
+      onError: (error) => {
+        ErrorLogger.logError(error, {
+          context: 'useRealtimeConsultationStats.fetchStats'
+        });
+        setConnectionStatus('error');
+      }
+    }
+  );
 
   const fetchStats = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const [totalResult, newResult, inProgressResult, completedResult, urgentResult] = await Promise.all([
-        supabase.from('consultation_requests').select('*', { count: 'exact', head: true }),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'new'),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .in('status', ['in_progress', 'reviewing', 'awaiting_response']),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .in('status', ['completed', 'converted_to_appointment']),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .eq('urgency_level', 'high')
-          .eq('status', 'new'),
-      ]);
-
-      setStats({
-        total: totalResult.count || 0,
-        newRequests: newResult.count || 0,
-        inProgress: inProgressResult.count || 0,
-        completed: completedResult.count || 0,
-        urgentRequests: urgentResult.count || 0,
-      });
-    } catch (err) {
-      console.error('Error fetching consultation stats:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch stats');
-    } finally {
-      setLoading(false);
+    const result = await fetchStatsApi.execute();
+    if (mountedRef.current && result) {
+      setStats(result);
+      setConnectionStatus('connected');
     }
-  }, []);
+  }, [fetchStatsApi]);
 
   useEffect(() => {
     fetchStats();
@@ -408,16 +617,34 @@ export function useRealtimeConsultationStats(): {
           table: 'consultation_requests',
         },
         () => {
-          // Refetch stats when any consultation changes
-          fetchStats();
+          if (mountedRef.current) {
+            // Refetch stats when any consultation changes
+            fetchStats();
+          }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          setConnectionStatus('connected');
+        } else if (status === 'CHANNEL_ERROR') {
+          setConnectionStatus('error');
+        }
+      });
+
+    subscriptionRef.current = subscription;
 
     return () => {
-      subscription.unsubscribe();
+      mountedRef.current = false;
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+      }
     };
   }, [fetchStats]);
 
-  return { stats, loading, error };
+  return {
+    stats,
+    loading: fetchStatsApi.loading,
+    error: fetchStatsApi.error,
+    connectionStatus
+  };
 }

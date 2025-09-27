@@ -13,12 +13,12 @@ export const AdminLoginPage: React.FC = () => {
 
   const from = location.state?.from?.pathname || '/admin'
 
-  const { values, errors, handleChange, handleSubmit } = useForm<AdminFormData>({
-    initialValues: {
+  const { values, errors, handleChange, handleSubmit } = useForm<AdminFormData>(
+    {
       email: '',
       password: ''
     },
-    validate: (values) => {
+    (values: AdminFormData) => {
       const errors: Partial<Record<keyof AdminFormData, string>> = {}
 
       if (!values.email) {
@@ -35,7 +35,7 @@ export const AdminLoginPage: React.FC = () => {
 
       return errors
     }
-  })
+  )
 
   // Redirect if already logged in as admin
   useEffect(() => {

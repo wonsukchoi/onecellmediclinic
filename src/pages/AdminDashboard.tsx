@@ -1,18 +1,14 @@
-import React, { useEffect } from 'react'
-import { useAdmin } from '../contexts/AdminContext'
-import { StatCard } from '../components/AdminComponents/StatCard'
-import { ActivityFeed } from '../components/AdminComponents/ActivityFeed'
-import { QuickActions } from '../components/AdminComponents/QuickActions'
-import { RecentAppointments } from '../components/AdminComponents/RecentAppointments'
-import { ConsultationOverview } from '../components/AdminComponents/ConsultationOverview'
-import styles from './AdminDashboard.module.css'
+import React, { useEffect } from "react";
+import { useAdmin } from "../contexts/AdminContext";
+import { StatCard } from "../components/AdminComponents/StatCard";
+import { ActivityFeed } from "../components/AdminComponents/ActivityFeed";
+import { QuickActions } from "../components/AdminComponents/QuickActions";
+import { RecentAppointments } from "../components/AdminComponents/RecentAppointments";
+import { ConsultationOverview } from "../components/AdminComponents/ConsultationOverview";
+import styles from "./AdminDashboard.module.css";
 
 export const AdminDashboard: React.FC = () => {
-  const { stats, loading, refreshStats } = useAdmin()
-
-  useEffect(() => {
-    refreshStats()
-  }, [refreshStats])
+  const { stats, loading, refreshStats } = useAdmin();
 
   if (loading) {
     return (
@@ -20,7 +16,7 @@ export const AdminDashboard: React.FC = () => {
         <div className={styles.spinner}></div>
         <p>대시보드 로딩 중...</p>
       </div>
-    )
+    );
   }
 
   if (!stats) {
@@ -31,7 +27,7 @@ export const AdminDashboard: React.FC = () => {
           다시 시도
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -115,5 +111,5 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

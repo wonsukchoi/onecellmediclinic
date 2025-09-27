@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AdminService } from '../../services/admin.service'
 import type { Appointment } from '../../types'
@@ -7,23 +7,49 @@ import styles from './RecentAppointments.module.css'
 export const RecentAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
+  const isMountedRef = useRef(true)
+
+  useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   useEffect(() => {
     const fetchRecentAppointments = async () => {
+      if (!isMountedRef.current) return
+
       try {
+        setLoading(true)
+        setError(null)
+
         const response = await AdminService.getAppointments(
           undefined,
           { page: 1, limit: 5 }
         )
 
+        if (!isMountedRef.current) return
+
         if (response.success && response.data) {
           setAppointments(response.data)
+          setError(null)
+        } else {
+          const errorMessage = response.error || 'Failed to fetch appointments'
+          setError(`예약 정보를 불러올 수 없습니다: ${errorMessage}`)
         }
       } catch (error) {
+        if (!isMountedRef.current) return
+
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
         console.error('Error fetching recent appointments:', error)
+        setError(`네트워크 오류: ${errorMessage}`)
       } finally {
-        setLoading(false)
+        if (isMountedRef.current) {
+          setLoading(false)
+        }
       }
     }
 
@@ -69,6 +95,20 @@ export const RecentAppointments: React.FC = () => {
         <div className={styles.loading}>
           <div className={styles.spinner}></div>
           <p>예약 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className={styles.recentAppointments}>
+        <div className={styles.header}>
+          <h3>최근 예약</h3>
+        </div>
+        <div className={styles.error}>
+          <div className={styles.errorIcon}>⚠️</div>
+          <p>{error}</p>
         </div>
       </div>
     )

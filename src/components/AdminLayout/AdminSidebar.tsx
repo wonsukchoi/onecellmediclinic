@@ -45,9 +45,15 @@ const navItems: NavItem[] = [
     label: '콘텐츠 관리',
     icon: '📝',
     children: [
+      { path: '/admin/content/video-shorts', label: '비디오 쇼츠', icon: '🎬' },
+      { path: '/admin/content/features', label: '클리닉 특징', icon: '⭐' },
+      { path: '/admin/content/events', label: '이벤트', icon: '🎉' },
+      { path: '/admin/content/selfie-reviews', label: '셀카 후기', icon: '🤳' },
+      { path: '/admin/content/youtube-videos', label: 'YouTube 비디오', icon: '📺' },
+      { path: '/admin/content/differentiators', label: '차별화 요소', icon: '🎯' },
       { path: '/admin/content/blog', label: '블로그', icon: '📰' },
       { path: '/admin/content/gallery', label: '갤러리', icon: '🖼️' },
-      { path: '/admin/content/banners', label: '이벤트 배너', icon: '🎯' }
+      { path: '/admin/content/banners', label: '배너', icon: '🏷️' }
     ]
   },
   {

@@ -1,4 +1,4 @@
-import { supabase } from '../../config/supabase';
+import { supabase } from './supabase';
 
 export interface BookAppointmentRequest {
   patientName: string;
@@ -149,31 +149,18 @@ class BookingService {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const { data: appointments, error } = await supabase
-        .from('appointments')
-        .select(`
-          *,
-          procedures(
-            id,
-            name,
-            duration_minutes,
-            price_range
-          ),
-          providers(
-            id,
-            full_name,
-            title,
-            specialization
-          )
-        `)
-        .eq('patient_email', user.email)
-        .order('created_at', { ascending: false });
+      const response = await fetch(`${this.functionsUrl}/manage-appointments?patientEmail=${encodeURIComponent(user.email!)}`, {
+        method: 'GET',
+        headers: await this.getAuthHeaders(),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get appointments');
       }
 
-      return { success: true, appointments: appointments || [] };
+      return { success: true, appointments: result.appointments || [] };
     } catch (error) {
       console.error('Error getting user appointments:', error);
       return {
@@ -191,17 +178,22 @@ class BookingService {
     cancellationReason?: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await supabase
-        .from('appointments')
-        .update({
-          status: 'cancelled',
-          cancellation_reason: cancellationReason,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', appointmentId);
+      const response = await fetch(`${this.functionsUrl}/manage-appointments`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'cancel',
+          appointmentId,
+          appointmentData: {
+            cancellationReason
+          }
+        }),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to cancel appointment');
       }
 
       return { success: true };
@@ -245,19 +237,24 @@ class BookingService {
         }
       }
 
-      const { error } = await supabase
-        .from('appointments')
-        .update({
-          preferred_date: newDate,
-          preferred_time: newTime,
-          provider_id: providerId,
-          status: 'pending',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', appointmentId);
+      const response = await fetch(`${this.functionsUrl}/manage-appointments`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'reschedule',
+          appointmentId,
+          appointmentData: {
+            newDate,
+            newTime,
+            providerId
+          }
+        }),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to reschedule appointment');
       }
 
       return { success: true };
@@ -275,26 +272,18 @@ class BookingService {
    */
   async getProviders(): Promise<{ success: boolean; providers?: any[]; error?: string }> {
     try {
-      const { data: providers, error } = await supabase
-        .from('providers')
-        .select(`
-          *,
-          procedure_providers(
-            procedures(
-              id,
-              name,
-              slug
-            )
-          )
-        `)
-        .eq('active', true)
-        .order('full_name');
+      const response = await fetch(`${this.functionsUrl}/manage-providers`, {
+        method: 'GET',
+        headers: await this.getAuthHeaders(),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get providers');
       }
 
-      return { success: true, providers: providers || [] };
+      return { success: true, providers: result.providers || [] };
     } catch (error) {
       console.error('Error getting providers:', error);
       return {
@@ -309,33 +298,18 @@ class BookingService {
    */
   async getProcedures(): Promise<{ success: boolean; procedures?: any[]; error?: string }> {
     try {
-      const { data: procedures, error } = await supabase
-        .from('procedures')
-        .select(`
-          *,
-          procedure_categories(
-            id,
-            name,
-            description
-          ),
-          procedure_providers(
-            providers(
-              id,
-              full_name,
-              title,
-              specialization
-            )
-          )
-        `)
-        .eq('active', true)
-        .order('display_order')
-        .order('name');
+      const response = await fetch(`${this.functionsUrl}/manage-procedures`, {
+        method: 'GET',
+        headers: await this.getAuthHeaders(),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get procedures');
       }
 
-      return { success: true, procedures: procedures || [] };
+      return { success: true, procedures: result.procedures || [] };
     } catch (error) {
       console.error('Error getting procedures:', error);
       return {
@@ -350,29 +324,21 @@ class BookingService {
    */
   async getProcedureCategories(): Promise<{ success: boolean; categories?: any[]; error?: string }> {
     try {
-      const { data: categories, error } = await supabase
-        .from('procedure_categories')
-        .select(`
-          *,
-          procedures(
-            id,
-            name,
-            slug,
-            description,
-            duration_minutes,
-            price_range,
-            featured_image_url
-          )
-        `)
-        .eq('active', true)
-        .eq('procedures.active', true)
-        .order('display_order');
+      const response = await fetch(`${this.functionsUrl}/manage-procedures`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'list_categories'
+        }),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get procedure categories');
       }
 
-      return { success: true, categories: categories || [] };
+      return { success: true, categories: result.categories || [] };
     } catch (error) {
       console.error('Error getting procedure categories:', error);
       return {

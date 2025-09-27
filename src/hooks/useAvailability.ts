@@ -1,6 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { supabase } from '../../config/supabase';
-import { bookingService, TimeSlot, Provider, AvailabilityResponse } from '../services/booking.service';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { supabase } from '../services/supabase';
+import { bookingService } from '../services/booking.service';
+import { useApiCall } from './useApiCall';
+import { ErrorLogger } from '../utils/error-logger';
+import type { TimeSlot, Provider, AvailabilityResponse } from '../services/booking.service';
 
 interface UseAvailabilityOptions {
   providerId?: number;
@@ -9,6 +12,7 @@ interface UseAvailabilityOptions {
   endDate?: string;
   durationMinutes?: number;
   autoFetch?: boolean;
+  enabled?: boolean; // Allow disabling the hook
 }
 
 interface UseAvailabilityReturn {
@@ -21,13 +25,13 @@ interface UseAvailabilityReturn {
   getProviderAvailability: (providerId: number) => TimeSlot[];
   isTimeSlotAvailable: (date: string, time: string, providerId?: number) => boolean;
   refreshAvailability: () => void;
+  groupedAvailability: Record<string, TimeSlot[]>;
+  availableDates: string[];
 }
 
 export function useAvailability(options: UseAvailabilityOptions = {}): UseAvailabilityReturn {
   const [availability, setAvailability] = useState<TimeSlot[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const {
     providerId,
@@ -36,23 +40,19 @@ export function useAvailability(options: UseAvailabilityOptions = {}): UseAvaila
     endDate,
     durationMinutes = 60,
     autoFetch = true,
+    enabled = true,
   } = options;
 
-  const fetchAvailability = useCallback(async () => {
-    if (!startDate && autoFetch) {
-      // Set default start date to today if auto-fetch is enabled
-      const today = new Date();
-      const defaultStartDate = today.toISOString().split('T')[0];
-      return;
-    }
+  // Refs for cleanup and preventing race conditions
+  const mountedRef = useRef(true);
+  const subscriptionRef = useRef<any>(null);
 
-    if (!startDate) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
+  // API call with retry logic
+  const availabilityApi = useApiCall(
+    async () => {
+      if (!startDate) {
+        throw new Error('Start date is required');
+      }
 
       const result: AvailabilityResponse = await bookingService.getAvailability({
         providerId,
@@ -62,63 +62,141 @@ export function useAvailability(options: UseAvailabilityOptions = {}): UseAvaila
         durationMinutes,
       });
 
-      if (result.success) {
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch availability');
+      }
+
+      return result;
+    },
+    {
+      retryCount: 3,
+      retryDelay: 1000,
+      exponentialBackoff: true,
+      onError: (error, attempt) => {
+        ErrorLogger.logError(error, {
+          context: 'useAvailability.fetchAvailability',
+          attempt,
+          providerId,
+          procedureId,
+          startDate,
+          endDate,
+          durationMinutes
+        });
+      },
+      onRetry: (attempt, delay) => {
+        console.log(`Retrying availability fetch in ${delay}ms (attempt ${attempt})`);
+      }
+    }
+  );
+
+  // Fetch availability function
+  const fetchAvailability = useCallback(async () => {
+    if (!enabled || !mountedRef.current) return;
+
+    if (!startDate) {
+      if (autoFetch) {
+        // Could set a default date here if needed
+        return;
+      }
+      return;
+    }
+
+    try {
+      const result = await availabilityApi.execute();
+
+      if (mountedRef.current && result) {
         setAvailability(result.availability);
         setProviders(result.providers);
-      } else {
-        setError(result.error || 'Failed to fetch availability');
       }
-    } catch (err) {
-      console.error('Error fetching availability:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch availability');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      ErrorLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+        context: 'useAvailability.fetchAvailability',
+        providerId,
+        procedureId,
+        startDate,
+        endDate
+      });
     }
-  }, [providerId, procedureId, startDate, endDate, durationMinutes, autoFetch]);
+  }, [enabled, providerId, procedureId, startDate, endDate, durationMinutes, autoFetch, availabilityApi]);
 
   // Auto-fetch when parameters change
   useEffect(() => {
-    if (autoFetch && startDate) {
+    if (enabled && autoFetch && startDate) {
       fetchAvailability();
     }
-  }, [autoFetch, fetchAvailability, startDate]);
+  }, [enabled, autoFetch, startDate, fetchAvailability]);
 
-  // Set up real-time subscription for availability changes
+  // Set up real-time subscription for availability changes with cleanup
   useEffect(() => {
-    if (!startDate) return;
+    if (!enabled || !startDate || !mountedRef.current) return;
 
-    const subscription = supabase
-      .channel('availability_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'appointment_availability',
-        },
-        () => {
-          // Refresh availability when appointment slots change
-          fetchAvailability();
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'appointments',
-        },
-        () => {
-          // Refresh availability when appointments are created/updated/cancelled
-          fetchAvailability();
-        }
-      )
-      .subscribe();
+    try {
+      const subscription = supabase
+        .channel('availability_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'appointment_availability',
+          },
+          () => {
+            if (mountedRef.current) {
+              console.log('Availability changed, refreshing...');
+              fetchAvailability();
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'appointments',
+          },
+          () => {
+            if (mountedRef.current) {
+              console.log('Appointments changed, refreshing availability...');
+              fetchAvailability();
+            }
+          }
+        )
+        .subscribe((status) => {
+          console.log('Availability subscription status:', status);
+          if (status === 'CHANNEL_ERROR') {
+            ErrorLogger.logError(new Error('Availability subscription error'), {
+              context: 'useAvailability.subscription',
+              status
+            });
+          }
+        });
+
+      subscriptionRef.current = subscription;
+    } catch (error) {
+      ErrorLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+        context: 'useAvailability.setupSubscription'
+      });
+    }
 
     return () => {
-      subscription.unsubscribe();
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        subscriptionRef.current = null;
+      }
     };
-  }, [fetchAvailability, startDate]);
+  }, [enabled, startDate, fetchAvailability]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+      }
+    };
+  }, []);
 
   // Memoized helper functions
   const getAvailableSlotsForDate = useCallback(
@@ -173,19 +251,15 @@ export function useAvailability(options: UseAvailabilityOptions = {}): UseAvaila
   return {
     availability,
     providers,
-    loading,
-    error,
+    loading: availabilityApi.loading,
+    error: availabilityApi.error,
     fetchAvailability,
     getAvailableSlotsForDate,
     getProviderAvailability,
     isTimeSlotAvailable,
     refreshAvailability,
-    // Additional computed values
     groupedAvailability,
     availableDates,
-  } as UseAvailabilityReturn & {
-    groupedAvailability: Record<string, TimeSlot[]>;
-    availableDates: string[];
   };
 }
 
@@ -219,191 +293,151 @@ interface UseProviderScheduleReturn {
   ) => Promise<void>;
 }
 
+const SUPABASE_URL = 'https://weqqkknwpgremfugcbvz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXFra253cGdyZW1mdWdjYnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzAwNTAsImV4cCI6MjA3NDQ0NjA1MH0.llYPWCVtWr6OWI_zRFYkeYMzGqaw9nfAQKU3VUV-Fgg';
+
 export function useProviderSchedule(providerId?: number): UseProviderScheduleReturn {
   const [schedule, setSchedule] = useState<AvailabilitySlot[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
 
-  const fetchSchedule = useCallback(async () => {
-    if (!providerId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error: fetchError } = await supabase
-        .from('appointment_availability')
-        .select('*')
-        .eq('provider_id', providerId)
-        .order('date')
-        .order('start_time');
-
-      if (fetchError) {
-        throw fetchError;
+  // API calls with enhanced error handling
+  const fetchScheduleApi = useApiCall(
+    async () => {
+      if (!providerId) {
+        throw new Error('Provider ID is required');
       }
 
-      const formattedSchedule: AvailabilitySlot[] = (data || []).map((item) => ({
-        id: item.id,
-        providerId: item.provider_id,
-        date: item.date,
-        startTime: item.start_time,
-        endTime: item.end_time,
-        slotDurationMinutes: item.slot_duration_minutes,
-        maxBookings: item.max_bookings,
-        available: item.available,
-        blockedReason: item.blocked_reason,
-      }));
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-availability?providerId=${providerId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      });
 
-      setSchedule(formattedSchedule);
-    } catch (err) {
-      console.error('Error fetching provider schedule:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch schedule');
-    } finally {
-      setLoading(false);
+      if (!response.ok) {
+        const result = await response.json().catch(() => null);
+        throw new Error(result?.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result.schedule || [];
+    },
+    {
+      retryCount: 2,
+      retryDelay: 1000,
+      onError: (error) => {
+        ErrorLogger.logError(error, {
+          context: 'useProviderSchedule.fetchSchedule',
+          providerId
+        });
+      }
     }
-  }, [providerId]);
+  );
+
+  const modifyScheduleApi = useApiCall(
+    async ({ action, data }: { action: string; data: any }) => {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-availability`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ action, ...data }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => null);
+        throw new Error(result?.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+    {
+      retryCount: 1, // Don't retry mutations multiple times
+      onError: (error) => {
+        ErrorLogger.logError(error, {
+          context: 'useProviderSchedule.modifySchedule',
+          providerId
+        });
+      }
+    }
+  );
+
+  // Fetch schedule
+  const fetchSchedule = useCallback(async () => {
+    if (!providerId || !mountedRef.current) return;
+
+    const result = await fetchScheduleApi.execute();
+    if (mountedRef.current && result) {
+      setSchedule(result);
+    }
+  }, [providerId, fetchScheduleApi]);
 
   useEffect(() => {
     fetchSchedule();
   }, [fetchSchedule]);
 
-  const addAvailabilitySlot = async (slot: Omit<AvailabilitySlot, 'id'>) => {
-    try {
-      const { error: insertError } = await supabase
-        .from('appointment_availability')
-        .insert([
-          {
-            provider_id: slot.providerId,
-            date: slot.date,
-            start_time: slot.startTime,
-            end_time: slot.endTime,
-            slot_duration_minutes: slot.slotDurationMinutes,
-            max_bookings: slot.maxBookings,
-            available: slot.available,
-            blocked_reason: slot.blockedReason,
-            created_at: new Date().toISOString(),
-          },
-        ]);
+  // Cleanup on unmount
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
-      if (insertError) {
-        throw insertError;
-      }
+  const addAvailabilitySlot = useCallback(async (slot: Omit<AvailabilitySlot, 'id'>) => {
+    await modifyScheduleApi.execute({
+      action: 'create',
+      data: { slotData: slot }
+    });
+    await fetchSchedule();
+  }, [modifyScheduleApi, fetchSchedule]);
 
-      await fetchSchedule();
-    } catch (err) {
-      console.error('Error adding availability slot:', err);
-      throw err;
-    }
-  };
+  const updateAvailabilitySlot = useCallback(async (id: number, updates: Partial<AvailabilitySlot>) => {
+    await modifyScheduleApi.execute({
+      action: 'update',
+      data: { slotId: id, slotData: updates }
+    });
+    await fetchSchedule();
+  }, [modifyScheduleApi, fetchSchedule]);
 
-  const updateAvailabilitySlot = async (id: number, updates: Partial<AvailabilitySlot>) => {
-    try {
-      const updateData: any = {};
-      if (updates.date) updateData.date = updates.date;
-      if (updates.startTime) updateData.start_time = updates.startTime;
-      if (updates.endTime) updateData.end_time = updates.endTime;
-      if (updates.slotDurationMinutes) updateData.slot_duration_minutes = updates.slotDurationMinutes;
-      if (updates.maxBookings) updateData.max_bookings = updates.maxBookings;
-      if (updates.available !== undefined) updateData.available = updates.available;
-      if (updates.blockedReason) updateData.blocked_reason = updates.blockedReason;
+  const deleteAvailabilitySlot = useCallback(async (id: number) => {
+    await modifyScheduleApi.execute({
+      action: 'delete',
+      data: { slotId: id }
+    });
+    await fetchSchedule();
+  }, [modifyScheduleApi, fetchSchedule]);
 
-      const { error: updateError } = await supabase
-        .from('appointment_availability')
-        .update(updateData)
-        .eq('id', id);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      await fetchSchedule();
-    } catch (err) {
-      console.error('Error updating availability slot:', err);
-      throw err;
-    }
-  };
-
-  const deleteAvailabilitySlot = async (id: number) => {
-    try {
-      const { error: deleteError } = await supabase
-        .from('appointment_availability')
-        .delete()
-        .eq('id', id);
-
-      if (deleteError) {
-        throw deleteError;
-      }
-
-      await fetchSchedule();
-    } catch (err) {
-      console.error('Error deleting availability slot:', err);
-      throw err;
-    }
-  };
-
-  const generateWeeklySchedule = async (
+  const generateWeeklySchedule = useCallback(async (
     targetProviderId: number,
     startDate: string,
-    weekdays: number[], // 0 = Sunday, 1 = Monday, etc.
+    weekdays: number[],
     startTime: string,
     endTime: string,
     slotDuration: number
   ) => {
-    try {
-      const slots: Omit<AvailabilitySlot, 'id'>[] = [];
-      const start = new Date(startDate);
-
-      // Generate slots for 4 weeks
-      for (let week = 0; week < 4; week++) {
-        for (let day = 0; day < 7; day++) {
-          const currentDate = new Date(start);
-          currentDate.setDate(currentDate.getDate() + (week * 7) + day);
-
-          if (weekdays.includes(currentDate.getDay())) {
-            slots.push({
-              providerId: targetProviderId,
-              date: currentDate.toISOString().split('T')[0],
-              startTime,
-              endTime,
-              slotDurationMinutes: slotDuration,
-              maxBookings: 1,
-              available: true,
-            });
-          }
+    await modifyScheduleApi.execute({
+      action: 'generate_weekly',
+      data: {
+        weeklyData: {
+          providerId: targetProviderId,
+          startDate,
+          weekdays,
+          startTime,
+          endTime,
+          slotDuration
         }
       }
-
-      // Insert all slots
-      const insertData = slots.map((slot) => ({
-        provider_id: slot.providerId,
-        date: slot.date,
-        start_time: slot.startTime,
-        end_time: slot.endTime,
-        slot_duration_minutes: slot.slotDurationMinutes,
-        max_bookings: slot.maxBookings,
-        available: slot.available,
-        created_at: new Date().toISOString(),
-      }));
-
-      const { error: insertError } = await supabase
-        .from('appointment_availability')
-        .insert(insertData);
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      await fetchSchedule();
-    } catch (err) {
-      console.error('Error generating weekly schedule:', err);
-      throw err;
-    }
-  };
+    });
+    await fetchSchedule();
+  }, [modifyScheduleApi, fetchSchedule]);
 
   return {
     schedule,
-    loading,
-    error,
+    loading: fetchScheduleApi.loading || modifyScheduleApi.loading,
+    error: fetchScheduleApi.error || modifyScheduleApi.error,
     addAvailabilitySlot,
     updateAvailabilitySlot,
     deleteAvailabilitySlot,

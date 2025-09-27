@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { DataTable } from '../components/AdminComponents/DataTable'
-import { Modal, ConfirmModal } from '../components/AdminComponents/Modal'
-import { AdminService } from '../services/admin.service'
+import { Modal } from '../components/AdminComponents/Modal'
+import { appointmentsService } from '../services/features.service'
 import type { Appointment, TableColumn, FilterParams, PaginationParams, SortParams } from '../types'
 import styles from './AdminBookingsPage.module.css'
 
@@ -90,10 +90,8 @@ export const AdminBookingsPage: React.FC = () => {
   const fetchAppointments = async () => {
     setLoading(true)
     try {
-      const response = await AdminService.getAppointments(filters, pagination)
-      if (response.success && response.data) {
-        setAppointments(response.data)
-      }
+      const data = await appointmentsService.getAll(filters)
+      setAppointments(data || [])
     } catch (error) {
       console.error('Error fetching appointments:', error)
     } finally {
@@ -141,17 +139,15 @@ export const AdminBookingsPage: React.FC = () => {
     if (!selectedAppointment) return
 
     try {
-      const response = await AdminService.updateAppointmentStatus(
+      await appointmentsService.updateStatus(
         selectedAppointment.id!,
         newStatus,
         statusNotes
       )
 
-      if (response.success) {
-        setShowStatusModal(false)
-        setSelectedAppointment(null)
-        fetchAppointments()
-      }
+      setShowStatusModal(false)
+      setSelectedAppointment(null)
+      fetchAppointments()
     } catch (error) {
       console.error('Error updating appointment status:', error)
     }
@@ -176,7 +172,7 @@ export const AdminBookingsPage: React.FC = () => {
 
   const renderCalendarView = () => {
     const events = getCalendarEvents()
-    const today = new Date()
+    // const today = new Date()
     const currentMonth = calendarDate.getMonth()
     const currentYear = calendarDate.getFullYear()
 

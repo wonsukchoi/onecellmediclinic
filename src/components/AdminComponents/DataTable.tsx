@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import type { TableColumn, SortParams, PaginationParams } from '../../types'
+import { useState } from 'react'
+import type { TableColumn, SortParams } from '../../types'
 import styles from './DataTable.module.css'
 
 interface DataTableProps<T> {

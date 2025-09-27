@@ -1,4 +1,4 @@
-import { supabase } from '../../config/supabase';
+import { supabase } from './supabase';
 
 export interface ConsultationRequest {
   patientName: string;
@@ -98,26 +98,18 @@ class ConsultationService {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const { data: consultations, error } = await supabase
-        .from('consultation_requests')
-        .select(`
-          *,
-          assigned_provider:providers(
-            id,
-            full_name,
-            title,
-            specialization,
-            profile_image_url
-          )
-        `)
-        .eq('patient_email', user.email)
-        .order('created_at', { ascending: false });
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?patientEmail=${encodeURIComponent(user.email!)}`, {
+        method: 'GET',
+        headers: await this.getAuthHeaders(),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get consultation requests');
       }
 
-      return { success: true, consultations: consultations || [] };
+      return { success: true, consultations: result.consultations || [] };
     } catch (error) {
       console.error('Error getting user consultation requests:', error);
       return {
@@ -134,28 +126,18 @@ class ConsultationService {
     id: number
   ): Promise<{ success: boolean; consultation?: any; error?: string }> {
     try {
-      const { data: consultation, error } = await supabase
-        .from('consultation_requests')
-        .select(`
-          *,
-          assigned_provider:providers(
-            id,
-            full_name,
-            title,
-            specialization,
-            profile_image_url,
-            bio,
-            consultation_fee
-          )
-        `)
-        .eq('id', id)
-        .single();
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?id=${id}`, {
+        method: 'GET',
+        headers: await this.getAuthHeaders(),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get consultation request');
       }
 
-      return { success: true, consultation };
+      return { success: true, consultation: result.consultation };
     } catch (error) {
       console.error('Error getting consultation request:', error);
       return {
@@ -172,23 +154,22 @@ class ConsultationService {
     consultationId: number
   ): Promise<{ success: boolean; tracking?: ConsultationTracking[]; error?: string }> {
     try {
-      const { data: tracking, error } = await supabase
-        .from('consultation_tracking')
-        .select(`
-          id,
-          status,
-          notes,
-          created_at,
-          created_by
-        `)
-        .eq('consultation_request_id', consultationId)
-        .order('created_at', { ascending: true });
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'get_tracking',
+          consultationId
+        }),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get consultation tracking');
       }
 
-      const formattedTracking: ConsultationTracking[] = (tracking || []).map((item) => ({
+      const formattedTracking: ConsultationTracking[] = (result.tracking || []).map((item: any) => ({
         id: item.id,
         status: item.status,
         notes: item.notes,
@@ -221,42 +202,21 @@ class ConsultationService {
     }
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        return { success: false, error: 'Authentication required' };
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'update',
+          consultationId: id,
+          updates
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update consultation request');
       }
-
-      // Prepare update data
-      const updateData: any = {
-        updated_at: new Date().toISOString(),
-      };
-
-      if (updates.status) updateData.status = updates.status;
-      if (updates.assignedProviderId) updateData.assigned_provider_id = updates.assignedProviderId;
-      if (updates.responseNotes) updateData.response_notes = updates.responseNotes;
-      if (updates.estimatedCostRange) updateData.estimated_cost_range = updates.estimatedCostRange;
-      if (updates.recommendedProcedures) updateData.recommended_procedures = updates.recommendedProcedures;
-      if (updates.followUpRequired !== undefined) updateData.follow_up_required = updates.followUpRequired;
-
-      const { error } = await supabase
-        .from('consultation_requests')
-        .update(updateData)
-        .eq('id', id);
-
-      if (error) {
-        throw error;
-      }
-
-      // Add tracking entry
-      await supabase.from('consultation_tracking').insert([
-        {
-          consultation_request_id: id,
-          status: updates.status || 'updated',
-          notes: updates.responseNotes || 'Consultation request updated',
-          created_by: user.id,
-          created_at: new Date().toISOString(),
-        },
-      ]);
 
       return { success: true };
     } catch (error) {
@@ -283,70 +243,23 @@ class ConsultationService {
     }
   ): Promise<{ success: boolean; appointmentId?: number; error?: string }> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        return { success: false, error: 'Authentication required' };
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'convert_to_appointment',
+          consultationId,
+          appointmentData
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to convert consultation to appointment');
       }
 
-      // Get consultation details
-      const { data: consultation, error: consultationError } = await supabase
-        .from('consultation_requests')
-        .select('*')
-        .eq('id', consultationId)
-        .single();
-
-      if (consultationError || !consultation) {
-        return { success: false, error: 'Consultation not found' };
-      }
-
-      // Create appointment
-      const { data: appointment, error: appointmentError } = await supabase
-        .from('appointments')
-        .insert([
-          {
-            patient_name: consultation.patient_name,
-            patient_email: consultation.patient_email,
-            patient_phone: consultation.patient_phone,
-            service_type: appointmentData.appointmentType || 'consultation',
-            procedure_id: appointmentData.procedureId,
-            provider_id: appointmentData.providerId || consultation.assigned_provider_id,
-            preferred_date: appointmentData.preferredDate,
-            preferred_time: appointmentData.preferredTime,
-            notes: appointmentData.notes || consultation.concerns,
-            status: 'pending',
-            appointment_type: appointmentData.appointmentType || 'consultation',
-            created_at: new Date().toISOString(),
-          },
-        ])
-        .select('id')
-        .single();
-
-      if (appointmentError) {
-        throw appointmentError;
-      }
-
-      // Update consultation status
-      await supabase
-        .from('consultation_requests')
-        .update({
-          status: 'converted_to_appointment',
-          follow_up_required: false,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', consultationId);
-
-      // Add tracking entry
-      await supabase.from('consultation_tracking').insert([
-        {
-          consultation_request_id: consultationId,
-          status: 'converted_to_appointment',
-          notes: `Converted to appointment #${appointment.id}`,
-          created_by: user.id,
-          created_at: new Date().toISOString(),
-        },
-      ]);
-
-      return { success: true, appointmentId: appointment.id };
+      return { success: true, appointmentId: result.appointmentId };
     } catch (error) {
       console.error('Error converting consultation to appointment:', error);
       return {
@@ -371,41 +284,23 @@ class ConsultationService {
     error?: string;
   }> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        return { success: false, error: 'Authentication required' };
-      }
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+        method: 'POST',
+        headers: await this.getAuthHeaders(),
+        body: JSON.stringify({
+          action: 'get_stats'
+        }),
+      });
 
-      const [totalResult, newResult, inProgressResult, completedResult, urgentResult] = await Promise.all([
-        supabase.from('consultation_requests').select('*', { count: 'exact', head: true }),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'new'),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .in('status', ['in_progress', 'reviewing', 'awaiting_response']),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .in('status', ['completed', 'converted_to_appointment']),
-        supabase
-          .from('consultation_requests')
-          .select('*', { count: 'exact', head: true })
-          .eq('urgency_level', 'high')
-          .eq('status', 'new'),
-      ]);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get consultation statistics');
+      }
 
       return {
         success: true,
-        stats: {
-          total: totalResult.count || 0,
-          newRequests: newResult.count || 0,
-          inProgress: inProgressResult.count || 0,
-          completed: completedResult.count || 0,
-          urgentRequests: urgentResult.count || 0,
-        },
+        stats: result.stats,
       };
     } catch (error) {
       console.error('Error getting consultation stats:', error);

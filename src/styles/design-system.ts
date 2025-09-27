@@ -1,4 +1,4 @@
-// BRAUN-inspired Design System for OneCell Medi Clinic
+// Design System for OneCell Medi Clinic
 export const designSystem = {
   colors: {
     // Primary brand colors inspired by medical professionalism

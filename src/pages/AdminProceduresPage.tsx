@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { DataTable } from '../components/AdminComponents/DataTable'
 import { FormBuilder } from '../components/AdminComponents/FormBuilder'
 import { Modal, ConfirmModal } from '../components/AdminComponents/Modal'
-import { AdminService } from '../services/admin.service'
+import { proceduresService } from '../services/features.service'
 import type { Procedure, ProcedureCategory, TableColumn, FilterParams, PaginationParams, SortParams } from '../types'
 import styles from './AdminProceduresPage.module.css'
 
@@ -30,10 +30,9 @@ export const AdminProceduresPage: React.FC = () => {
     recovery_time: '',
     active: true,
     display_order: 0,
-    tags: []
+    tags: [] as string[]
   })
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const columns: TableColumn[] = [
     {
@@ -151,10 +150,8 @@ export const AdminProceduresPage: React.FC = () => {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const response = await AdminService.getProcedures(filters, pagination, sorting)
-      if (response.success && response.data) {
-        setProcedures(response.data)
-      }
+      const data = await proceduresService.getAll(filters)
+      setProcedures(data || [])
     } catch (error) {
       console.error('Error fetching procedures:', error)
     } finally {
@@ -164,10 +161,13 @@ export const AdminProceduresPage: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await AdminService.getProcedureCategories()
-      if (response.success && response.data) {
-        setCategories(response.data)
-      }
+      // For now, use static categories - this can be enhanced later
+      setCategories([
+        { id: 1, name: '성형외과', display_order: 1, active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+        { id: 2, name: '피부과', display_order: 2, active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+        { id: 3, name: '미용외과', display_order: 3, active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+        { id: 4, name: '비수술', display_order: 4, active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+      ])
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
@@ -186,7 +186,7 @@ export const AdminProceduresPage: React.FC = () => {
       recovery_time: '',
       active: true,
       display_order: procedures.length,
-      tags: []
+      tags: [] as string[]
     })
     setFormErrors({})
     setShowModal(true)
@@ -218,7 +218,6 @@ export const AdminProceduresPage: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
     setFormErrors({})
 
     try {
@@ -229,20 +228,16 @@ export const AdminProceduresPage: React.FC = () => {
         slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
       }
 
-      const response = editingProcedure
-        ? await AdminService.updateProcedure(editingProcedure.id, submitData)
-        : await AdminService.createProcedure(submitData)
-
-      if (response.success) {
-        setShowModal(false)
-        fetchData()
+      if (editingProcedure) {
+        await proceduresService.update(editingProcedure.id, submitData)
       } else {
-        setFormErrors({ general: response.error || '저장에 실패했습니다' })
+        await proceduresService.create(submitData)
       }
+
+      setShowModal(false)
+      fetchData()
     } catch (error) {
       setFormErrors({ general: '저장 중 오류가 발생했습니다' })
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -250,12 +245,10 @@ export const AdminProceduresPage: React.FC = () => {
     if (!deletingProcedure) return
 
     try {
-      const response = await AdminService.deleteProcedure(deletingProcedure.id)
-      if (response.success) {
-        setShowDeleteModal(false)
-        setDeletingProcedure(null)
-        fetchData()
-      }
+      await proceduresService.delete(deletingProcedure.id)
+      setShowDeleteModal(false)
+      setDeletingProcedure(null)
+      fetchData()
     } catch (error) {
       console.error('Error deleting procedure:', error)
     }
@@ -342,10 +335,8 @@ export const AdminProceduresPage: React.FC = () => {
           fields={formFields}
           values={formData}
           errors={formErrors}
-          onChange={(key, value) => setFormData({ ...formData, [key]: value })}
+          onChange={(field, value) => setFormData(prev => ({ ...prev, [field]: value }))}
           onSubmit={handleFormSubmit}
-          submitLabel={editingProcedure ? '수정' : '추가'}
-          isSubmitting={isSubmitting}
         />
       </Modal>
 

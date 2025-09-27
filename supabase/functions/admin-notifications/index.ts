@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+import { handleDatabaseError } from '../_shared/error-handler.ts'
 
 interface NotificationRequest {
   type: 'appointment_status' | 'consultation_response' | 'reminder'
@@ -294,16 +295,6 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Error in admin-notifications function:', error)
-    return new Response(
-      JSON.stringify({
-        error: 'Internal server error',
-        details: error.message
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    )
+    return handleDatabaseError(error, 'notifications', 'admin-notifications')
   }
 })

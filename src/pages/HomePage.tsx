@@ -1,25 +1,23 @@
 import React from 'react'
 import HeroSection from '../sections/HeroSection'
 import ContactSection from '../sections/ContactSection'
-
-// Placeholder components - will be created later
-const ShortsSection = () => <div style={{ padding: '2rem', textAlign: 'center', background: 'white' }}>Shorts Section - Coming Soon</div>
-const DifferentiatorsSection = () => <div style={{ padding: '2rem', textAlign: 'center', background: '#f8fafc' }}>Differentiators Section - Coming Soon</div>
-const EventsSection = () => <div style={{ padding: '2rem', textAlign: 'center', background: 'white' }}>Events Section - Coming Soon</div>
-const ReviewsSection = () => <div style={{ padding: '2rem', textAlign: 'center', background: '#f8fafc' }}>Reviews Section - Coming Soon</div>
-const YoutubeSection = () => <div style={{ padding: '2rem', textAlign: 'center', background: 'white' }}>YouTube Section - Coming Soon</div>
-const FeaturesSection = () => <div style={{ padding: '2rem', textAlign: 'center', background: '#f8fafc' }}>Features Section - Coming Soon</div>
+import VideoShortsSection from '../sections/VideoShortsSection'
+import ClinicFeaturesSection from '../sections/ClinicFeaturesSection'
+import EventsSection from '../sections/EventsSection'
+import SelfieReviewsSection from '../sections/SelfieReviewsSection'
+import YouTubeSection from '../sections/YouTubeSection'
+import DifferentiatorsSection from '../sections/DifferentiatorsSection'
 
 const HomePage: React.FC = () => {
   return (
     <main>
       <HeroSection />
-      <ShortsSection />
-      <DifferentiatorsSection />
+      <VideoShortsSection />
+      <ClinicFeaturesSection />
       <EventsSection />
-      <ReviewsSection />
-      <YoutubeSection />
-      <FeaturesSection />
+      <SelfieReviewsSection />
+      <YouTubeSection />
+      <DifferentiatorsSection />
       <ContactSection />
     </main>
   )
