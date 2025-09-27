@@ -67,7 +67,7 @@ const DataTable = <T extends Record<string, any>>({
   search,
   actions,
   bulkActions,
-  emptyMessage = 'No data available',
+  emptyMessage = '데이터가 없습니다',
   className,
 }: DataTableProps<T>) => {
   const [searchValue, setSearchValue] = useState(search?.value || '');
@@ -155,7 +155,7 @@ const DataTable = <T extends Record<string, any>>({
     if (typeof value === 'boolean') {
       return (
         <span className={`${styles.badge} ${value ? styles.success : styles.error}`}>
-          {value ? 'Yes' : 'No'}
+          {value ? '예' : '아니오'}
         </span>
       );
     }
@@ -176,7 +176,7 @@ const DataTable = <T extends Record<string, any>>({
             <div className={styles.searchContainer}>
               <input
                 type="text"
-                placeholder={search.placeholder || 'Search...'}
+                placeholder={search.placeholder || '검색...'}
                 value={searchValue}
                 onChange={handleSearchChange}
                 className={styles.searchInput}
@@ -188,7 +188,7 @@ const DataTable = <T extends Record<string, any>>({
           {bulkActions && selection && selection.selectedItems.length > 0 && (
             <div className={styles.bulkActions}>
               <span className={styles.selectionCount}>
-                {selection.selectedItems.length} selected
+                {selection.selectedItems.length}개 선택됨
               </span>
               {bulkActions.map((action, index) => (
                 <button
@@ -241,7 +241,7 @@ const DataTable = <T extends Record<string, any>>({
                 </th>
               ))}
               {actions && (
-                <th className={styles.actionsColumn}>Actions</th>
+                <th className={styles.actionsColumn}>작업</th>
               )}
             </tr>
           </thead>
@@ -251,7 +251,7 @@ const DataTable = <T extends Record<string, any>>({
                 <td colSpan={columns.length + (selection ? 1 : 0) + (actions ? 1 : 0)} className={styles.loadingCell}>
                   <div className={styles.loading}>
                     <div className={styles.loadingSpinner}></div>
-                    <span>Loading...</span>
+                    <span>로딩 중...</span>
                   </div>
                 </td>
               </tr>
@@ -294,7 +294,7 @@ const DataTable = <T extends Record<string, any>>({
                             <button
                               onClick={() => actions.onView!(item)}
                               className={`${styles.actionBtn} ${styles.view}`}
-                              title="View"
+                              title="보기"
                             >
                               👁️
                             </button>
@@ -303,7 +303,7 @@ const DataTable = <T extends Record<string, any>>({
                             <button
                               onClick={() => actions.onEdit!(item)}
                               className={`${styles.actionBtn} ${styles.edit}`}
-                              title="Edit"
+                              title="편집"
                             >
                               ✏️
                             </button>
@@ -312,7 +312,7 @@ const DataTable = <T extends Record<string, any>>({
                             <button
                               onClick={() => actions.onDelete!(item)}
                               className={`${styles.actionBtn} ${styles.delete}`}
-                              title="Delete"
+                              title="삭제"
                             >
                               🗑️
                             </button>
@@ -342,9 +342,7 @@ const DataTable = <T extends Record<string, any>>({
       {pagination && (
         <div className={styles.pagination}>
           <div className={styles.paginationInfo}>
-            Showing {Math.min((pagination.currentPage - 1) * pagination.itemsPerPage + 1, pagination.totalItems)} to{' '}
-            {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} of{' '}
-            {pagination.totalItems} entries
+            전체 {pagination.totalItems}개 중 {Math.min((pagination.currentPage - 1) * pagination.itemsPerPage + 1, pagination.totalItems)}-{Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)}개 표시
           </div>
           <div className={styles.paginationControls}>
             <button
@@ -352,7 +350,7 @@ const DataTable = <T extends Record<string, any>>({
               disabled={pagination.currentPage <= 1}
               className={styles.pageBtn}
             >
-              Previous
+이전
             </button>
             {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
               let pageNum;
@@ -383,7 +381,7 @@ const DataTable = <T extends Record<string, any>>({
               disabled={pagination.currentPage >= pagination.totalPages}
               className={styles.pageBtn}
             >
-              Next
+다음
             </button>
           </div>
         </div>

@@ -44,11 +44,11 @@ const LoginPage: React.FC = () => {
       const result = await signIn(formData.email, formData.password);
 
       if (!result.success) {
-        setError(result.error || 'Login failed');
+        setError(result.error || '로그인에 실패했습니다');
       }
       // If successful, the useAdmin context will handle the redirect
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError('예상치 못한 오류가 발생했습니다');
     } finally {
       setIsSubmitting(false);
     }
@@ -62,9 +62,9 @@ const LoginPage: React.FC = () => {
         <div className={styles.loginHeader}>
           <div className={styles.logo}>
             <span className={styles.logoIcon}>🏥</span>
-            <h1 className={styles.logoText}>OneCell Admin</h1>
+            <h1 className={styles.logoText}>원셀 관리자</h1>
           </div>
-          <p className={styles.subtitle}>Sign in to manage your clinic</p>
+          <p className={styles.subtitle}>클리닉 관리를 위해 로그인하세요</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.loginForm}>
@@ -76,7 +76,7 @@ const LoginPage: React.FC = () => {
 
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.label}>
-              Email Address
+              이메일 주소
             </label>
             <input
               type="email"
@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
               value={formData.email}
               onChange={handleInputChange}
               className={styles.input}
-              placeholder="admin@onecellclinic.com"
+              placeholder="admin@onecellclinic.co.kr"
               required
               autoComplete="email"
               disabled={isSubmitting}
@@ -94,7 +94,7 @@ const LoginPage: React.FC = () => {
 
           <div className={styles.formGroup}>
             <label htmlFor="password" className={styles.label}>
-              Password
+              비밀번호
             </label>
             <input
               type="password"
@@ -103,7 +103,7 @@ const LoginPage: React.FC = () => {
               value={formData.password}
               onChange={handleInputChange}
               className={styles.input}
-              placeholder="Enter your password"
+              placeholder="비밀번호를 입력하세요"
               required
               autoComplete="current-password"
               disabled={isSubmitting}
@@ -118,17 +118,17 @@ const LoginPage: React.FC = () => {
             {isSubmitting ? (
               <>
                 <span className={styles.loadingSpinner}></span>
-                Signing in...
+                로그인 중...
               </>
             ) : (
-              'Sign In'
+              '로그인'
             )}
           </button>
         </form>
 
         <div className={styles.loginFooter}>
           <p className={styles.helpText}>
-            Admin access only. Contact your system administrator for access.
+            관리자 전용 접근입니다. 접근이 필요하시면 시스템 관리자에게 문의하세요.
           </p>
         </div>
       </div>

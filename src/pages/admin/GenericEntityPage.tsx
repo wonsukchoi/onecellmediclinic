@@ -66,11 +66,11 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
           totalItems: result.data!.total,
         }));
       } else {
-        setError(result.error || 'Failed to load data');
+        setError(result.error || '데이터 로드에 실패했습니다');
         setData([]);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      setError(err instanceof Error ? err.message : '알 수 없는 오류입니다');
       setData([]);
     } finally {
       setLoading(false);
@@ -141,7 +141,7 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
   };
 
   const handleDelete = async (item: any) => {
-    if (!window.confirm(`Are you sure you want to delete this ${config.singularName.toLowerCase()}?`)) {
+    if (!window.confirm(`이 ${config.singularName}을(를) 정말 삭제하시겠습니까?`)) {
       return;
     }
 
@@ -152,15 +152,15 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
         await loadData();
         setSelectedItems(prev => prev.filter(selected => selected.id !== item.id));
       } else {
-        setError(result.error || 'Failed to delete item');
+        setError(result.error || '항목 삭제에 실패했습니다');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      setError(err instanceof Error ? err.message : '알 수 없는 오류입니다');
     }
   };
 
   const handleBulkDelete = async (items: any[]) => {
-    if (!window.confirm(`Are you sure you want to delete ${items.length} ${config.name.toLowerCase()}?`)) {
+    if (!window.confirm(`${items.length}개의 ${config.name}을(를) 정말 삭제하시겠습니까?`)) {
       return;
     }
 
@@ -172,10 +172,10 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
         await loadData();
         setSelectedItems([]);
       } else {
-        setError(result.error || 'Failed to delete items');
+        setError(result.error || '항목 삭제에 실패했습니다');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      setError(err instanceof Error ? err.message : '알 수 없는 오류입니다');
     }
   };
 
@@ -196,7 +196,7 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
               onClick={handleCreate}
               className={styles.createButton}
             >
-              + Add {config.singularName}
+              + {config.singularName} 추가
             </button>
           )}
           <button
@@ -204,7 +204,7 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
             className={styles.refreshButton}
             disabled={loading}
           >
-            🔄 Refresh
+            🔄 새로고침
           </button>
         </div>
       </div>
@@ -232,7 +232,7 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
         }}
         search={{
           value: searchValue,
-          placeholder: `Search ${config.name.toLowerCase()}...`,
+          placeholder: `${config.name} 검색...`,
           onSearch: handleSearch,
         }}
         actions={{
@@ -240,12 +240,12 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
           onDelete: config.canDelete ? handleDelete : undefined,
         }}
         bulkActions={config.canDelete ? [{
-          label: 'Delete Selected',
+          label: '선택 항목 삭제',
           icon: '🗑️',
           onClick: handleBulkDelete,
           className: styles.deleteAction,
         }] : undefined}
-        emptyMessage={`No ${config.name.toLowerCase()} found`}
+        emptyMessage={`${config.name}을(를) 찾을 수 없습니다`}
         className={styles.dataTable}
       />
     </div>

@@ -21,58 +21,58 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const navigationItems = [
     {
-      label: 'Dashboard',
+      label: '대시보드',
       path: '/admin',
       icon: '📊',
     },
     {
-      label: 'Appointments',
+      label: '예약 관리',
       path: '/admin/appointments',
       icon: '📅',
       badge: stats?.pendingAppointments || 0,
     },
     {
-      label: 'Consultations',
+      label: '상담 관리',
       path: '/admin/consultations',
       icon: '💬',
       badge: stats?.newConsultations || 0,
     },
     {
-      label: 'Contact Submissions',
+      label: '문의 접수',
       path: '/admin/contact-submissions',
       icon: '📧',
       badge: stats?.newContactSubmissions || 0,
     },
     {
-      label: 'Content Management',
+      label: '콘텐츠 관리',
       path: '',
       icon: '📝',
       children: [
-        { label: 'Blog Posts', path: '/admin/blog-posts' },
-        { label: 'Procedures', path: '/admin/procedures' },
-        { label: 'Procedure Categories', path: '/admin/procedure-categories' },
-        { label: 'Providers', path: '/admin/providers' },
-        { label: 'Gallery', path: '/admin/gallery-items' },
+        { label: '블로그 게시물', path: '/admin/blog-posts' },
+        { label: '시술 항목', path: '/admin/procedures' },
+        { label: '시술 카테고리', path: '/admin/procedure-categories' },
+        { label: '의료진 관리', path: '/admin/providers' },
+        { label: '갤러리 관리', path: '/admin/gallery-items' },
       ],
     },
     {
-      label: 'Media & Reviews',
+      label: '미디어 및 리뷰',
       path: '',
       icon: '🎬',
       children: [
-        { label: 'Video Shorts', path: '/admin/video-shorts' },
-        { label: 'YouTube Videos', path: '/admin/youtube-videos' },
-        { label: 'Selfie Reviews', path: '/admin/selfie-reviews' },
+        { label: '짧은 동영상', path: '/admin/video-shorts' },
+        { label: '유튜브 동영상', path: '/admin/youtube-videos' },
+        { label: '셀피 리뷰', path: '/admin/selfie-reviews' },
       ],
     },
     {
-      label: 'Site Features',
+      label: '사이트 기능',
       path: '',
       icon: '⚙️',
       children: [
-        { label: 'Clinic Features', path: '/admin/clinic-features' },
-        { label: 'Differentiators', path: '/admin/differentiators' },
-        { label: 'Event Banners', path: '/admin/event-banners' },
+        { label: '클리닉 특징', path: '/admin/clinic-features' },
+        { label: '차별화 요소', path: '/admin/differentiators' },
+        { label: '이벤트 배너', path: '/admin/event-banners' },
       ],
     },
   ];
@@ -91,7 +91,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
             <span className={styles.logoIcon}>🏥</span>
-            {!sidebarCollapsed && <span className={styles.logoText}>OneCell Admin</span>}
+            {!sidebarCollapsed && <span className={styles.logoText}>원셀 관리자</span>}
           </div>
           <button
             className={styles.collapseBtn}
@@ -155,13 +155,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {/* Header */}
         <header className={styles.header}>
           <div className={styles.headerLeft}>
-            <h1 className={styles.pageTitle}>Admin Panel</h1>
+            <h1 className={styles.pageTitle}>관리자 패널</h1>
           </div>
           <div className={styles.headerRight}>
             <div className={styles.userInfo}>
               <span className={styles.userName}>{user?.name || user?.email}</span>
               <button className={styles.signOutBtn} onClick={handleSignOut}>
-                Sign Out
+                로그아웃
               </button>
             </div>
           </div>

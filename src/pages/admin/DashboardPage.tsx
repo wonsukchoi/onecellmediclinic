@@ -26,7 +26,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, color, 
             <span className={change >= 0 ? styles.positive : styles.negative}>
               {change >= 0 ? '↗' : '↘'} {Math.abs(change)}
             </span>
-            <span className={styles.changeText}>vs last month</span>
+            <span className={styles.changeText}>지난 달 대비</span>
           </div>
         )}
       </div>
@@ -68,36 +68,36 @@ const DashboardPage: React.FC = () => {
     return (
       <div className={styles.loading}>
         <div className={styles.loadingSpinner}></div>
-        <p>Loading dashboard...</p>
+        <p>대시보드 로딩 중...</p>
       </div>
     );
   }
 
   const quickActions = [
     {
-      title: 'Add New Procedure',
-      description: 'Create a new medical procedure',
+      title: '신규 시술 추가',
+      description: '새로운 의료 시술을 등록합니다',
       icon: '🏥',
       link: '/admin/procedures/new',
       color: 'blue' as const,
     },
     {
-      title: 'Add Provider',
-      description: 'Register a new medical provider',
+      title: '의료진 추가',
+      description: '새로운 의료 진을 등록합니다',
       icon: '👨‍⚕️',
       link: '/admin/providers/new',
       color: 'green' as const,
     },
     {
-      title: 'Create Blog Post',
-      description: 'Write a new blog article',
+      title: '블로그 작성',
+      description: '새로운 블로그 글을 작성합니다',
       icon: '📝',
       link: '/admin/blog-posts/new',
       color: 'purple' as const,
     },
     {
-      title: 'Upload Gallery Item',
-      description: 'Add before/after photos',
+      title: '갤러리 사진 업로드',
+      description: '전후 비교 사진을 추가합니다',
       icon: '📸',
       link: '/admin/gallery-items/new',
       color: 'blue' as const,
@@ -107,68 +107,68 @@ const DashboardPage: React.FC = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardHeader}>
-        <h1 className={styles.pageTitle}>Dashboard Overview</h1>
+        <h1 className={styles.pageTitle}>대시보드 개요</h1>
         <button
           onClick={refreshStats}
           className={styles.refreshButton}
         >
-          🔄 Refresh
+          🔄 새로고침
         </button>
       </div>
 
       {/* Statistics Grid */}
       <div className={styles.statsGrid}>
         <StatCard
-          title="Total Appointments"
+          title="전체 예약"
           value={stats.totalAppointments}
           icon="📅"
           color="blue"
           link="/admin/appointments"
         />
         <StatCard
-          title="Pending Appointments"
+          title="대기 중인 예약"
           value={stats.pendingAppointments}
           icon="⏰"
           color="yellow"
           link="/admin/appointments?status=pending"
         />
         <StatCard
-          title="Today's Appointments"
+          title="오늘의 예약"
           value={stats.todayAppointments}
           icon="📋"
           color="green"
           link="/admin/appointments?date=today"
         />
         <StatCard
-          title="New Consultations"
+          title="신규 상담"
           value={stats.newConsultations}
           icon="💬"
           color="purple"
           link="/admin/consultations"
         />
         <StatCard
-          title="Contact Submissions"
+          title="문의 접수"
           value={stats.totalContactSubmissions}
           icon="📧"
           color="blue"
           link="/admin/contact-submissions"
         />
         <StatCard
-          title="Active Procedures"
+          title="활성 시술"
           value={stats.totalProcedures}
           icon="🏥"
           color="green"
           link="/admin/procedures"
         />
         <StatCard
-          title="Medical Providers"
+          title="의료진"
           value={stats.totalProviders}
           icon="👨‍⚕️"
           color="purple"
           link="/admin/providers"
         />
         <StatCard
-          title="Blog Posts"
+          title="블로그 게시물"
           value={stats.totalBlogPosts}
           icon="📝"
           color="purple"
@@ -177,7 +177,7 @@ const DashboardPage: React.FC = () => {
 
       {/* Quick Actions */}
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Quick Actions</h2>
+        <h2 className={styles.sectionTitle}>빠른 작업</h2>
         <div className={styles.quickActionsGrid}>
           {quickActions.map((action, index) => (
             <QuickAction key={index} {...action} />
@@ -187,50 +187,50 @@ const DashboardPage: React.FC = () => {
 
       {/* Content Overview */}
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Content Overview</h2>
+        <h2 className={styles.sectionTitle}>콘텐츠 개요</h2>
         <div className={styles.contentGrid}>
           <div className={styles.contentCard}>
-            <h3>Media Content</h3>
+            <h3>미디어 콘텐츠</h3>
             <div className={styles.contentStats}>
               <div className={styles.contentStat}>
                 <span className={styles.contentIcon}>🎬</span>
                 <div>
                   <div className={styles.contentValue}>{stats.totalVideoShorts}</div>
-                  <div className={styles.contentLabel}>Video Shorts</div>
+                  <div className={styles.contentLabel}>짧은 동영상</div>
                 </div>
               </div>
               <div className={styles.contentStat}>
                 <span className={styles.contentIcon}>📺</span>
                 <div>
                   <div className={styles.contentValue}>{stats.totalYouTubeVideos}</div>
-                  <div className={styles.contentLabel}>YouTube Videos</div>
+                  <div className={styles.contentLabel}>유튜브 동영상</div>
                 </div>
               </div>
               <div className={styles.contentStat}>
                 <span className={styles.contentIcon}>📸</span>
                 <div>
                   <div className={styles.contentValue}>{stats.totalGalleryItems}</div>
-                  <div className={styles.contentLabel}>Gallery Items</div>
+                  <div className={styles.contentLabel}>갤러리 항목</div>
                 </div>
               </div>
             </div>
           </div>
 
           <div className={styles.contentCard}>
-            <h3>Reviews & Features</h3>
+            <h3>리뷰 및 기능</h3>
             <div className={styles.contentStats}>
               <div className={styles.contentStat}>
                 <span className={styles.contentIcon}>🤳</span>
                 <div>
                   <div className={styles.contentValue}>{stats.totalSelfieReviews}</div>
-                  <div className={styles.contentLabel}>Selfie Reviews</div>
+                  <div className={styles.contentLabel}>셀피 리뷰</div>
                 </div>
               </div>
               <div className={styles.contentStat}>
                 <span className={styles.contentIcon}>⭐</span>
                 <div>
                   <div className={styles.contentValue}>{stats.totalEventBanners}</div>
-                  <div className={styles.contentLabel}>Event Banners</div>
+                  <div className={styles.contentLabel}>이벤트 배너</div>
                 </div>
               </div>
             </div>

@@ -12,7 +12,7 @@ const BlogPostsPage: React.FC = () => {
     },
     {
       key: 'featured_image',
-      label: 'Image',
+      label: '이미지',
       width: '80px',
       render: (value) => value ? (
         <img
@@ -37,7 +37,7 @@ const BlogPostsPage: React.FC = () => {
     },
     {
       key: 'title',
-      label: 'Title',
+      label: '제목',
       sortable: true,
       render: (value, item) => (
         <div>
@@ -59,7 +59,7 @@ const BlogPostsPage: React.FC = () => {
     },
     {
       key: 'slug',
-      label: 'Slug',
+      label: 'URL 슬러그',
       width: '150px',
       render: (value) => (
         <code style={{
@@ -75,7 +75,7 @@ const BlogPostsPage: React.FC = () => {
     },
     {
       key: 'published',
-      label: 'Status',
+      label: '상태',
       sortable: true,
       width: '100px',
       render: (value) => (
@@ -88,35 +88,35 @@ const BlogPostsPage: React.FC = () => {
           fontWeight: 600,
           textTransform: 'uppercase',
         }}>
-          {value ? 'Published' : 'Draft'}
+          {value ? '게시됨' : '초안'}
         </span>
       ),
     },
     {
       key: 'author_id',
-      label: 'Author',
+      label: '작성자',
       width: '120px',
-      render: (value) => value || 'System',
+      render: (value) => value || '시스템',
     },
     {
       key: 'created_at',
-      label: 'Created',
+      label: '작성일',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
     {
       key: 'updated_at',
-      label: 'Updated',
+      label: '수정일',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
   ];
 
   const config = {
-    name: 'Blog Posts',
-    singularName: 'Blog Post',
+    name: '블로그 게시물',
+    singularName: '블로그 글',
     tableName: 'blog_posts',
     columns,
     searchFields: ['title', 'excerpt', 'content', 'slug'],

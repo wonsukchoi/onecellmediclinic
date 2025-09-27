@@ -12,7 +12,7 @@ const AppointmentsPage: React.FC = () => {
     },
     {
       key: 'patient_name',
-      label: 'Patient Name',
+      label: '환자명',
       sortable: true,
       render: (value, item) => (
         <div>
@@ -23,12 +23,12 @@ const AppointmentsPage: React.FC = () => {
     },
     {
       key: 'patient_phone',
-      label: 'Phone',
+      label: '전화번호',
       width: '140px',
     },
     {
       key: 'service_type',
-      label: 'Service',
+      label: '서비스',
       sortable: true,
       render: (value) => (
         <span style={{
@@ -45,19 +45,19 @@ const AppointmentsPage: React.FC = () => {
     },
     {
       key: 'preferred_date',
-      label: 'Date',
+      label: '날짜',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
     {
       key: 'preferred_time',
-      label: 'Time',
+      label: '시간',
       width: '100px',
     },
     {
       key: 'status',
-      label: 'Status',
+      label: '상태',
       sortable: true,
       width: '100px',
       render: (value) => {
@@ -86,16 +86,16 @@ const AppointmentsPage: React.FC = () => {
     },
     {
       key: 'created_at',
-      label: 'Created',
+      label: '등록일',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
   ];
 
   const config = {
-    name: 'Appointments',
-    singularName: 'Appointment',
+    name: '예약 관리',
+    singularName: '예약',
     tableName: 'appointments',
     columns,
     searchFields: ['patient_name', 'patient_email', 'patient_phone', 'service_type'],

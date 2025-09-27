@@ -12,7 +12,7 @@ const ProceduresPage: React.FC = () => {
     },
     {
       key: 'featured_image_url',
-      label: 'Image',
+      label: '이미지',
       width: '80px',
       render: (value) => value ? (
         <img
@@ -37,7 +37,7 @@ const ProceduresPage: React.FC = () => {
     },
     {
       key: 'name',
-      label: 'Procedure Name',
+      label: '시술명',
       sortable: true,
       render: (value, item) => (
         <div>
@@ -59,7 +59,7 @@ const ProceduresPage: React.FC = () => {
     },
     {
       key: 'category_id',
-      label: 'Category',
+      label: '카테고리',
       sortable: true,
       width: '150px',
       render: (value, item) => (
@@ -71,25 +71,25 @@ const ProceduresPage: React.FC = () => {
           fontSize: '12px',
           fontWeight: 600,
         }}>
-          {item.category?.name || `Category ${value}`}
+          {item.category?.name || `카테고리 ${value}`}
         </span>
       ),
     },
     {
       key: 'duration_minutes',
-      label: 'Duration',
+      label: '소요 시간',
       width: '100px',
-      render: (value) => value ? `${value} min` : '—',
+      render: (value) => value ? `${value}분` : '—',
     },
     {
       key: 'price_range',
-      label: 'Price Range',
+      label: '가격대',
       width: '120px',
       render: (value) => value || '—',
     },
     {
       key: 'active',
-      label: 'Status',
+      label: '상태',
       sortable: true,
       width: '100px',
       render: (value) => (
@@ -102,29 +102,29 @@ const ProceduresPage: React.FC = () => {
           fontWeight: 600,
           textTransform: 'uppercase',
         }}>
-          {value ? 'Active' : 'Inactive'}
+          {value ? '활성' : '비활성'}
         </span>
       ),
     },
     {
       key: 'display_order',
-      label: 'Order',
+      label: '순서',
       width: '80px',
       align: 'center' as const,
       sortable: true,
     },
     {
       key: 'created_at',
-      label: 'Created',
+      label: '등록일',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
   ];
 
   const config = {
-    name: 'Procedures',
-    singularName: 'Procedure',
+    name: '시술 관리',
+    singularName: '시술',
     tableName: 'procedures',
     columns,
     searchFields: ['name', 'description', 'tags'],

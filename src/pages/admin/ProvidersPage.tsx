@@ -12,7 +12,7 @@ const ProvidersPage: React.FC = () => {
     },
     {
       key: 'profile_image_url',
-      label: 'Photo',
+      label: '사진',
       width: '80px',
       render: (value, item) => value ? (
         <img
@@ -37,7 +37,7 @@ const ProvidersPage: React.FC = () => {
     },
     {
       key: 'full_name',
-      label: 'Provider',
+      label: '의료진',
       sortable: true,
       render: (value, item) => (
         <div>
@@ -57,19 +57,19 @@ const ProvidersPage: React.FC = () => {
     },
     {
       key: 'years_experience',
-      label: 'Experience',
+      label: '경력',
       width: '100px',
-      render: (value) => value ? `${value} years` : '—',
+      render: (value) => value ? `${value}년` : '—',
     },
     {
       key: 'consultation_fee',
-      label: 'Fee',
+      label: '상담비',
       width: '100px',
-      render: (value) => value ? `$${value}` : '—',
+      render: (value) => value ? `${value}원` : '—',
     },
     {
       key: 'languages',
-      label: 'Languages',
+      label: '가능 언어',
       width: '150px',
       render: (value) => {
         if (!value || !Array.isArray(value)) return '—';
@@ -78,7 +78,7 @@ const ProvidersPage: React.FC = () => {
     },
     {
       key: 'active',
-      label: 'Status',
+      label: '상태',
       sortable: true,
       width: '100px',
       render: (value) => (
@@ -91,22 +91,22 @@ const ProvidersPage: React.FC = () => {
           fontWeight: 600,
           textTransform: 'uppercase',
         }}>
-          {value ? 'Active' : 'Inactive'}
+          {value ? '활성' : '비활성'}
         </span>
       ),
     },
     {
       key: 'created_at',
-      label: 'Joined',
+      label: '가입일',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
   ];
 
   const config = {
-    name: 'Medical Providers',
-    singularName: 'Provider',
+    name: '의료진 관리',
+    singularName: '의료진',
     tableName: 'providers',
     columns,
     searchFields: ['full_name', 'title', 'specialization', 'languages'],

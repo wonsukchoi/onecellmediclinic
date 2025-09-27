@@ -7,12 +7,12 @@ export interface VideoShort {
   video_url: string;
   thumbnail_url?: string;
   duration_seconds?: number;
-  procedure_category?: string;
+  category: string;
   tags?: string[];
   view_count: number;
   featured: boolean;
   active: boolean;
-  display_order: number;
+  order_index: number;
   created_at: string;
   updated_at: string;
 }

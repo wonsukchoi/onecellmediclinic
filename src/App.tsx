@@ -20,6 +20,7 @@ import ProceduresPage from "./pages/admin/ProceduresPage";
 import ProvidersPage from "./pages/admin/ProvidersPage";
 import BlogPostsPage from "./pages/admin/BlogPostsPage";
 import GalleryItemsPage from "./pages/admin/GalleryItemsPage";
+import VideoShortsPage from "./pages/admin/VideoShortsPage";
 
 import "./styles/globals.css";
 
@@ -45,9 +46,9 @@ const App: React.FC = () => {
                       <Route path="/providers" element={<ProvidersPage />} />
                       <Route path="/blog-posts" element={<BlogPostsPage />} />
                       <Route path="/gallery-items" element={<GalleryItemsPage />} />
+                      <Route path="/video-shorts" element={<VideoShortsPage />} />
                       {/* Additional admin routes can be added here for:
                           - procedure-categories
-                          - video-shorts
                           - youtube-videos
                           - selfie-reviews
                           - clinic-features

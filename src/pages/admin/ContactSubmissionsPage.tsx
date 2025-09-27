@@ -12,7 +12,7 @@ const ContactSubmissionsPage: React.FC = () => {
     },
     {
       key: 'name',
-      label: 'Contact',
+      label: '연락처',
       sortable: true,
       render: (value, item) => (
         <div>
@@ -30,7 +30,7 @@ const ContactSubmissionsPage: React.FC = () => {
     },
     {
       key: 'service_type',
-      label: 'Service Interest',
+      label: '관심 서비스',
       sortable: true,
       render: (value) => (
         <span style={{
@@ -47,7 +47,7 @@ const ContactSubmissionsPage: React.FC = () => {
     },
     {
       key: 'message',
-      label: 'Message',
+      label: '메시지',
       width: '300px',
       render: (value) => (
         <div style={{
@@ -62,7 +62,7 @@ const ContactSubmissionsPage: React.FC = () => {
     },
     {
       key: 'preferred_contact',
-      label: 'Preferred Contact',
+      label: '선호 연락 방법',
       width: '130px',
       render: (value) => {
         const colors = {
@@ -88,16 +88,16 @@ const ContactSubmissionsPage: React.FC = () => {
     },
     {
       key: 'created_at',
-      label: 'Submitted',
+      label: '접수일',
       sortable: true,
       width: '120px',
-      render: (value) => new Date(value).toLocaleDateString(),
+      render: (value) => new Date(value).toLocaleDateString('ko-KR'),
     },
   ];
 
   const config = {
-    name: 'Contact Submissions',
-    singularName: 'Contact Submission',
+    name: '문의 접수',
+    singularName: '문의',
     tableName: 'contact_submissions',
     columns,
     searchFields: ['name', 'email', 'phone', 'service_type', 'message'],
