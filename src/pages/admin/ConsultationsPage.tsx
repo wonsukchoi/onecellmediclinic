@@ -1,6 +1,7 @@
 import React from 'react';
 import GenericEntityPage from './GenericEntityPage';
 import type { Column } from '../../components/admin/DataTable';
+import { Icon } from '../../components/icons';
 
 const ConsultationsPage: React.FC = () => {
   const columns: Column[] = [
@@ -109,7 +110,7 @@ const ConsultationsPage: React.FC = () => {
       label: 'Follow-up',
       width: '100px',
       align: 'center' as const,
-      render: (value) => value ? '✅' : '—',
+      render: (value) => value ? <Icon name="check" size="sm" /> : '—',
     },
     {
       key: 'created_at',

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Icon, type IconName } from '../icons'
 import styles from './ConsultationSidebar.module.css'
 
 interface ConsultationOption {
   id: string
-  icon: string
+  icon: IconName
   label: string
   description: string
   action: () => void
@@ -39,7 +40,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
   const consultationOptions: ConsultationOption[] = [
     {
       id: 'phone',
-      icon: '📞',
+      icon: 'chat' as IconName,
       label: 'Call Now',
       description: '즉시 전화 상담',
       color: '#10b981',
@@ -49,7 +50,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
     },
     {
       id: 'whatsapp',
-      icon: '💬',
+      icon: 'chat' as IconName,
       label: 'WhatsApp',
       description: '카카오톡 상담',
       color: '#fbbf24',
@@ -59,7 +60,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
     },
     {
       id: 'booking',
-      icon: '📅',
+      icon: 'calendar' as IconName,
       label: 'Book Online',
       description: '온라인 예약',
       color: '#3b82f6',
@@ -70,7 +71,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
     },
     {
       id: 'consultation',
-      icon: '💻',
+      icon: 'video' as IconName,
       label: 'Free Consult',
       description: '무료 온라인 상담',
       color: '#8b5cf6',
@@ -80,7 +81,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
     },
     {
       id: 'email',
-      icon: '✉️',
+      icon: 'mail' as IconName,
       label: 'Email Us',
       description: '이메일 문의',
       color: '#ef4444',
@@ -159,7 +160,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
                 } as React.CSSProperties}
               >
                 <div className={styles.optionIcon} style={{ backgroundColor: option.color }}>
-                  <span>{option.icon}</span>
+                  <Icon name={option.icon} size="lg" />
                 </div>
                 <div className={styles.optionContent}>
                   <span className={styles.optionLabel}>{option.label}</span>
@@ -193,7 +194,7 @@ const ConsultationSidebar: React.FC<ConsultationSidebarProps> = ({
             onClick={() => navigate('/reservation')}
             aria-label="빠른 예약"
           >
-            <span className={styles.fabIcon}>📅</span>
+            <Icon name="calendar" size="lg" className={styles.fabIcon} />
             <span className={styles.fabText}>예약</span>
           </button>
         </div>

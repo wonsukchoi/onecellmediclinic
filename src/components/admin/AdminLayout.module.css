@@ -37,7 +37,10 @@
 }
 
 .logoIcon {
-  font-size: 24px;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logoText {
@@ -47,12 +50,14 @@
 .collapseBtn {
   background: none;
   border: none;
-  font-size: 16px;
   cursor: pointer;
   color: #64748b;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .collapseBtn:hover {
@@ -100,10 +105,18 @@
   color: #1e40af;
 }
 
+.navItem:hover .navIcon {
+  color: var(--color-primary);
+}
+
 .navItem.active {
   background-color: #eff6ff;
   color: #1e40af;
-  border-right: 3px solid #3b82f6;
+  border-right: 3px solid var(--color-primary);
+}
+
+.navItem.active .navIcon {
+  color: var(--color-primary);
 }
 
 .navSubItem {
@@ -112,10 +125,13 @@
 }
 
 .navIcon {
-  font-size: 18px;
   margin-right: 12px;
   width: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: color 0.2s;
 }
 
 .navLabel {

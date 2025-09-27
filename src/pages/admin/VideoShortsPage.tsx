@@ -1,6 +1,7 @@
 import React from 'react';
 import GenericEntityPage from './GenericEntityPage';
 import type { Column } from '../../components/admin/DataTable';
+import { Icon } from '../../components/icons';
 
 const VideoShortsPage: React.FC = () => {
   const columns: Column[] = [
@@ -43,7 +44,7 @@ const VideoShortsPage: React.FC = () => {
         onClick={() => window.open(item.video_url, '_blank')}
         title="Click to view video"
         >
-          🎬
+          <Icon name="video" size="md" />
         </div>
       ),
     },
@@ -189,7 +190,10 @@ const VideoShortsPage: React.FC = () => {
           fontWeight: 600,
           textTransform: 'uppercase',
         }}>
-          {value ? '⭐ Featured' : 'Normal'}
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            {value && <Icon name="star" size="sm" />}
+            {value ? 'Featured' : 'Normal'}
+          </span>
         </span>
       ),
     },

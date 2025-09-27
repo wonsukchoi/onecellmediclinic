@@ -43,7 +43,9 @@
   top: 50%;
   transform: translateY(-50%);
   color: #6b7280;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bulkActions {
@@ -130,7 +132,9 @@
 
 .sortIcon {
   color: #9ca3af;
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .td {

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Icon } from '../icons';
 import styles from './DataTable.module.css';
 
 export interface Column<T = any> {
@@ -137,8 +138,10 @@ const DataTable = <T extends Record<string, any>>({
   };
 
   const getSortIcon = (field: string) => {
-    if (!sorting || sorting.field !== field) return '↕️';
-    return sorting.direction === 'asc' ? '↑' : '↓';
+    if (!sorting || sorting.field !== field) {
+      return <Icon name="sortNeutral" size="sm" />;
+    }
+    return <Icon name={sorting.direction === 'asc' ? 'sortAsc' : 'sortDesc'} size="sm" />;
   };
 
   const renderCellValue = (column: Column<T>, item: T, index: number) => {
@@ -181,7 +184,7 @@ const DataTable = <T extends Record<string, any>>({
                 onChange={handleSearchChange}
                 className={styles.searchInput}
               />
-              <span className={styles.searchIcon}>🔍</span>
+              <Icon name="search" size="sm" className={styles.searchIcon} />
             </div>
           )}
 
@@ -296,7 +299,7 @@ const DataTable = <T extends Record<string, any>>({
                               className={`${styles.actionBtn} ${styles.view}`}
                               title="보기"
                             >
-                              👁️
+                              <Icon name="view" size="sm" />
                             </button>
                           )}
                           {actions.onEdit && (
@@ -305,7 +308,7 @@ const DataTable = <T extends Record<string, any>>({
                               className={`${styles.actionBtn} ${styles.edit}`}
                               title="편집"
                             >
-                              ✏️
+                              <Icon name="edit" size="sm" />
                             </button>
                           )}
                           {actions.onDelete && (
@@ -314,7 +317,7 @@ const DataTable = <T extends Record<string, any>>({
                               className={`${styles.actionBtn} ${styles.delete}`}
                               title="삭제"
                             >
-                              🗑️
+                              <Icon name="delete" size="sm" />
                             </button>
                           )}
                           {actions.customActions?.map((action, actionIndex) => (

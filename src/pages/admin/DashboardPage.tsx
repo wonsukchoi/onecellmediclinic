@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAdmin } from '../../contexts/AdminContext';
+import { Icon, type IconName } from '../../components/icons';
 import styles from './DashboardPage.module.css';
 
 interface StatCardProps {
   title: string;
   value: number;
   change?: number;
-  icon: string;
+  icon: IconName;
   color: 'blue' | 'green' | 'yellow' | 'red' | 'purple';
   link?: string;
 }
@@ -16,7 +17,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, color, 
   const content = (
     <div className={`${styles.statCard} ${styles[color]}`}>
       <div className={styles.statIcon}>
-        <span>{icon}</span>
+        <Icon name={icon} size="lg" />
       </div>
       <div className={styles.statContent}>
         <h3 className={styles.statValue}>{value.toLocaleString()}</h3>
@@ -24,7 +25,8 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, color, 
         {change !== undefined && (
           <div className={styles.statChange}>
             <span className={change >= 0 ? styles.positive : styles.negative}>
-              {change >= 0 ? '↗' : '↘'} {Math.abs(change)}
+              <Icon name={change >= 0 ? 'chevronUp' : 'chevronDown'} size="sm" />
+              {Math.abs(change)}
             </span>
             <span className={styles.changeText}>지난 달 대비</span>
           </div>
@@ -39,7 +41,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, color, 
 interface QuickActionProps {
   title: string;
   description: string;
-  icon: string;
+  icon: IconName;
   link: string;
   color: 'blue' | 'green' | 'purple' | 'red' | 'yellow';
 }
@@ -47,13 +49,15 @@ interface QuickActionProps {
 const QuickAction: React.FC<QuickActionProps> = ({ title, description, icon, link, color }) => (
   <Link to={link} className={`${styles.quickAction} ${styles[color]}`}>
     <div className={styles.actionIcon}>
-      <span>{icon}</span>
+      <Icon name={icon} size="lg" />
     </div>
     <div className={styles.actionContent}>
       <h4 className={styles.actionTitle}>{title}</h4>
       <p className={styles.actionDescription}>{description}</p>
     </div>
-    <div className={styles.actionArrow}>→</div>
+    <div className={styles.actionArrow}>
+      <Icon name="chevronRight" size="sm" />
+    </div>
   </Link>
 );
 
@@ -77,28 +81,28 @@ const DashboardPage: React.FC = () => {
     {
       title: '신규 시술 추가',
       description: '새로운 의료 시술을 등록합니다',
-      icon: '🏥',
+      icon: 'medical' as IconName,
       link: '/admin/procedures/new',
       color: 'blue' as const,
     },
     {
       title: '의료진 추가',
       description: '새로운 의료 진을 등록합니다',
-      icon: '👨‍⚕️',
+      icon: 'user' as IconName,
       link: '/admin/providers/new',
       color: 'green' as const,
     },
     {
       title: '블로그 작성',
       description: '새로운 블로그 글을 작성합니다',
-      icon: '📝',
+      icon: 'blog' as IconName,
       link: '/admin/blog-posts/new',
       color: 'purple' as const,
     },
     {
       title: '갤러리 사진 업로드',
       description: '전후 비교 사진을 추가합니다',
-      icon: '📸',
+      icon: 'image' as IconName,
       link: '/admin/gallery-items/new',
       color: 'blue' as const,
     },
@@ -112,7 +116,8 @@ const DashboardPage: React.FC = () => {
           onClick={refreshStats}
           className={styles.refreshButton}
         >
-          🔄 새로고침
+          <Icon name="refresh" size="sm" />
+          새로고침
         </button>
       </div>
 
@@ -121,56 +126,56 @@ const DashboardPage: React.FC = () => {
         <StatCard
           title="전체 예약"
           value={stats.totalAppointments}
-          icon="📅"
+          icon="calendar"
           color="blue"
           link="/admin/appointments"
         />
         <StatCard
           title="대기 중인 예약"
           value={stats.pendingAppointments}
-          icon="⏰"
+          icon="clock"
           color="yellow"
           link="/admin/appointments?status=pending"
         />
         <StatCard
           title="오늘의 예약"
           value={stats.todayAppointments}
-          icon="📋"
+          icon="calendar"
           color="green"
           link="/admin/appointments?date=today"
         />
         <StatCard
           title="신규 상담"
           value={stats.newConsultations}
-          icon="💬"
+          icon="chat"
           color="purple"
           link="/admin/consultations"
         />
         <StatCard
           title="문의 접수"
           value={stats.totalContactSubmissions}
-          icon="📧"
+          icon="mail"
           color="blue"
           link="/admin/contact-submissions"
         />
         <StatCard
           title="활성 시술"
           value={stats.totalProcedures}
-          icon="🏥"
+          icon="medical"
           color="green"
           link="/admin/procedures"
         />
         <StatCard
           title="의료진"
           value={stats.totalProviders}
-          icon="👨‍⚕️"
+          icon="user"
           color="purple"
           link="/admin/providers"
         />
         <StatCard
           title="블로그 게시물"
           value={stats.totalBlogPosts}
-          icon="📝"
+          icon="blog"
           color="purple"
         />
       </div>
@@ -193,21 +198,27 @@ const DashboardPage: React.FC = () => {
             <h3>미디어 콘텐츠</h3>
             <div className={styles.contentStats}>
               <div className={styles.contentStat}>
-                <span className={styles.contentIcon}>🎬</span>
+                <div className={styles.contentIcon}>
+                  <Icon name="video" size="md" />
+                </div>
                 <div>
                   <div className={styles.contentValue}>{stats.totalVideoShorts}</div>
                   <div className={styles.contentLabel}>짧은 동영상</div>
                 </div>
               </div>
               <div className={styles.contentStat}>
-                <span className={styles.contentIcon}>📺</span>
+                <div className={styles.contentIcon}>
+                  <Icon name="youtube" size="md" />
+                </div>
                 <div>
                   <div className={styles.contentValue}>{stats.totalYouTubeVideos}</div>
                   <div className={styles.contentLabel}>유튜브 동영상</div>
                 </div>
               </div>
               <div className={styles.contentStat}>
-                <span className={styles.contentIcon}>📸</span>
+                <div className={styles.contentIcon}>
+                  <Icon name="image" size="md" />
+                </div>
                 <div>
                   <div className={styles.contentValue}>{stats.totalGalleryItems}</div>
                   <div className={styles.contentLabel}>갤러리 항목</div>
@@ -220,14 +231,18 @@ const DashboardPage: React.FC = () => {
             <h3>리뷰 및 기능</h3>
             <div className={styles.contentStats}>
               <div className={styles.contentStat}>
-                <span className={styles.contentIcon}>🤳</span>
+                <div className={styles.contentIcon}>
+                  <Icon name="selfie" size="md" />
+                </div>
                 <div>
                   <div className={styles.contentValue}>{stats.totalSelfieReviews}</div>
                   <div className={styles.contentLabel}>셀피 리뷰</div>
                 </div>
               </div>
               <div className={styles.contentStat}>
-                <span className={styles.contentIcon}>⭐</span>
+                <div className={styles.contentIcon}>
+                  <Icon name="star" size="md" />
+                </div>
                 <div>
                   <div className={styles.contentValue}>{stats.totalEventBanners}</div>
                   <div className={styles.contentLabel}>이벤트 배너</div>

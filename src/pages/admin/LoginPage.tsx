@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAdmin } from '../../contexts/AdminContext';
+import { Icon } from '../../components/icons';
 import styles from './LoginPage.module.css';
 
 interface LocationState {
@@ -61,7 +62,9 @@ const LoginPage: React.FC = () => {
       <div className={styles.loginBox}>
         <div className={styles.loginHeader}>
           <div className={styles.logo}>
-            <span className={styles.logoIcon}>🏥</span>
+            <div className={styles.logoIcon}>
+              <Icon name="medical" size="xl" />
+            </div>
             <h1 className={styles.logoText}>원셀 관리자</h1>
           </div>
           <p className={styles.subtitle}>클리닉 관리를 위해 로그인하세요</p>

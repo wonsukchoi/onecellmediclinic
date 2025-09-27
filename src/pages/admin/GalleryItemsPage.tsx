@@ -1,6 +1,7 @@
 import React from 'react';
 import GenericEntityPage from './GenericEntityPage';
 import type { Column } from '../../components/admin/DataTable';
+import { Icon } from '../../components/icons';
 
 const GalleryItemsPage: React.FC = () => {
   const columns: Column[] = [
@@ -112,7 +113,7 @@ const GalleryItemsPage: React.FC = () => {
       label: 'Featured',
       width: '80px',
       align: 'center' as const,
-      render: (value) => value ? '⭐' : '—',
+      render: (value) => value ? <Icon name="star" size="sm" /> : '—',
     },
     {
       key: 'consent_given',

@@ -1,6 +1,7 @@
 import React from 'react';
 import GenericEntityPage from './GenericEntityPage';
 import type { Column } from '../../components/admin/DataTable';
+import { Icon } from '../../components/icons';
 
 const ProceduresPage: React.FC = () => {
   const columns: Column[] = [
@@ -31,7 +32,7 @@ const ProceduresPage: React.FC = () => {
           justifyContent: 'center',
           fontSize: '20px',
         }}>
-          🏥
+          <Icon name="medical" size="md" />
         </div>
       ),
     },

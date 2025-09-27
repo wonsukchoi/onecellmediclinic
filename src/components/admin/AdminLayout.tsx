@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAdmin } from '../../contexts/AdminContext';
+import { Icon, type IconName } from '../icons';
 import styles from './AdminLayout.module.css';
 
 interface AdminLayoutProps {
@@ -23,30 +24,30 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     {
       label: '대시보드',
       path: '/admin',
-      icon: '📊',
+      icon: 'dashboard' as IconName,
     },
     {
       label: '예약 관리',
       path: '/admin/appointments',
-      icon: '📅',
+      icon: 'calendar' as IconName,
       badge: stats?.pendingAppointments || 0,
     },
     {
       label: '상담 관리',
       path: '/admin/consultations',
-      icon: '💬',
+      icon: 'chat' as IconName,
       badge: stats?.newConsultations || 0,
     },
     {
       label: '문의 접수',
       path: '/admin/contact-submissions',
-      icon: '📧',
+      icon: 'mail' as IconName,
       badge: stats?.newContactSubmissions || 0,
     },
     {
       label: '콘텐츠 관리',
       path: '',
-      icon: '📝',
+      icon: 'blog' as IconName,
       children: [
         { label: '블로그 게시물', path: '/admin/blog-posts' },
         { label: '시술 항목', path: '/admin/procedures' },
@@ -58,7 +59,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     {
       label: '미디어 및 리뷰',
       path: '',
-      icon: '🎬',
+      icon: 'video' as IconName,
       children: [
         { label: '짧은 동영상', path: '/admin/video-shorts' },
         { label: '유튜브 동영상', path: '/admin/youtube-videos' },
@@ -68,7 +69,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     {
       label: '사이트 기능',
       path: '',
-      icon: '⚙️',
+      icon: 'settings' as IconName,
       children: [
         { label: '클리닉 특징', path: '/admin/clinic-features' },
         { label: '차별화 요소', path: '/admin/differentiators' },
@@ -90,14 +91,14 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.collapsed : ''}`}>
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
-            <span className={styles.logoIcon}>🏥</span>
+            <Icon name="medical" size="lg" className={styles.logoIcon} />
             {!sidebarCollapsed && <span className={styles.logoText}>원셀 관리자</span>}
           </div>
           <button
             className={styles.collapseBtn}
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           >
-            {sidebarCollapsed ? '→' : '←'}
+            <Icon name={sidebarCollapsed ? 'chevronRight' : 'chevronLeft'} size="sm" />
           </button>
         </div>
 
@@ -107,7 +108,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               return (
                 <div key={index} className={styles.navGroup}>
                   <div className={styles.navGroupLabel}>
-                    <span className={styles.navIcon}>{item.icon}</span>
+                    <Icon name={item.icon} size="sm" className={styles.navIcon} />
                     {!sidebarCollapsed && <span>{item.label}</span>}
                   </div>
                   {!sidebarCollapsed && (
@@ -135,7 +136,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 to={item.path}
                 className={`${styles.navItem} ${isActive(item.path) ? styles.active : ''}`}
               >
-                <span className={styles.navIcon}>{item.icon}</span>
+                <Icon name={item.icon} size="sm" className={styles.navIcon} />
                 {!sidebarCollapsed && (
                   <>
                     <span className={styles.navLabel}>{item.label}</span>

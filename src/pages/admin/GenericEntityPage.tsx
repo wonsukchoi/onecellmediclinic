@@ -4,6 +4,7 @@ import DataTable from '../../components/admin/DataTable';
 import type { Column } from '../../components/admin/DataTable';
 import { AdminService } from '../../services/supabase';
 import type { ListParams } from '../../types/admin';
+import { Icon } from '../../components/icons';
 import styles from './GenericEntityPage.module.css';
 
 interface EntityConfig {
@@ -204,7 +205,8 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
             className={styles.refreshButton}
             disabled={loading}
           >
-            🔄 새로고침
+            <Icon name="refresh" size="sm" />
+            새로고침
           </button>
         </div>
       </div>
@@ -241,7 +243,7 @@ const GenericEntityPage: React.FC<GenericEntityPageProps> = ({ config }) => {
         }}
         bulkActions={config.canDelete ? [{
           label: '선택 항목 삭제',
-          icon: '🗑️',
+          icon: 'delete',
           onClick: handleBulkDelete,
           className: styles.deleteAction,
         }] : undefined}
