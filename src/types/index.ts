@@ -503,3 +503,151 @@ export interface NavigationFormData {
   css_classes?: string
   access_level: string
 }
+
+// Member System Types
+export interface MemberProfile {
+  id: string
+  email: string
+  name?: string
+  phone?: string
+  date_of_birth?: string
+  gender?: 'male' | 'female' | 'other'
+  address?: string
+  emergency_contact_name?: string
+  emergency_contact_phone?: string
+  medical_history?: string
+  allergies?: string
+  current_medications?: string
+  insurance_provider?: string
+  insurance_number?: string
+  profile_image_url?: string
+  email_verified?: boolean
+  phone_verified?: boolean
+  membership_type?: 'basic' | 'premium' | 'vip'
+  member_since?: string
+  last_visit?: string
+  total_visits?: number
+  created_at?: string
+  updated_at?: string
+}
+
+export interface MedicalRecord {
+  id: string
+  member_id: string
+  provider_id?: string
+  visit_date: string
+  diagnosis: string
+  treatment_plan?: string
+  notes?: string
+  prescribed_medications?: string
+  follow_up_date?: string
+  visit_type: 'consultation' | 'procedure' | 'follow_up' | 'emergency'
+  status: 'completed' | 'in_progress' | 'cancelled'
+  attachments?: string[]
+  created_at: string
+  updated_at: string
+  provider?: Provider
+}
+
+export interface Prescription {
+  id: string
+  member_id: string
+  provider_id: string
+  medical_record_id?: string
+  medication_name: string
+  dosage: string
+  frequency: string
+  duration: string
+  instructions?: string
+  quantity: number
+  refills_remaining?: number
+  prescribed_date: string
+  expiry_date?: string
+  status: 'active' | 'completed' | 'cancelled'
+  pharmacy_notes?: string
+  created_at: string
+  provider?: Provider
+}
+
+export interface PaymentHistory {
+  id: string
+  member_id: string
+  appointment_id?: string
+  medical_record_id?: string
+  amount: number
+  currency: string
+  payment_method: 'card' | 'cash' | 'insurance' | 'bank_transfer'
+  payment_status: 'pending' | 'completed' | 'failed' | 'refunded'
+  transaction_id?: string
+  description: string
+  payment_date: string
+  receipt_url?: string
+  insurance_claimed?: boolean
+  insurance_amount?: number
+  created_at: string
+}
+
+export interface ConsultationNote {
+  id: string
+  member_id: string
+  provider_id: string
+  appointment_id?: string
+  consultation_type: 'online' | 'in_person' | 'phone'
+  chief_complaint: string
+  symptoms?: string
+  examination_findings?: string
+  assessment: string
+  recommendations?: string
+  follow_up_instructions?: string
+  priority_level: 'low' | 'medium' | 'high' | 'urgent'
+  attachments?: string[]
+  consultation_date: string
+  duration_minutes?: number
+  status: 'draft' | 'completed' | 'reviewed'
+  created_at: string
+  updated_at: string
+  provider?: Provider
+}
+
+export interface MemberLoginFormData {
+  email: string
+  password: string
+  rememberMe?: boolean
+}
+
+export interface MemberSignupFormData {
+  email: string
+  password: string
+  confirmPassword: string
+  name: string
+  phone: string
+  dateOfBirth?: string
+  gender?: 'male' | 'female' | 'other'
+  agreeToTerms: boolean
+  agreeToPrivacy: boolean
+  agreeToMarketing?: boolean
+}
+
+export interface MemberDashboardData {
+  profile: MemberProfile
+  upcomingAppointments: Appointment[]
+  recentMedicalRecords: MedicalRecord[]
+  activePrescriptions: Prescription[]
+  recentPayments: PaymentHistory[]
+  unreadNotifications: number
+  membershipStatus: {
+    type: 'basic' | 'premium' | 'vip'
+    benefits: string[]
+    expiryDate?: string
+  }
+}
+
+export interface MemberPasswordResetFormData {
+  email: string
+}
+
+export interface MemberPasswordUpdateFormData {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}

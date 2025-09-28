@@ -32,8 +32,11 @@
     "@types/dompurify": "^3.0.5",
     "@types/uuid": "^10.0.0",
     "dompurify": "^3.2.7",
+    "i18next": "^25.5.2",
+    "i18next-browser-languagedetector": "^8.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-i18next": "^16.0.0",
     "react-router-dom": "^7.1.4",
     "swiper": "^12.0.2",
     "uuid": "^13.0.0"

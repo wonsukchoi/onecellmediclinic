@@ -1,0 +1,184 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "back": "Back",
+    "home": "Home"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "procedures": "Procedures",
+    "staff": "Medical Staff",
+    "facility": "Facility",
+    "events": "Events",
+    "reviews": "Reviews",
+    "youtube": "YouTube",
+    "shorts": "Shorts",
+    "consultation": "Online Consultation",
+    "contact": "Contact",
+    "notices": "Notices",
+    "faq": "FAQ",
+    "model_program": "Model Program",
+    "pricing": "Pricing",
+    "reservation": "Book Appointment",
+    "menu": "Menu",
+    "language": "Language"
+  },
+  "header": {
+    "logo_alt": "OneCell Medical Clinic",
+    "skip_to_main": "Skip to main content",
+    "reservation_cta": "Book Appointment"
+  },
+  "footer": {
+    "clinic_name": "OneCell Medical Clinic",
+    "address": "123 Teheran-ro, Gangnam-gu, Seoul",
+    "phone": "02-1234-5678",
+    "hours": "Operating Hours",
+    "weekdays": "Weekdays 10:00 - 19:00",
+    "saturday": "Saturday 10:00 - 16:00",
+    "sunday": "Sunday Closed",
+    "quick_links": "Quick Links",
+    "social_media": "Social Media",
+    "copyright": "© 2025 OneCell Medical Clinic. All rights reserved."
+  },
+  "homepage": {
+    "hero_title": "Begin Your Beautiful Transformation",
+    "hero_subtitle": "Join us at OneCell Medical Clinic",
+    "hero_cta": "Book Consultation",
+    "features_title": "Why Choose OneCell?",
+    "procedures_title": "Popular Procedures",
+    "reviews_title": "Customer Reviews",
+    "events_title": "Events & Promotions"
+  },
+  "procedures": {
+    "title": "Procedures",
+    "subtitle": "Experience beautiful transformation through our various procedures",
+    "view_details": "View Details",
+    "book_consultation": "Book Consultation",
+    "categories": {
+      "facial": "Facial Surgery",
+      "body": "Body Contouring",
+      "skin": "Skin Care",
+      "hair": "Hair Transplant"
+    }
+  },
+  "reservation": {
+    "title": "Book Appointment",
+    "subtitle": "Get personalized treatment guidance through professional consultation",
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "procedure": "Procedure of Interest",
+    "message": "Message",
+    "preferred_date": "Preferred Date",
+    "preferred_time": "Preferred Time",
+    "submit": "Submit Request",
+    "success": "Your appointment request has been submitted. We will contact you soon.",
+    "error": "An error occurred while submitting your request. Please try again."
+  },
+  "contact": {
+    "title": "Contact & Directions",
+    "subtitle": "Visit OneCell Medical Clinic",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Operating Hours",
+    "parking": "Parking Information",
+    "public_transport": "Public Transportation",
+    "send_message": "Send Message",
+    "message_sent": "Your message has been sent.",
+    "message_error": "An error occurred while sending your message."
+  },
+  "member": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "mypage": "My Page",
+    "profile": "Profile",
+    "appointments": "Appointments",
+    "medical_records": "Medical Records",
+    "prescriptions": "Prescriptions",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "forgot_password": "Forgot Password",
+    "verify_email": "Email Verification",
+    "verification_sent": "Verification email has been sent",
+    "login_success": "Successfully logged in",
+    "login_error": "Login failed",
+    "signup_success": "Sign up completed",
+    "signup_error": "Sign up failed"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalid_email": "Please enter a valid email address",
+    "invalid_phone": "Please enter a valid phone number",
+    "password_min_length": "Password must be at least 8 characters",
+    "password_mismatch": "Passwords do not match",
+    "invalid_date": "Please select a valid date"
+  },
+  "consultation": {
+    "title": "Online Consultation",
+    "subtitle": "Meet with experts through convenient online consultation",
+    "start_consultation": "Start Consultation",
+    "video_call": "Video Consultation",
+    "chat": "Chat Consultation",
+    "schedule": "Schedule Consultation"
+  },
+  "reviews": {
+    "title": "Selfie Reviews",
+    "subtitle": "Real transformation stories from our customers",
+    "before": "Before",
+    "after": "After",
+    "write_review": "Write Review",
+    "rating": "Rating",
+    "recommend": "Recommend"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Check out special offers and promotions",
+    "ongoing": "Ongoing",
+    "upcoming": "Upcoming",
+    "expired": "Expired",
+    "view_event": "View Event"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find quick answers to your questions",
+    "search_placeholder": "Search questions",
+    "no_results": "No search results found"
+  },
+  "notices": {
+    "title": "Notices",
+    "subtitle": "Check the latest news from our clinic",
+    "important": "Important",
+    "new": "New"
+  },
+  "errors": {
+    "page_not_found": "Page not found",
+    "go_home": "Go Home",
+    "something_wrong": "Something went wrong",
+    "try_again": "Try Again",
+    "network_error": "Network Error",
+    "server_error": "Server Error"
+  },
+  "language_switcher": {
+    "korean": "한국어",
+    "english": "English",
+    "change_language": "Change Language"
+  }
+}

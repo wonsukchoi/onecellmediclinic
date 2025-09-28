@@ -78,6 +78,13 @@
 
 .ctaContainer {
   margin-left: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.languageSwitcher {
+  /* Language switcher styles are defined in its own module */
 }
 
 .navItem {
@@ -281,6 +288,8 @@
     margin-left: 0;
     margin-top: var(--spacing-lg);
     padding: 0 var(--spacing-lg);
+    flex-direction: column;
+    gap: var(--spacing-sm);
   }
 
   .navMenu.open {

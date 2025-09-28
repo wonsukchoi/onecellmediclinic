@@ -1,5 +1,27 @@
 /* OneCell Medi Clinic Design System Variables */
 :root {
+	/* Typography - Inspired by Braun PS */
+	--font-primary: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+	--font-heading: 'Open Sans', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+	--font-accent: 'Merriweather', 'Noto Serif KR', serif;
+
+	/* Font Weights */
+	--font-weight-light: 300;
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
+
+	/* Line Heights */
+	--line-height-tight: 1.25;
+	--line-height-normal: 1.5;
+	--line-height-relaxed: 1.75;
+
+	/* Letter Spacing */
+	--letter-spacing-tight: -0.025em;
+	--letter-spacing-normal: 0;
+	--letter-spacing-wide: 0.025em;
+
 	/* Scrollbar width detection */
 	--scrollbar-width: 0px;
 	/* Primary colors */
@@ -143,12 +165,12 @@ html, body {
 
 body {
 	margin: 0;
-	font-family: 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	font-family: var(--font-primary);
 	color: var(--color-text-primary);
 	background: var(--color-background-white);
-	line-height: 1.5;
+	line-height: var(--line-height-normal);
 	font-size: var(--text-base);
-	font-weight: 400;
+	font-weight: var(--font-weight-normal);
 	padding-top: 0;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -176,6 +198,32 @@ input, textarea, select {
   font-size: inherit;
 }
 
+/* Korean-specific typography improvements */
+:lang(ko) {
+  font-feature-settings: "kern" 1, "liga" 1;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Typography utility classes */
+.font-primary { font-family: var(--font-primary); }
+.font-heading { font-family: var(--font-heading); }
+.font-accent { font-family: var(--font-accent); }
+
+.font-light { font-weight: var(--font-weight-light); }
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+.leading-tight { line-height: var(--line-height-tight); }
+.leading-normal { line-height: var(--line-height-normal); }
+.leading-relaxed { line-height: var(--line-height-relaxed); }
+
+.tracking-tight { letter-spacing: var(--letter-spacing-tight); }
+.tracking-normal { letter-spacing: var(--letter-spacing-normal); }
+.tracking-wide { letter-spacing: var(--letter-spacing-wide); }
+
 /* Utility classes */
 .container {
   max-width: 1200px;
@@ -189,7 +237,7 @@ input, textarea, select {
   justify-content: center;
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
   cursor: pointer;
@@ -423,7 +471,7 @@ input, textarea, select {
   border: 1px solid transparent;
   border-radius: 6px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;

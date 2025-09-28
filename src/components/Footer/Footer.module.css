@@ -28,17 +28,19 @@
 }
 
 .logoText {
+  font-family: var(--font-heading);
   font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  line-height: 1;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: var(--line-height-tight);
   color: white;
 }
 
 .logoSubtitle {
-  font-size: 0.875rem;
-  font-weight: 300;
-  letter-spacing: 1px;
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-light);
+  letter-spacing: var(--letter-spacing-wide);
   color: #cbd5e1;
   margin-left: 2px;
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Navigation from '../Navigation/Navigation'
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher'
 import styles from './Header.module.css'
 
 interface HeaderProps {
@@ -9,6 +11,7 @@ interface HeaderProps {
 
 
 const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
+  const { t } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -48,11 +51,11 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
   return (
     <header className={headerClasses}>
       <div className={styles.headerInner}>
-        <Link to="/" className={styles.logo} aria-label="OneCell Medi Clinic">
+        <Link to="/" className={styles.logo} aria-label={t('header.logo_alt')}>
           <img
             className={styles.logoImg}
             src="/assets/oc-logo.png"
-            alt="One Cell Medi Clinic"
+            alt={t('header.logo_alt')}
           />
         </Link>
 
@@ -61,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
             className={toggleClasses}
             aria-controls="nav-menu"
             aria-expanded={isMobileMenuOpen}
-            aria-label="메뉴"
+            aria-label={t('navigation.menu')}
             onClick={toggleMobileMenu}
           >
             <span></span>
@@ -74,12 +77,13 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
             />
 
             <div className={styles.ctaContainer}>
+              <LanguageSwitcher className={styles.languageSwitcher} variant="toggle" />
               <Link
                 to="/reservation"
                 className={styles.btnCta}
                 onClick={handleNavigationClose}
               >
-                예약문의
+                {t('header.reservation_cta')}
               </Link>
             </div>
           </div>

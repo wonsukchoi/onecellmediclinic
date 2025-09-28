@@ -1,10 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import ConsultationSidebar from "./components/ConsultationSidebar";
-import StickyScrollBar from "./components/StickyScrollBar";
+import MainLayout from "./components/MainLayout/MainLayout";
+import LanguageRouter from "./components/LanguageRouter/LanguageRouter";
+
+// Initialize i18n
+import "./i18n/config";
 import HomePage from "./pages/HomePage";
 import ReservationPage from "./pages/ReservationPage";
 import EventsGalleryPage from "./pages/EventsGalleryPage";
@@ -27,6 +28,17 @@ import ModelProgramPage from "./pages/ModelProgramPage";
 import PriceGuidePage from "./pages/PriceGuidePage";
 import DynamicPage from "./pages/DynamicPage";
 import NotFoundPage from "./pages/NotFoundPage";
+
+// Member imports
+import { MemberProvider } from "./contexts/MemberContext";
+import MemberProtectedRoute from "./components/member/MemberProtectedRoute";
+import {
+  MemberLoginPage,
+  MemberSignupPage,
+  MemberMyPage,
+  EmailVerificationPage,
+  ForgotPasswordPage
+} from "./pages/member";
 
 // Admin imports
 import { AdminProvider } from "./contexts/AdminContext";
@@ -60,8 +72,37 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <AdminProvider>
-        <Router>
-          <Routes>
+        <MemberProvider>
+          <Router>
+            <LanguageRouter>
+              <Routes>
+            {/* Member routes */}
+            <Route path="/member/login" element={<MemberLoginPage />} />
+            <Route path="/member/signup" element={<MemberSignupPage />} />
+            <Route path="/member/verify-email" element={<EmailVerificationPage />} />
+            <Route path="/member/forgot-password" element={<ForgotPasswordPage />} />
+            <Route
+              path="/member/mypage"
+              element={
+                <MemberProtectedRoute>
+                  <MemberMyPage />
+                </MemberProtectedRoute>
+              }
+            />
+            <Route
+              path="/member/*"
+              element={
+                <MemberProtectedRoute>
+                  <Routes>
+                    <Route path="/appointments" element={<div>Member Appointments</div>} />
+                    <Route path="/medical-records" element={<div>Member Medical Records</div>} />
+                    <Route path="/prescriptions" element={<div>Member Prescriptions</div>} />
+                    <Route path="/profile" element={<div>Member Profile</div>} />
+                  </Routes>
+                </MemberProtectedRoute>
+              }
+            />
+
             {/* Admin routes */}
             <Route path="/admin/login" element={<LoginPage />} />
             <Route
@@ -107,20 +148,13 @@ const App: React.FC = () => {
               }
             />
 
-            {/* Public routes with main layout */}
+            {/* Public routes with main layout - both with and without language prefix */}
             <Route
               path="/*"
               element={
-                <ErrorBoundary>
-                  <div className="app">
-                    <a href="#main-content" className="skip-link">
-                      메인 콘텐츠로 바로가기
-                    </a>
-                    <ErrorBoundary>
-                      <Header />
-                    </ErrorBoundary>
-                    <main id="main-content">
-                      <Routes>
+                <MainLayout>
+                  <Routes>
+                        {/* Homepage - both root and language-prefixed */}
                         <Route
                           path="/"
                           element={
@@ -130,7 +164,25 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/"
+                          element={
+                            <ErrorBoundary>
+                              <HomePage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Public pages with language support */}
+                        <Route
                           path="/reservation"
+                          element={
+                            <ErrorBoundary>
+                              <ReservationPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/reservation"
                           element={
                             <ErrorBoundary>
                               <ReservationPage />
@@ -146,7 +198,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/events"
+                          element={
+                            <ErrorBoundary>
+                              <EventsGalleryPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/about"
+                          element={
+                            <ErrorBoundary>
+                              <AboutPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/about"
                           element={
                             <ErrorBoundary>
                               <AboutPage />
@@ -162,7 +230,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/staff"
+                          element={
+                            <ErrorBoundary>
+                              <MedicalStaffPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/facility"
+                          element={
+                            <ErrorBoundary>
+                              <FacilityTourPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/facility"
                           element={
                             <ErrorBoundary>
                               <FacilityTourPage />
@@ -178,7 +262,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/procedures/:category"
+                          element={
+                            <ErrorBoundary>
+                              <ProcedureCategoryPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/procedures"
+                          element={
+                            <ErrorBoundary>
+                              <ProceduresOverviewPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/procedures"
                           element={
                             <ErrorBoundary>
                               <ProceduresOverviewPage />
@@ -194,7 +294,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/procedures/:category/:procedure"
+                          element={
+                            <ErrorBoundary>
+                              <ProcedureDetailPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/reviews"
+                          element={
+                            <ErrorBoundary>
+                              <SelfieReviewsPagePublic />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/reviews"
                           element={
                             <ErrorBoundary>
                               <SelfieReviewsPagePublic />
@@ -210,7 +326,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/youtube"
+                          element={
+                            <ErrorBoundary>
+                              <YouTubeChannelPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/shorts"
+                          element={
+                            <ErrorBoundary>
+                              <VideoShortsPagePublic />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/shorts"
                           element={
                             <ErrorBoundary>
                               <VideoShortsPagePublic />
@@ -226,7 +358,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/consultation"
+                          element={
+                            <ErrorBoundary>
+                              <OnlineConsultationPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/contact"
+                          element={
+                            <ErrorBoundary>
+                              <ContactPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/contact"
                           element={
                             <ErrorBoundary>
                               <ContactPage />
@@ -242,7 +390,23 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/notices"
+                          element={
+                            <ErrorBoundary>
+                              <NoticesPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/faq"
+                          element={
+                            <ErrorBoundary>
+                              <FAQPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/faq"
                           element={
                             <ErrorBoundary>
                               <FAQPage />
@@ -258,6 +422,14 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
+                          path="/:lang/model-program"
+                          element={
+                            <ErrorBoundary>
+                              <ModelProgramPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
                           path="/pricing"
                           element={
                             <ErrorBoundary>
@@ -265,6 +437,15 @@ const App: React.FC = () => {
                             </ErrorBoundary>
                           }
                         />
+                        <Route
+                          path="/:lang/pricing"
+                          element={
+                            <ErrorBoundary>
+                              <PriceGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+
                         {/* 404 Page */}
                         <Route
                           path="/404"
@@ -274,6 +455,15 @@ const App: React.FC = () => {
                             </ErrorBoundary>
                           }
                         />
+                        <Route
+                          path="/:lang/404"
+                          element={
+                            <ErrorBoundary>
+                              <NotFoundPage />
+                            </ErrorBoundary>
+                          }
+                        />
+
                         {/* Dynamic CMS Pages - Must be last to act as catch-all */}
                         <Route
                           path="/:slug"
@@ -283,23 +473,22 @@ const App: React.FC = () => {
                             </ErrorBoundary>
                           }
                         />
-                      </Routes>
-                    </main>
-                    <ErrorBoundary>
-                      <Footer />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                      <ConsultationSidebar position="right" />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                      <StickyScrollBar />
-                    </ErrorBoundary>
-                  </div>
-                </ErrorBoundary>
+                        <Route
+                          path="/:lang/:slug"
+                          element={
+                            <ErrorBoundary>
+                              <DynamicPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                  </Routes>
+                </MainLayout>
               }
             />
-          </Routes>
-        </Router>
+              </Routes>
+            </LanguageRouter>
+          </Router>
+        </MemberProvider>
       </AdminProvider>
     </ErrorBoundary>
   );

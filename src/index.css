@@ -1,11 +1,53 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Typography Variables - Inspired by Braun PS */
+  --font-primary: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-heading: 'Open Sans', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  --font-accent: 'Merriweather', 'Noto Serif KR', serif;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;   /* 30px */
+  --font-size-4xl: 2rem;       /* 32px */
+  --font-size-5xl: 2.5rem;     /* 40px */
+  --font-size-6xl: 3rem;       /* 48px */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+
+  /* Colors */
+  --text-primary: #222222;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --text-light: #aaaaaa;
+
+  /* Base Typography Settings */
+  font-family: var(--font-primary);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-base);
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--text-primary);
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -30,39 +72,191 @@ body {
   min-height: 100vh;
 }
 
+/* Typography Styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
 h1 {
-  font-size: 3.2em;
+  font-size: var(--font-size-6xl);
+  font-weight: var(--font-weight-light);
   line-height: 1.1;
 }
 
+h2 {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-normal);
+}
+
+h3 {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-medium);
+}
+
+h4 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+}
+
+h5 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+h6 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Body Text */
+p {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+/* Small Text */
+small {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Accent Text */
+.text-accent {
+  font-family: var(--font-accent);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Text Colors */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-light { color: var(--text-light); }
+
+/* Font Weights */
+.font-light { font-weight: var(--font-weight-light); }
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+/* Font Sizes */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+.text-4xl { font-size: var(--font-size-4xl); }
+.text-5xl { font-size: var(--font-size-5xl); }
+.text-6xl { font-size: var(--font-size-6xl); }
+
+/* Button Styles */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-primary);
   background-color: #1a1a1a;
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.25s ease;
 }
+
 button:hover {
   border-color: #646cff;
+  transform: translateY(-1px);
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: rgba(255, 255, 255, 0.87);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --text-light: rgba(255, 255, 255, 0.3);
+
+    color: var(--text-primary);
+    background-color: #242424;
+  }
+
+  button {
+    background-color: #1a1a1a;
+    color: white;
+  }
+
+  button:hover {
+    background-color: #333;
+  }
+}
+
+/* Light Mode (Default) */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
+    --text-primary: #222222;
+    --text-secondary: #555555;
+    --text-muted: #888888;
+    --text-light: #aaaaaa;
+
+    color: var(--text-primary);
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
+    color: var(--text-primary);
+  }
+
+  button:hover {
+    background-color: #e5e5e5;
+  }
+}
+
+/* Korean-specific typography improvements */
+:lang(ko) {
+  font-feature-settings: "kern" 1, "liga" 1;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  :root {
+    --font-size-6xl: 2.25rem;   /* 36px */
+    --font-size-5xl: 2rem;      /* 32px */
+    --font-size-4xl: 1.75rem;   /* 28px */
+    --font-size-3xl: 1.5rem;    /* 24px */
+  }
+
+  h1 {
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-6xl: 2rem;      /* 32px */
+    --font-size-5xl: 1.75rem;   /* 28px */
+    --font-size-4xl: 1.5rem;    /* 24px */
   }
 }

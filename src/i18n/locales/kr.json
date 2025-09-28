@@ -1,0 +1,184 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공",
+    "cancel": "취소",
+    "confirm": "확인",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "수정",
+    "view": "보기",
+    "close": "닫기",
+    "next": "다음",
+    "previous": "이전",
+    "submit": "제출",
+    "search": "검색",
+    "filter": "필터",
+    "reset": "초기화",
+    "back": "뒤로가기",
+    "home": "홈"
+  },
+  "navigation": {
+    "home": "홈",
+    "about": "클리닉 소개",
+    "procedures": "시술 안내",
+    "staff": "의료진",
+    "facility": "시설 안내",
+    "events": "이벤트",
+    "reviews": "셀피 후기",
+    "youtube": "유튜브",
+    "shorts": "쇼츠",
+    "consultation": "온라인 상담",
+    "contact": "오시는 길",
+    "notices": "공지사항",
+    "faq": "자주 묻는 질문",
+    "model_program": "모델 프로그램",
+    "pricing": "가격 안내",
+    "reservation": "예약문의",
+    "menu": "메뉴",
+    "language": "언어"
+  },
+  "header": {
+    "logo_alt": "원셀 메디 클리닉",
+    "skip_to_main": "메인 콘텐츠로 바로가기",
+    "reservation_cta": "예약문의"
+  },
+  "footer": {
+    "clinic_name": "원셀 메디 클리닉",
+    "address": "서울특별시 강남구 테헤란로 123",
+    "phone": "02-1234-5678",
+    "hours": "진료시간",
+    "weekdays": "평일 10:00 - 19:00",
+    "saturday": "토요일 10:00 - 16:00",
+    "sunday": "일요일 휴진",
+    "quick_links": "빠른 링크",
+    "social_media": "소셜 미디어",
+    "copyright": "© 2025 원셀 메디 클리닉. 모든 권리 보유."
+  },
+  "homepage": {
+    "hero_title": "아름다운 변화의 시작",
+    "hero_subtitle": "원셀 메디 클리닉과 함께하세요",
+    "hero_cta": "상담 예약하기",
+    "features_title": "왜 원셀을 선택해야 할까요?",
+    "procedures_title": "인기 시술",
+    "reviews_title": "고객 후기",
+    "events_title": "이벤트 & 프로모션"
+  },
+  "procedures": {
+    "title": "시술 안내",
+    "subtitle": "다양한 시술을 통해 아름다운 변화를 경험하세요",
+    "view_details": "자세히 보기",
+    "book_consultation": "상담 예약",
+    "categories": {
+      "facial": "얼굴 성형",
+      "body": "몸매 관리",
+      "skin": "피부 관리",
+      "hair": "모발 이식"
+    }
+  },
+  "reservation": {
+    "title": "예약 문의",
+    "subtitle": "전문 상담을 통해 맞춤형 시술을 안내해드립니다",
+    "name": "이름",
+    "phone": "연락처",
+    "email": "이메일",
+    "procedure": "관심 시술",
+    "message": "문의 내용",
+    "preferred_date": "희망 상담일",
+    "preferred_time": "희망 시간",
+    "submit": "예약 신청",
+    "success": "예약 신청이 완료되었습니다. 곧 연락드리겠습니다.",
+    "error": "예약 신청 중 오류가 발생했습니다. 다시 시도해주세요."
+  },
+  "contact": {
+    "title": "오시는 길",
+    "subtitle": "원셀 메디 클리닉을 찾아오세요",
+    "address": "주소",
+    "phone": "전화번호",
+    "hours": "진료시간",
+    "parking": "주차 안내",
+    "public_transport": "대중교통",
+    "send_message": "문의하기",
+    "message_sent": "문의가 전송되었습니다.",
+    "message_error": "문의 전송 중 오류가 발생했습니다."
+  },
+  "member": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "signup": "회원가입",
+    "mypage": "마이페이지",
+    "profile": "프로필",
+    "appointments": "예약 내역",
+    "medical_records": "진료 기록",
+    "prescriptions": "처방전",
+    "email": "이메일",
+    "password": "비밀번호",
+    "confirm_password": "비밀번호 확인",
+    "forgot_password": "비밀번호 찾기",
+    "verify_email": "이메일 인증",
+    "verification_sent": "인증 이메일이 전송되었습니다",
+    "login_success": "로그인되었습니다",
+    "login_error": "로그인에 실패했습니다",
+    "signup_success": "회원가입이 완료되었습니다",
+    "signup_error": "회원가입에 실패했습니다"
+  },
+  "validation": {
+    "required": "필수 입력 항목입니다",
+    "invalid_email": "올바른 이메일 주소를 입력해주세요",
+    "invalid_phone": "올바른 전화번호를 입력해주세요",
+    "password_min_length": "비밀번호는 최소 8자 이상이어야 합니다",
+    "password_mismatch": "비밀번호가 일치하지 않습니다",
+    "invalid_date": "올바른 날짜를 선택해주세요"
+  },
+  "consultation": {
+    "title": "온라인 상담",
+    "subtitle": "편리한 온라인 상담으로 전문가와 만나보세요",
+    "start_consultation": "상담 시작",
+    "video_call": "화상 상담",
+    "chat": "채팅 상담",
+    "schedule": "상담 예약"
+  },
+  "reviews": {
+    "title": "셀피 후기",
+    "subtitle": "고객들의 생생한 변화 스토리",
+    "before": "시술 전",
+    "after": "시술 후",
+    "write_review": "후기 작성",
+    "rating": "평점",
+    "recommend": "추천"
+  },
+  "events": {
+    "title": "이벤트",
+    "subtitle": "특별한 혜택과 프로모션을 확인하세요",
+    "ongoing": "진행 중",
+    "upcoming": "예정",
+    "expired": "종료",
+    "view_event": "이벤트 보기"
+  },
+  "faq": {
+    "title": "자주 묻는 질문",
+    "subtitle": "궁금한 점을 빠르게 해결하세요",
+    "search_placeholder": "질문을 검색하세요",
+    "no_results": "검색 결과가 없습니다"
+  },
+  "notices": {
+    "title": "공지사항",
+    "subtitle": "클리닉의 최신 소식을 확인하세요",
+    "important": "중요",
+    "new": "새글"
+  },
+  "errors": {
+    "page_not_found": "페이지를 찾을 수 없습니다",
+    "go_home": "홈으로 가기",
+    "something_wrong": "문제가 발생했습니다",
+    "try_again": "다시 시도",
+    "network_error": "네트워크 오류",
+    "server_error": "서버 오류"
+  },
+  "language_switcher": {
+    "korean": "한국어",
+    "english": "English",
+    "change_language": "언어 변경"
+  }
+}

@@ -1,0 +1,906 @@
+/* Member MyPage Styles */
+.myPageContainer {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.myPageHeader {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcomeSection h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.025em;
+}
+
+.welcomeSection p {
+  font-size: 18px;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.signOutButton {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.signOutButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Content */
+.myPageContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Tab Navigation */
+.tabNavigation {
+  display: flex;
+  gap: 2px;
+  background: white;
+  border-radius: 12px;
+  padding: 4px;
+  margin: -20px 0 32px 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.tabButton {
+  flex: 1;
+  white-space: nowrap;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: max-content;
+}
+
+.tabButton:hover {
+  color: #374151;
+  background: #f9fafb;
+}
+
+.tabButton.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+/* Tab Content */
+.tabContent {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading and Error States */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.retryButton {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+/* Overview Content */
+.overviewContent {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.statCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.statIcon {
+  font-size: 32px;
+  background: #f0f9ff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statInfo h3 {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.statInfo p {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Activity Section */
+.activitySection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.activitySection h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.activityCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.activityCard h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+/* Appointment Items */
+.appointmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.appointmentItem {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.appointmentDate {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.appointmentType {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.appointmentStatus {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.appointmentStatus.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.appointmentStatus.confirmed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.appointmentStatus.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.appointmentStatus.completed {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Record Items */
+.recordList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.recordItem {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.recordDate {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.recordDiagnosis {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.recordProvider {
+  font-size: 14px;
+  color: #6b7280;
+  text-align: right;
+}
+
+.viewAllLink {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.viewAllLink:hover {
+  color: #5a67d8;
+}
+
+/* Section Headers */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sectionHeader h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.newAppointmentButton,
+.editProfileButton,
+.createAppointmentButton {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.newAppointmentButton:hover,
+.editProfileButton:hover,
+.createAppointmentButton:hover {
+  background: #5a67d8;
+}
+
+/* Appointments Content */
+.appointmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointmentCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.appointmentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.appointmentDateTime {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.date {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.time {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.statusBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 16px;
+}
+
+.statusBadge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statusBadge.confirmed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statusBadge.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.statusBadge.completed {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.appointmentBody {
+  margin-bottom: 16px;
+}
+
+.serviceType {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.patientInfo {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.appointmentNotes {
+  font-size: 14px;
+  color: #374151;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.appointmentActions {
+  display: flex;
+  gap: 12px;
+}
+
+.cancelButton,
+.rescheduleButton {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.cancelButton:hover {
+  background: #fecaca;
+}
+
+.rescheduleButton {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.rescheduleButton:hover {
+  background: #bfdbfe;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.emptyState h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.emptyState p {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+}
+
+/* Medical Records Content */
+.recordsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recordCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.recordHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.recordStatus {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 16px;
+}
+
+.recordStatus.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.recordStatus.in_progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.recordStatus.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.recordBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.diagnosis,
+.treatmentPlan,
+.provider,
+.notes {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.followUp {
+  font-size: 14px;
+  padding: 12px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border-left: 4px solid #0ea5e9;
+}
+
+/* Prescriptions Content */
+.prescriptionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.prescriptionCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.prescriptionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.medicationName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.prescriptionStatus {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 16px;
+}
+
+.prescriptionStatus.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.prescriptionStatus.completed {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.prescriptionStatus.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.prescriptionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dosageInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.instructions {
+  font-size: 14px;
+  padding: 12px;
+  background: #fffbeb;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.prescriptionMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.refillInfo {
+  font-size: 14px;
+  color: #059669;
+  font-weight: 600;
+}
+
+/* Profile Content */
+.profileCard {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.profileAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  font-size: 32px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.profileInfo h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+}
+
+.profileInfo p {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0 0 12px 0;
+}
+
+.membershipBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 16px;
+  display: inline-block;
+}
+
+.basicBadge {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.premiumBadge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.vipBadge {
+  background: #ede9fe;
+  color: #6b46c1;
+}
+
+.profileDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.value {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.membershipBenefits {
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.membershipBenefits h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+}
+
+.membershipBenefits ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #374151;
+}
+
+.membershipBenefits li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .myPageHeader {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding: 32px 20px;
+  }
+
+  .welcomeSection h1 {
+    font-size: 24px;
+  }
+
+  .welcomeSection p {
+    font-size: 16px;
+  }
+
+  .tabNavigation {
+    margin: -16px 0 24px 0;
+  }
+
+  .tabButton {
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .appointmentItem,
+  .recordItem {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .appointmentActions {
+    flex-direction: column;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .dosageInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .prescriptionMeta {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .statCard,
+  .activityCard,
+  .appointmentCard,
+  .recordCard,
+  .prescriptionCard,
+  .profileCard {
+    border: 2px solid #e5e7eb;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tabContent,
+  .statCard {
+    animation: none;
+  }
+
+  .statCard:hover,
+  .tabButton,
+  .signOutButton,
+  .newAppointmentButton,
+  .editProfileButton,
+  .createAppointmentButton,
+  .cancelButton,
+  .rescheduleButton,
+  .viewAllLink {
+    transition: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+}

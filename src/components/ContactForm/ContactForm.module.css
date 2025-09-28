@@ -8,8 +8,9 @@
 }
 
 .formTitle {
+  font-family: var(--font-heading);
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   text-align: center;
   color: var(--text);
   margin-bottom: 1.5rem;
@@ -27,10 +28,11 @@
 
 .formLabel {
   display: block;
-  font-weight: 600;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
   color: var(--text);
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .formInput,
