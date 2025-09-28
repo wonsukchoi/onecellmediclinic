@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MemberService } from '../../services/member.service';
 import type { MemberLoginFormData } from '../../types';
 import styles from './MemberLoginPage.module.css';
 
 const MemberLoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,17 +45,17 @@ const MemberLoginPage: React.FC = () => {
 
   const validateForm = (): boolean => {
     if (!formData.email.trim()) {
-      setError('이메일을 입력해주세요.');
+      setError(t('member.email_required'));
       return false;
     }
 
     if (!formData.email.includes('@')) {
-      setError('올바른 이메일 형식을 입력해주세요.');
+      setError(t('member.email_format_invalid'));
       return false;
     }
 
     if (!formData.password.trim()) {
-      setError('비밀번호를 입력해주세요.');
+      setError(t('member.password_required'));
       return false;
     }
 
@@ -79,15 +81,15 @@ const MemberLoginPage: React.FC = () => {
         // Handle specific error messages
         const errorMessage = result.error;
         if (errorMessage?.includes('Invalid login credentials')) {
-          setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+          setError(t('member.invalid_credentials'));
         } else if (errorMessage?.includes('Email not confirmed')) {
-          setError('이메일 인증이 필요합니다. 이메일을 확인해주세요.');
+          setError(t('member.email_not_verified'));
         } else {
-          setError(errorMessage || '로그인 중 오류가 발생했습니다.');
+          setError(errorMessage || t('member.login_general_error'));
         }
       }
     } catch (error) {
-      setError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setError(t('member.login_retry_error'));
     } finally {
       setLoading(false);
     }
@@ -95,7 +97,7 @@ const MemberLoginPage: React.FC = () => {
 
   const handleSocialLogin = (provider: 'google' | 'kakao') => {
     // TODO: Implement social login
-    setError(`${provider} 로그인은 준비 중입니다.`);
+    setError(`${provider} ${t('member.social_login_coming_soon')}`);
   };
 
   return (
@@ -104,14 +106,14 @@ const MemberLoginPage: React.FC = () => {
         <div className={styles.logoSection}>
           <img
             src="/images/logo-dark.png"
-            alt="원셀 메디클리닉"
+            alt={t('header.logo_alt')}
             className={styles.logo}
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/logo.png';
             }}
           />
-          <h1 className={styles.title}>회원 로그인</h1>
-          <p className={styles.subtitle}>원셀 메디클리닉 회원 서비스에 오신 것을 환영합니다</p>
+          <h1 className={styles.title}>{t('member.login_page_title')}</h1>
+          <p className={styles.subtitle}>{t('member.login_page_subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.loginForm}>
@@ -126,7 +128,7 @@ const MemberLoginPage: React.FC = () => {
 
           <div className={styles.inputGroup}>
             <label htmlFor="email" className={styles.label}>
-              이메일 주소
+              {t('member.email_address')}
             </label>
             <input
               type="email"
@@ -143,7 +145,7 @@ const MemberLoginPage: React.FC = () => {
 
           <div className={styles.inputGroup}>
             <label htmlFor="password" className={styles.label}>
-              비밀번호
+              {t('member.password')}
             </label>
             <div className={styles.passwordInputWrapper}>
               <input
@@ -152,7 +154,7 @@ const MemberLoginPage: React.FC = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="비밀번호를 입력하세요"
+                placeholder={t('member.password_placeholder')}
                 className={styles.input}
                 required
                 autoComplete="current-password"
@@ -161,7 +163,7 @@ const MemberLoginPage: React.FC = () => {
                 type="button"
                 className={styles.passwordToggle}
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                aria-label={showPassword ? t('member.hide_password') : t('member.show_password')}
               >
                 {showPassword ? (
                   <svg viewBox="0 0 20 20" fill="currentColor">
@@ -187,11 +189,11 @@ const MemberLoginPage: React.FC = () => {
                 onChange={handleInputChange}
                 className={styles.checkbox}
               />
-              <span className={styles.checkboxText}>로그인 상태 유지</span>
+              <span className={styles.checkboxText}>{t('member.remember_me')}</span>
             </label>
 
             <Link to="/member/forgot-password" className={styles.forgotPassword}>
-              비밀번호를 잊으셨나요?
+              {t('member.forgot_password_question')}
             </Link>
           </div>
 
@@ -203,16 +205,16 @@ const MemberLoginPage: React.FC = () => {
             {loading ? (
               <>
                 <div className={styles.spinner}></div>
-                로그인 중...
+                {t('member.logging_in')}
               </>
             ) : (
-              '로그인'
+              t('member.login')
             )}
           </button>
         </form>
 
         <div className={styles.divider}>
-          <span>또는</span>
+          <span>{t('member.or')}</span>
         </div>
 
         <div className={styles.socialLogin}>
@@ -227,7 +229,7 @@ const MemberLoginPage: React.FC = () => {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Google로 로그인
+            {t('member.login_with_google')}
           </button>
 
           <button
@@ -238,30 +240,30 @@ const MemberLoginPage: React.FC = () => {
             <svg className={styles.socialIcon} viewBox="0 0 24 24">
               <path fill="#3C1E1E" d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3z"/>
             </svg>
-            카카오로 로그인
+            {t('member.login_with_kakao')}
           </button>
         </div>
 
         <div className={styles.signupPrompt}>
           <p>
-            아직 회원이 아니신가요?{' '}
+            {t('member.not_member_yet')}{' '}
             <Link to="/member/signup" className={styles.signupLink}>
-              회원가입하기
+              {t('member.signup_link')}
             </Link>
           </p>
         </div>
 
         <div className={styles.helpLinks}>
           <Link to="/member/help" className={styles.helpLink}>
-            도움말
+            {t('member.help')}
           </Link>
           <span className={styles.linkDivider}>|</span>
           <Link to="/contact" className={styles.helpLink}>
-            고객센터
+            {t('member.customer_service')}
           </Link>
           <span className={styles.linkDivider}>|</span>
           <Link to="/privacy" className={styles.helpLink}>
-            개인정보처리방침
+            {t('member.privacy_policy')}
           </Link>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
 import styles from './YouTubeSection.module.css'
 
@@ -30,11 +31,12 @@ interface YouTubeSectionProps {
 }
 
 const YouTubeSection: React.FC<YouTubeSectionProps> = ({
-  title = "YouTube 영상",
-  subtitle = "원셀 메디의원의 다양한 정보와 노하우를 영상으로 만나보세요",
+  title,
+  subtitle,
   showCategories = true,
   maxItems = 8
 }) => {
+  const { t } = useTranslation()
   const [videos, setVideos] = useState<YouTubeVideo[]>([])
   const [filteredVideos, setFilteredVideos] = useState<YouTubeVideo[]>([])
   const [activeCategory, setActiveCategory] = useState<string>('all')
@@ -44,12 +46,12 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
   const playerRefs = useRef<{ [key: string]: any }>({})
 
   const categories = [
-    { key: 'all', label: '전체' },
-    { key: 'facility', label: '시설 투어' },
-    { key: 'interview', label: '전문의 인터뷰' },
-    { key: 'testimonial', label: '고객 후기' },
-    { key: 'procedure', label: '시술 소개' },
-    { key: 'education', label: '교육 영상' }
+    { key: 'all', label: t('youtube.categories.all') },
+    { key: 'facility', label: t('youtube.categories.facility') },
+    { key: 'interview', label: t('youtube.categories.interview') },
+    { key: 'testimonial', label: t('youtube.categories.testimonial') },
+    { key: 'procedure', label: t('youtube.categories.procedure') },
+    { key: 'education', label: t('youtube.categories.education') }
   ]
 
   useEffect(() => {
@@ -84,7 +86,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
       setError(null)
     } catch (error) {
       console.error('Error fetching videos:', error)
-      setError('영상을 불러오는데 실패했습니다.')
+      setError(t('youtube.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -156,7 +158,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
         <div className={styles.container}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>영상을 불러오는 중...</p>
+            <p>{t('youtube.loading')}</p>
           </div>
         </div>
       </section>
@@ -170,7 +172,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
           <div className={styles.error}>
             <p>{error}</p>
             <button onClick={fetchVideos} className={styles.retryButton}>
-              다시 시도
+              {t('youtube.error.retry')}
             </button>
           </div>
         </div>
@@ -182,8 +184,8 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h2 className={styles.title}>{title || t('youtube.title')}</h2>
+          <p className={styles.subtitle}>{subtitle || t('youtube.subtitle')}</p>
         </div>
 
         {showCategories && (
@@ -207,7 +209,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
             <div key={video.id} className={`${styles.videoCard} ${video.featured ? styles.featured : ''}`}>
               {video.featured && (
                 <div className={styles.featuredBadge}>
-                  <span>추천</span>
+                  <span>{t('youtube.featured')}</span>
                 </div>
               )}
 
@@ -265,7 +267,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
                       />
                       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
                     </svg>
-                    <span>조회수 {formatViewCount(video.view_count)}</span>
+                    <span>{t('youtube.viewCount').replace('{{count}}', formatViewCount(video.view_count))}</span>
                   </div>
 
                   <div className={styles.metaItem}>
@@ -290,7 +292,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
                         fill="white"
                       />
                     </svg>
-                    YouTube에서 보기
+                    {t('youtube.watchOnYoutube')}
                   </a>
 
                   <button
@@ -309,7 +311,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
                         strokeLinejoin="round"
                       />
                     </svg>
-                    공유
+                    {t('youtube.share')}
                   </button>
                 </div>
               </div>
@@ -319,7 +321,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
 
         {filteredVideos.length === 0 && (
           <div className={styles.noVideos}>
-            <p>선택한 카테고리에 영상이 없습니다.</p>
+            <p>{t('youtube.noVideos')}</p>
           </div>
         )}
       </div>

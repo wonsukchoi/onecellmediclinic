@@ -54,7 +54,18 @@
     "sunday": "일요일 휴진",
     "quick_links": "빠른 링크",
     "social_media": "소셜 미디어",
-    "copyright": "© 2025 원셀 메디 클리닉. 모든 권리 보유."
+    "copyright": "© 2025 원셀 메디 클리닉. 모든 권리 보유.",
+    "full_address": "서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩",
+    "address_note": "강남역 3번출구 도보 5분",
+    "main_phone_label": "대표번호",
+    "kakao_label": "카카오톡",
+    "hours_label": "진료시간",
+    "hours_detail": "월 - 금 AM 10:00 - PM 07:00   토요일 AM 10:00 - PM 05:00",
+    "privacy_policy": "개인정보처리방침",
+    "terms_of_service": "이용약관",
+    "medical_fees_guide": "비급여 진룼비용 안내",
+    "company_info": "원셀메디의원 | 주소 : 서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩 | 대표원장 : 김원셀 | 사업자등록번호 : 123-45-67890",
+    "copyright_full": "COPYRIGHT © 2024 ONECELL MEDI. ALL RIGHTS RESERVED."
   },
   "homepage": {
     "hero_title": "아름다운 변화의 시작",
@@ -121,7 +132,74 @@
     "login_success": "로그인되었습니다",
     "login_error": "로그인에 실패했습니다",
     "signup_success": "회원가입이 완료되었습니다",
-    "signup_error": "회원가입에 실패했습니다"
+    "signup_error": "회원가입에 실패했습니다",
+    "login_page_title": "회원 로그인",
+    "login_page_subtitle": "원셀 메디클리닉 회원 서비스에 오신 것을 환영합니다",
+    "email_address": "이메일 주소",
+    "password_placeholder": "비밀번호를 입력하세요",
+    "show_password": "비밀번호 보기",
+    "hide_password": "비밀번호 숨기기",
+    "remember_me": "로그인 상태 유지",
+    "forgot_password_question": "비밀번호를 잊으셨나요?",
+    "logging_in": "로그인 중...",
+    "or": "또는",
+    "login_with_google": "Google로 로그인",
+    "login_with_kakao": "카카오로 로그인",
+    "not_member_yet": "아직 회원이 아니신가요?",
+    "signup_link": "회원가입하기",
+    "help": "도움말",
+    "customer_service": "고객센터",
+    "privacy_policy": "개인정보처리방침",
+    "email_required": "이메일을 입력해주세요.",
+    "email_format_invalid": "올바른 이메일 형식을 입력해주세요.",
+    "password_required": "비밀번호를 입력해주세요.",
+    "invalid_credentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
+    "email_not_verified": "이메일 인증이 필요합니다. 이메일을 확인해주세요.",
+    "login_general_error": "로그인 중 오류가 발생했습니다.",
+    "login_retry_error": "로그인 중 오류가 발생했습니다. 다시 시도해주세요.",
+    "social_login_coming_soon": "로그인은 준비 중입니다.",
+    "signup_page_title": "회원가입",
+    "account_info_step": "계정 정보",
+    "account_info_description": "로그인에 사용할 이메일과 비밀번호를 입력해주세요",
+    "personal_info_step": "개인 정보",
+    "personal_info_description": "원활한 진료를 위한 기본 정보를 입력해주세요",
+    "terms_agreement_step": "약관 동의",
+    "terms_agreement_description": "서비스 이용을 위한 약관에 동의해주세요",
+    "password_requirements": "8자 이상, 영문 + 숫자 조합",
+    "confirm_password_placeholder": "비밀번호를 다시 입력하세요",
+    "name_label": "이름",
+    "name_placeholder": "실명을 입력해주세요",
+    "phone_label": "휴대폰 번호",
+    "birth_date_label": "생년월일",
+    "gender_label": "성별",
+    "gender_select_placeholder": "선택해주세요",
+    "gender_male": "남성",
+    "gender_female": "여성",
+    "gender_other": "기타",
+    "terms_of_service": "이용약관",
+    "terms_agree_required": "에 동의합니다 (필수)",
+    "privacy_policy_agree": "에 동의합니다 (필수)",
+    "marketing_agree": "마케팅 정보 수신에 동의합니다 (선택)",
+    "marketing_benefits_description": "마케팅 정보 수신 동의 시, 다음과 같은 혜택을 받으실 수 있습니다:",
+    "marketing_benefit_events": "이벤트 및 프로모션 안내",
+    "marketing_benefit_procedures": "신규 시술 정보",
+    "marketing_benefit_health_tips": "건강 관리 팁",
+    "marketing_benefit_notifications": "예약 알림 서비스",
+    "view_terms": "보기",
+    "step_account_info": "계정정보",
+    "step_personal_info": "개인정보",
+    "step_terms_agreement": "약관동의",
+    "previous": "이전",
+    "next": "다음",
+    "signing_up": "가입 중...",
+    "complete_signup": "회원가입 완료",
+    "already_member": "이미 회원이신가요?",
+    "login_link": "로그인하기",
+    "signup_complete_message": "회원가입이 완료되었습니다. 이메일을 확인하여 계정을 인증해주세요.",
+    "email_already_exists": "이미 가입된 이메일입니다.",
+    "password_too_weak": "비밀번호가 너무 약합니다. 더 강력한 비밀번호를 사용해주세요.",
+    "signup_general_error": "회원가입 중 오류가 발생했습니다.",
+    "signup_retry_error": "회원가입 중 오류가 발생했습니다. 다시 시도해주세요."
   },
   "validation": {
     "required": "필수 입력 항목입니다",
@@ -129,7 +207,16 @@
     "invalid_phone": "올바른 전화번호를 입력해주세요",
     "password_min_length": "비밀번호는 최소 8자 이상이어야 합니다",
     "password_mismatch": "비밀번호가 일치하지 않습니다",
-    "invalid_date": "올바른 날짜를 선택해주세요"
+    "invalid_date": "올바른 날짜를 선택해주세요",
+    "name_required": "이름을 입력해주세요",
+    "phone_required": "전화번호를 입력해주세요",
+    "birth_date_required": "생년월일을 입력해주세요",
+    "gender_required": "성별을 선택해주세요",
+    "terms_agreement_required": "이용약관에 동의해주세요",
+    "privacy_agreement_required": "개인정보처리방침에 동의해주세요",
+    "password_complexity_required": "비밀번호는 영문과 숫자를 포함해야 합니다",
+    "name_min_length": "이름은 최소 2자 이상이어야 합니다",
+    "invalid_birth_date": "올바른 생년월일을 입력해주세요. (YYYY-MM-DD)"
   },
   "consultation": {
     "title": "온라인 상담",
@@ -175,6 +262,148 @@
     "try_again": "다시 시도",
     "network_error": "네트워크 오류",
     "server_error": "서버 오류"
+  },
+  "hero": {
+    "slide1": {
+      "title": "예쁨 급상승, 원셀 코성형",
+      "subtitle": "SHORT × SELFIE",
+      "description": "독보적인 이유, 맞춤형 코성형으로 오랫동안 자연스럽게",
+      "cta": "상담문의"
+    },
+    "slide2": {
+      "title": "피부과 시그니처, 원셀 피부과",
+      "subtitle": "DERM × SCIENCE",
+      "description": "VIP 프리미엄 케어 프로그램",
+      "cta": "더 알아보기"
+    },
+    "slide3": {
+      "title": "안전이 만든 아름다움",
+      "subtitle": "SAFE × PREMIUM",
+      "description": "3D-CT 정밀 수술 시스템으로 더욱 안전하고 정밀한 시술",
+      "cta": "예약하기"
+    }
+  },
+  "videoShorts": {
+    "title": "비디오 쇼츠",
+    "subtitle": "짧고 임팩트있는 영상으로 만나는 원셀 메디의원",
+    "loading": "영상을 불러오는 중...",
+    "noVideos": "선택한 카테고리에 영상이 없습니다.",
+    "categories": {
+      "all": "전체",
+      "introduction": "소개",
+      "safety": "안전",
+      "recovery": "회복",
+      "testimonial": "후기",
+      "procedure": "시술"
+    },
+    "error": {
+      "fetchFailed": "영상을 불러오는데 실패했습니다.",
+      "retry": "다시 시도"
+    }
+  },
+  "clinicFeatures": {
+    "title": "차이를 만드는 원셀만의 디테일",
+    "subtitle": "환자 안전과 만족을 위한 원셀 메디의원만의 특별한 시스템",
+    "loading": "특징을 불러오는 중...",
+    "noFeatures": "선택한 카테고리에 특징이 없습니다.",
+    "categories": {
+      "all": "전체",
+      "technology": "첨단기술",
+      "expertise": "전문성",
+      "safety": "안전",
+      "consultation": "상담",
+      "facility": "시설"
+    },
+    "error": {
+      "fetchFailed": "특징을 불러오는데 실패했습니다.",
+      "retry": "다시 시도"
+    }
+  },
+  "events": {
+    "title": "원셀 이벤트",
+    "subtitle": "특별한 혜택과 프로모션으로 더욱 아름다운 변화를 경험하세요",
+    "loading": "이벤트를 불러오는 중...",
+    "noEvents": "현재 진행 중인 이벤트가 없습니다.",
+    "daysRemaining": "{{days}}일 남음",
+    "endsToday": "오늘 마감",
+    "participants": "{{current}} / {{max}}명",
+    "spotsRemaining": "{{count}}자리 남음",
+    "soldOut": "마감",
+    "register": "참가 신청",
+    "viewDetails": "자세히 보기",
+    "categories": {
+      "all": "전체",
+      "promotion": "프로모션",
+      "discount": "할인",
+      "consultation": "상담",
+      "event": "이벤트",
+      "seminar": "세미나"
+    },
+    "error": {
+      "fetchFailed": "이벤트를 불러오는데 실패했습니다.",
+      "registrationFailed": "참가 신청에 실패했습니다. 다시 시도해주세요.",
+      "retry": "다시 시도"
+    }
+  },
+  "reviews": {
+    "title": "셀카후기",
+    "subtitle": "진솔한 고객들의 셀카 후기로 확인하는 원셀의 실력",
+    "loading": "후기를 불러오는 중...",
+    "noReviews": "선택한 시술의 후기가 없습니다.",
+    "imageAlt": "{{name}}님의 후기",
+    "viewDetails": "자세히 보기",
+    "verified": "검증",
+    "verifiedReview": "검증된 후기",
+    "patientReview": "{{name}}님의 후기",
+    "procedure": "시술",
+    "ageRange": "연령대",
+    "treatmentDate": "시술일",
+    "recoveryPeriod": "{{weeks}}주",
+    "categories": {
+      "all": "전체",
+      "eye": "눈성형",
+      "nose": "코성형",
+      "contouring": "안면윤곽",
+      "breast": "가슴성형",
+      "liposuction": "지방흡입",
+      "wrinkle": "주름개선"
+    },
+    "error": {
+      "fetchFailed": "후기를 불러오는데 실패했습니다.",
+      "retry": "다시 시도"
+    }
+  },
+  "youtube": {
+    "title": "YouTube 영상",
+    "subtitle": "원셀 메디의원의 다양한 정보와 노하우를 영상으로 만나보세요",
+    "loading": "영상을 불러오는 중...",
+    "noVideos": "선택한 카테고리에 영상이 없습니다.",
+    "featured": "추천",
+    "viewCount": "조회수 {{count}}",
+    "watchOnYoutube": "YouTube에서 보기",
+    "share": "공유",
+    "categories": {
+      "all": "전체",
+      "facility": "시설 투어",
+      "interview": "전문의 인터뷰",
+      "testimonial": "고객 후기",
+      "procedure": "시술 소개",
+      "education": "교육 영상"
+    },
+    "error": {
+      "fetchFailed": "영상을 불러오는데 실패했습니다.",
+      "retry": "다시 시도"
+    }
+  },
+  "differentiators": {
+    "title": "원셀을 선택한 독보적인 이유",
+    "subtitle": "다른 곳과는 차별화된 원셀 메디의원만의 특별함을 확인하세요",
+    "loading": "차별화 요소를 불러오는 중...",
+    "noDifferentiators": "차별화 요소가 없습니다.",
+    "error": {
+      "fetchFailed": "차별화 요소를 불러오는데 실패했습니다.",
+      "retry": "다시 시도"
+    }
   },
   "language_switcher": {
     "korean": "한국어",

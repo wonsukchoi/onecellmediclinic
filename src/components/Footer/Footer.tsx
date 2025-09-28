@@ -1,7 +1,10 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styles from './Footer.module.css'
 
 const Footer: React.FC = () => {
+  const { t } = useTranslation()
+
   return (
     <footer id="contact" className={styles.siteFooter}>
       <div className={styles.footerContent}>
@@ -11,9 +14,9 @@ const Footer: React.FC = () => {
             <span className={styles.logoSubtitle}>MEDI</span>
           </div>
           <div className={styles.footerAddress}>
-            서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩
+            {t('footer.full_address')}
             <br />
-            <span className={styles.addressNote}>강남역 3번출구 도보 5분</span>
+            <span className={styles.addressNote}>{t('footer.address_note')}</span>
           </div>
         </div>
 
@@ -37,38 +40,38 @@ const Footer: React.FC = () => {
 
         <div className={styles.footerContact}>
           <div className={styles.contactSection}>
-            <div className={styles.contactLabel}>대표번호</div>
+            <div className={styles.contactLabel}>{t('footer.main_phone_label')}</div>
             <div className={styles.contactNumber}>02. 1234. 5678</div>
           </div>
           <div className={styles.contactSection}>
-            <div className={styles.contactLabel}>카카오톡</div>
+            <div className={styles.contactLabel}>{t('footer.kakao_label')}</div>
             <div className={styles.contactNumber}>@onecell</div>
           </div>
         </div>
 
         <div className={styles.footerHours}>
-          <div className={styles.hoursLabel}>진료시간</div>
+          <div className={styles.hoursLabel}>{t('footer.hours_label')}</div>
           <div className={styles.hoursText}>
-            월 - 금 AM 10:00 - PM 07:00 &nbsp;&nbsp; 토요일 AM 10:00 - PM 05:00
+            {t('footer.hours_detail')}
           </div>
         </div>
       </div>
 
       <div className={styles.footerBottom}>
         <div className={styles.footerPolicies}>
-          <a href="#">개인정보처리방침</a>
+          <a href="#">{t('footer.privacy_policy')}</a>
           <span className={styles.separator}>|</span>
-          <a href="#">이용약관</a>
+          <a href="#">{t('footer.terms_of_service')}</a>
           <span className={styles.separator}>|</span>
-          <a href="#">비급여 진료비용 안내</a>
+          <a href="#">{t('footer.medical_fees_guide')}</a>
         </div>
 
         <div className={styles.footerMeta}>
           <div className={styles.companyInfo}>
-            원셀메디의원 | 주소 : 서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩 | 대표원장 : 김원셀 | 사업자등록번호 : 123-45-67890
+            {t('footer.company_info')}
           </div>
           <div className={styles.copyright}>
-            COPYRIGHT © 2024 ONECELL MEDI. ALL RIGHTS RESERVED.
+            {t('footer.copyright_full')}
           </div>
         </div>
       </div>

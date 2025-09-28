@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MemberService } from '../../services/member.service';
 import type { MemberSignupFormData } from '../../types';
 import styles from './MemberSignupPage.module.css';
 
 const MemberSignupPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<MemberSignupFormData>({
@@ -60,23 +62,23 @@ const MemberSignupPage: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = '이메일을 입력해주세요.';
+      newErrors.email = t('member.email_required');
     } else if (!formData.email.includes('@')) {
-      newErrors.email = '올바른 이메일 형식을 입력해주세요.';
+      newErrors.email = t('member.email_format_invalid');
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = '비밀번호를 입력해주세요.';
+      newErrors.password = t('member.password_required');
     } else if (formData.password.length < 8) {
-      newErrors.password = '비밀번호는 최소 8자 이상이어야 합니다.';
+      newErrors.password = t('validation.password_min_length');
     } else if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = '비밀번호는 영문과 숫자를 포함해야 합니다.';
+      newErrors.password = t('validation.password_complexity_required');
     }
 
     if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = '비밀번호 확인을 입력해주세요.';
+      newErrors.confirmPassword = t('validation.required');
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+      newErrors.confirmPassword = t('validation.password_mismatch');
     }
 
     setErrors(newErrors);
@@ -87,19 +89,19 @@ const MemberSignupPage: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = '이름을 입력해주세요.';
+      newErrors.name = t('validation.name_required');
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = '이름은 최소 2자 이상이어야 합니다.';
+      newErrors.name = t('validation.name_min_length');
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = '휴대폰 번호를 입력해주세요.';
+      newErrors.phone = t('validation.phone_required');
     } else if (!/^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$/.test(formData.phone.replace(/[^0-9]/g, ''))) {
-      newErrors.phone = '올바른 휴대폰 번호를 입력해주세요.';
+      newErrors.phone = t('validation.invalid_phone');
     }
 
     if (formData.dateOfBirth && !/^\d{4}-\d{2}-\d{2}$/.test(formData.dateOfBirth)) {
-      newErrors.dateOfBirth = '올바른 생년월일을 입력해주세요. (YYYY-MM-DD)';
+      newErrors.dateOfBirth = t('validation.invalid_birth_date');
     }
 
     setErrors(newErrors);
@@ -110,11 +112,11 @@ const MemberSignupPage: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = '이용약관에 동의해주세요.';
+      newErrors.agreeToTerms = t('validation.terms_agreement_required');
     }
 
     if (!formData.agreeToPrivacy) {
-      newErrors.agreeToPrivacy = '개인정보처리방침에 동의해주세요.';
+      newErrors.agreeToPrivacy = t('validation.privacy_agreement_required');
     }
 
     setErrors(newErrors);
@@ -156,24 +158,24 @@ const MemberSignupPage: React.FC = () => {
         navigate('/member/verify-email', {
           state: {
             email: formData.email,
-            message: '회원가입이 완료되었습니다. 이메일을 확인하여 계정을 인증해주세요.'
+            message: t('member.signup_complete_message')
           }
         });
       } else {
         // Handle specific error messages
         const errorMessage = result.error;
         if (errorMessage?.includes('User already registered')) {
-          setErrors({ email: '이미 가입된 이메일입니다.' });
+          setErrors({ email: t('member.email_already_exists') });
           setStep(1);
         } else if (errorMessage?.includes('Password should be at least')) {
-          setErrors({ password: '비밀번호가 너무 약합니다. 더 강력한 비밀번호를 사용해주세요.' });
+          setErrors({ password: t('member.password_too_weak') });
           setStep(1);
         } else {
-          setErrors({ general: errorMessage || '회원가입 중 오류가 발생했습니다.' });
+          setErrors({ general: errorMessage || t('member.signup_general_error') });
         }
       }
     } catch (error) {
-      setErrors({ general: '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.' });
+      setErrors({ general: t('member.signup_retry_error') });
     } finally {
       setLoading(false);
     }
@@ -193,12 +195,12 @@ const MemberSignupPage: React.FC = () => {
 
   const renderStep1 = () => (
     <div className={styles.step}>
-      <h2 className={styles.stepTitle}>계정 정보</h2>
-      <p className={styles.stepDescription}>로그인에 사용할 이메일과 비밀번호를 입력해주세요</p>
+      <h2 className={styles.stepTitle}>{t('member.account_info_step')}</h2>
+      <p className={styles.stepDescription}>{t('member.account_info_description')}</p>
 
       <div className={styles.inputGroup}>
         <label htmlFor="email" className={styles.label}>
-          이메일 주소 *
+          {t('member.email_address')} *
         </label>
         <input
           type="email"
@@ -215,7 +217,7 @@ const MemberSignupPage: React.FC = () => {
 
       <div className={styles.inputGroup}>
         <label htmlFor="password" className={styles.label}>
-          비밀번호 *
+          {t('member.password')} *
         </label>
         <div className={styles.passwordInputWrapper}>
           <input
@@ -224,7 +226,7 @@ const MemberSignupPage: React.FC = () => {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            placeholder="8자 이상, 영문 + 숫자 조합"
+            placeholder={t('member.password_requirements')}
             className={`${styles.input} ${errors.password ? styles.error : ''}`}
             required
           />
@@ -241,7 +243,7 @@ const MemberSignupPage: React.FC = () => {
 
       <div className={styles.inputGroup}>
         <label htmlFor="confirmPassword" className={styles.label}>
-          비밀번호 확인 *
+          {t('member.confirm_password')} *
         </label>
         <div className={styles.passwordInputWrapper}>
           <input
@@ -250,7 +252,7 @@ const MemberSignupPage: React.FC = () => {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            placeholder="비밀번호를 다시 입력하세요"
+            placeholder={t('member.confirm_password_placeholder')}
             className={`${styles.input} ${errors.confirmPassword ? styles.error : ''}`}
             required
           />
@@ -269,12 +271,12 @@ const MemberSignupPage: React.FC = () => {
 
   const renderStep2 = () => (
     <div className={styles.step}>
-      <h2 className={styles.stepTitle}>개인 정보</h2>
-      <p className={styles.stepDescription}>원활한 진료를 위한 기본 정보를 입력해주세요</p>
+      <h2 className={styles.stepTitle}>{t('member.personal_info_step')}</h2>
+      <p className={styles.stepDescription}>{t('member.personal_info_description')}</p>
 
       <div className={styles.inputGroup}>
         <label htmlFor="name" className={styles.label}>
-          이름 *
+          {t('member.name_label')} *
         </label>
         <input
           type="text"
@@ -282,7 +284,7 @@ const MemberSignupPage: React.FC = () => {
           name="name"
           value={formData.name}
           onChange={handleInputChange}
-          placeholder="실명을 입력해주세요"
+          placeholder={t('member.name_placeholder')}
           className={`${styles.input} ${errors.name ? styles.error : ''}`}
           required
         />
@@ -291,7 +293,7 @@ const MemberSignupPage: React.FC = () => {
 
       <div className={styles.inputGroup}>
         <label htmlFor="phone" className={styles.label}>
-          휴대폰 번호 *
+          {t('member.phone_label')} *
         </label>
         <input
           type="tel"
@@ -309,7 +311,7 @@ const MemberSignupPage: React.FC = () => {
       <div className={styles.inputRow}>
         <div className={styles.inputGroup}>
           <label htmlFor="dateOfBirth" className={styles.label}>
-            생년월일
+            {t('member.birth_date_label')}
           </label>
           <input
             type="date"
@@ -324,7 +326,7 @@ const MemberSignupPage: React.FC = () => {
 
         <div className={styles.inputGroup}>
           <label htmlFor="gender" className={styles.label}>
-            성별
+            {t('member.gender_label')}
           </label>
           <select
             id="gender"
@@ -333,10 +335,10 @@ const MemberSignupPage: React.FC = () => {
             onChange={handleInputChange}
             className={styles.input}
           >
-            <option value="">선택해주세요</option>
-            <option value="male">남성</option>
-            <option value="female">여성</option>
-            <option value="other">기타</option>
+            <option value="">{t('member.gender_select_placeholder')}</option>
+            <option value="male">{t('member.gender_male')}</option>
+            <option value="female">{t('member.gender_female')}</option>
+            <option value="other">{t('member.gender_other')}</option>
           </select>
         </div>
       </div>
@@ -345,8 +347,8 @@ const MemberSignupPage: React.FC = () => {
 
   const renderStep3 = () => (
     <div className={styles.step}>
-      <h2 className={styles.stepTitle}>약관 동의</h2>
-      <p className={styles.stepDescription}>서비스 이용을 위한 약관에 동의해주세요</p>
+      <h2 className={styles.stepTitle}>{t('member.terms_agreement_step')}</h2>
+      <p className={styles.stepDescription}>{t('member.terms_agreement_description')}</p>
 
       <div className={styles.agreementSection}>
         <div className={`${styles.agreementItem} ${errors.agreeToTerms ? styles.error : ''}`}>
@@ -359,11 +361,11 @@ const MemberSignupPage: React.FC = () => {
               className={styles.checkbox}
             />
             <span className={styles.checkboxText}>
-              <strong>이용약관</strong>에 동의합니다 (필수)
+              <strong>{t('member.terms_of_service')}</strong>{t('member.terms_agree_required')}
             </span>
           </label>
           <button type="button" className={styles.viewTermsButton}>
-            보기
+            {t('member.view_terms')}
           </button>
         </div>
         {errors.agreeToTerms && <span className={styles.errorMessage}>{errors.agreeToTerms}</span>}
@@ -378,11 +380,11 @@ const MemberSignupPage: React.FC = () => {
               className={styles.checkbox}
             />
             <span className={styles.checkboxText}>
-              <strong>개인정보처리방침</strong>에 동의합니다 (필수)
+              <strong>{t('member.privacy_policy')}</strong>{t('member.privacy_policy_agree')}
             </span>
           </label>
           <button type="button" className={styles.viewTermsButton}>
-            보기
+            {t('member.view_terms')}
           </button>
         </div>
         {errors.agreeToPrivacy && <span className={styles.errorMessage}>{errors.agreeToPrivacy}</span>}
@@ -397,19 +399,19 @@ const MemberSignupPage: React.FC = () => {
               className={styles.checkbox}
             />
             <span className={styles.checkboxText}>
-              마케팅 정보 수신에 동의합니다 (선택)
+              {t('member.marketing_agree')}
             </span>
           </label>
         </div>
       </div>
 
       <div className={styles.marketingInfo}>
-        <p>마케팅 정보 수신 동의 시, 다음과 같은 혜택을 받으실 수 있습니다:</p>
+        <p>{t('member.marketing_benefits_description')}</p>
         <ul>
-          <li>이벤트 및 프로모션 안내</li>
-          <li>신규 시술 정보</li>
-          <li>건강 관리 팁</li>
-          <li>예약 알림 서비스</li>
+          <li>{t('member.marketing_benefit_events')}</li>
+          <li>{t('member.marketing_benefit_procedures')}</li>
+          <li>{t('member.marketing_benefit_health_tips')}</li>
+          <li>{t('member.marketing_benefit_notifications')}</li>
         </ul>
       </div>
     </div>
@@ -421,13 +423,13 @@ const MemberSignupPage: React.FC = () => {
         <div className={styles.header}>
           <img
             src="/images/logo-dark.png"
-            alt="원셀 메디클리닉"
+            alt={t('header.logo_alt')}
             className={styles.logo}
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/images/logo.png';
             }}
           />
-          <h1 className={styles.title}>회원가입</h1>
+          <h1 className={styles.title}>{t('member.signup_page_title')}</h1>
 
           {/* Progress indicator */}
           <div className={styles.progressIndicator}>
@@ -439,7 +441,7 @@ const MemberSignupPage: React.FC = () => {
                 >
                   <span className={styles.stepNumber}>{stepNum}</span>
                   <span className={styles.stepLabel}>
-                    {stepNum === 1 ? '계정정보' : stepNum === 2 ? '개인정보' : '약관동의'}
+                    {stepNum === 1 ? t('member.step_account_info') : stepNum === 2 ? t('member.step_personal_info') : t('member.step_terms_agreement')}
                   </span>
                 </div>
               ))}
@@ -471,7 +473,7 @@ const MemberSignupPage: React.FC = () => {
                 onClick={handlePrevStep}
                 className={styles.prevButton}
               >
-                이전
+                {t('member.previous')}
               </button>
             )}
 
@@ -481,7 +483,7 @@ const MemberSignupPage: React.FC = () => {
                 onClick={handleNextStep}
                 className={styles.nextButton}
               >
-                다음
+                {t('member.next')}
               </button>
             ) : (
               <button
@@ -492,10 +494,10 @@ const MemberSignupPage: React.FC = () => {
                 {loading ? (
                   <>
                     <div className={styles.spinner}></div>
-                    가입 중...
+                    {t('member.signing_up')}
                   </>
                 ) : (
-                  '회원가입 완료'
+                  t('member.complete_signup')
                 )}
               </button>
             )}
@@ -504,9 +506,9 @@ const MemberSignupPage: React.FC = () => {
 
         <div className={styles.loginPrompt}>
           <p>
-            이미 회원이신가요?{' '}
+            {t('member.already_member')}{' '}
             <Link to="/member/login" className={styles.loginLink}>
-              로그인하기
+              {t('member.login_link')}
             </Link>
           </p>
         </div>
