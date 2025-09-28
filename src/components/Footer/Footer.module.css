@@ -3,6 +3,9 @@
   color: white;
   padding: 3rem 0 1rem;
   margin-top: auto;
+  position: relative;
+  z-index: 1;
+  margin-top: 6rem; /* Increased margin to prevent overlap with contact form */
 }
 
 .footerContent {
@@ -182,6 +185,7 @@
 @media (max-width: 768px) {
   .siteFooter {
     padding: 2rem 0 1rem;
+    margin-top: 5rem; /* Slightly reduced margin for mobile */
   }
 
   .footerContent {
