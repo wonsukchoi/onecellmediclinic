@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
 import styles from './VideoShortsSection.module.css'
 
@@ -19,10 +20,11 @@ interface VideoShortsProps {
 }
 
 const VideoShortsSection: React.FC<VideoShortsProps> = ({
-  title = "비디오 쇼츠",
-  subtitle = "짧고 임팩트있는 영상으로 만나는 원셀 메디의원",
+  title,
+  subtitle,
   showCategories = true
 }) => {
+  const { t } = useTranslation()
   const [videos, setVideos] = useState<VideoShort[]>([])
   const [filteredVideos, setFilteredVideos] = useState<VideoShort[]>([])
   const [activeCategory, setActiveCategory] = useState<string>('all')
@@ -30,12 +32,12 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
   const [error, setError] = useState<string | null>(null)
 
   const categories = [
-    { key: 'all', label: '전체' },
-    { key: 'introduction', label: '소개' },
-    { key: 'safety', label: '안전' },
-    { key: 'recovery', label: '회복' },
-    { key: 'testimonial', label: '후기' },
-    { key: 'procedure', label: '시술' }
+    { key: 'all', label: t('videoShorts.categories.all') },
+    { key: 'introduction', label: t('videoShorts.categories.introduction') },
+    { key: 'safety', label: t('videoShorts.categories.safety') },
+    { key: 'recovery', label: t('videoShorts.categories.recovery') },
+    { key: 'testimonial', label: t('videoShorts.categories.testimonial') },
+    { key: 'procedure', label: t('videoShorts.categories.procedure') }
   ]
 
   useEffect(() => {
@@ -58,7 +60,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
       setError(null)
     } catch (error) {
       console.error('Error fetching videos:', error)
-      setError('영상을 불러오는데 실패했습니다.')
+      setError(t('videoShorts.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -71,7 +73,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
         <div className={styles.container}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>영상을 불러오는 중...</p>
+            <p>{t('videoShorts.loading')}</p>
           </div>
         </div>
       </section>
@@ -85,7 +87,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
           <div className={styles.error}>
             <p>{error}</p>
             <button onClick={fetchVideos} className={styles.retryButton}>
-              다시 시도
+              {t('videoShorts.error.retry')}
             </button>
           </div>
         </div>
@@ -97,8 +99,8 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h2 className={styles.title}>{title || t('videoShorts.title')}</h2>
+          <p className={styles.subtitle}>{subtitle || t('videoShorts.subtitle')}</p>
         </div>
 
         {showCategories && (
@@ -142,7 +144,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
 
         {filteredVideos.length === 0 && (
           <div className={styles.noVideos}>
-            <p>선택한 카테고리에 영상이 없습니다.</p>
+            <p>{t('videoShorts.noVideos')}</p>
           </div>
         )}
       </div>

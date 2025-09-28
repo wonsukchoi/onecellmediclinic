@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
 import styles from './SelfieReviewsSection.module.css'
 
@@ -23,11 +24,12 @@ interface SelfieReviewsSectionProps {
 }
 
 const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
-  title = "셀카후기",
-  subtitle = "진솔한 고객들의 셀카 후기로 확인하는 원셀의 실력",
+  title,
+  subtitle,
   showProcedureFilter = true,
   maxItems = 9
 }) => {
+  const { t } = useTranslation()
   const [reviews, setReviews] = useState<SelfieReview[]>([])
   const [filteredReviews, setFilteredReviews] = useState<SelfieReview[]>([])
   const [activeProcedure, setActiveProcedure] = useState<string>('all')
@@ -36,13 +38,13 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
   const [lightboxImage, setLightboxImage] = useState<SelfieReview | null>(null)
 
   const procedures = [
-    { key: 'all', label: '전체' },
-    { key: '눈성형', label: '눈성형' },
-    { key: '코성형', label: '코성형' },
-    { key: '안면윤곽', label: '안면윤곽' },
-    { key: '가슴성형', label: '가슴성형' },
-    { key: '지방흡입', label: '지방흡입' },
-    { key: '주름개선', label: '주름개선' }
+    { key: 'all', label: t('reviews.categories.all') },
+    { key: '눈성형', label: t('reviews.categories.eye') },
+    { key: '코성형', label: t('reviews.categories.nose') },
+    { key: '안면윤곽', label: t('reviews.categories.contouring') },
+    { key: '가슴성형', label: t('reviews.categories.breast') },
+    { key: '지방흡입', label: t('reviews.categories.liposuction') },
+    { key: '주름개선', label: t('reviews.categories.wrinkle') }
   ]
 
   useEffect(() => {
@@ -65,7 +67,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
       setError(null)
     } catch (error) {
       console.error('Error fetching reviews:', error)
-      setError('후기를 불러오는데 실패했습니다.')
+      setError(t('reviews.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -113,7 +115,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
         <div className={styles.container}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>후기를 불러오는 중...</p>
+            <p>{t('reviews.loading')}</p>
           </div>
         </div>
       </section>
@@ -127,7 +129,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
           <div className={styles.error}>
             <p>{error}</p>
             <button onClick={fetchReviews} className={styles.retryButton}>
-              다시 시도
+              {t('reviews.error.retry')}
             </button>
           </div>
         </div>
@@ -139,8 +141,8 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h2 className={styles.title}>{title || t('reviews.title')}</h2>
+          <p className={styles.subtitle}>{subtitle || t('reviews.subtitle')}</p>
         </div>
 
         {showProcedureFilter && (
@@ -169,7 +171,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
               <div className={styles.imageContainer}>
                 <img
                   src={review.selfie_url}
-                  alt={`${review.patient_initial}님의 후기`}
+                  alt={t('reviews.imageAlt', { name: review.patient_initial })}
                   className={styles.reviewImage}
                 />
                 <div className={styles.imageOverlay}>
@@ -186,7 +188,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
                         strokeWidth="2"
                       />
                     </svg>
-                    <span>자세히 보기</span>
+                    <span>{t('reviews.viewDetails')}</span>
                   </div>
                 </div>
 
@@ -208,7 +210,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span>검증</span>
+                    <span>{t('reviews.verified')}</span>
                   </div>
                 )}
               </div>
@@ -247,7 +249,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
 
         {filteredReviews.length === 0 && (
           <div className={styles.noReviews}>
-            <p>선택한 시술의 후기가 없습니다.</p>
+            <p>{t('reviews.noReviews')}</p>
           </div>
         )}
 
@@ -270,13 +272,13 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
               <div className={styles.lightboxImage}>
                 <img
                   src={lightboxImage.selfie_url}
-                  alt={`${lightboxImage.patient_initial}님의 후기`}
+                  alt={t('reviews.imageAlt', { name: lightboxImage.patient_initial })}
                 />
               </div>
 
               <div className={styles.lightboxInfo}>
                 <div className={styles.lightboxHeader}>
-                  <h3>{lightboxImage.patient_initial}님의 후기</h3>
+                  <h3>{t('reviews.patientReview', { name: lightboxImage.patient_initial })}</h3>
                   {lightboxImage.verified && (
                     <div className={styles.verifiedBadge}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -295,14 +297,14 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
                           strokeLinejoin="round"
                         />
                       </svg>
-                      <span>검증된 후기</span>
+                      <span>{t('reviews.verifiedReview')}</span>
                     </div>
                   )}
                 </div>
 
                 {lightboxImage.procedure_type && (
                   <div className={styles.lightboxProcedure}>
-                    시술: {lightboxImage.procedure_type}
+                    {t('reviews.procedure')}: {lightboxImage.procedure_type}
                   </div>
                 )}
 
@@ -318,13 +320,13 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
 
                 <div className={styles.lightboxMeta}>
                   {lightboxImage.patient_age_range && (
-                    <span>연령대: {lightboxImage.patient_age_range}</span>
+                    <span>{t('reviews.ageRange')}: {lightboxImage.patient_age_range}</span>
                   )}
                   {lightboxImage.treatment_date && (
-                    <span>시술일: {formatDate(lightboxImage.treatment_date)}</span>
+                    <span>{t('reviews.treatmentDate')}: {formatDate(lightboxImage.treatment_date)}</span>
                   )}
                   {lightboxImage.recovery_weeks && (
-                    <span>회복기간: {lightboxImage.recovery_weeks}주</span>
+                    <span>{t('reviews.recoveryPeriod', { weeks: lightboxImage.recovery_weeks })}</span>
                   )}
                 </div>
               </div>

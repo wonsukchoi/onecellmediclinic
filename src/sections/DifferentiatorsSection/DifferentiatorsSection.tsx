@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
 import styles from './DifferentiatorsSection.module.css'
 
@@ -22,10 +23,11 @@ interface DifferentiatorsSectionProps {
 }
 
 const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
-  title = "원셀을 선택한 독보적인 이유",
-  subtitle = "다른 곳과는 차별화된 원셀 메디의원만의 특별함을 확인하세요",
+  title,
+  subtitle,
   maxItems = 6
 }) => {
+  const { t } = useTranslation()
   const [differentiators, setDifferentiators] = useState<Differentiator[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -89,7 +91,7 @@ const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
       setError(null)
     } catch (error) {
       console.error('Error fetching differentiators:', error)
-      setError('차별화 요소를 불러오는데 실패했습니다.')
+      setError(t('differentiators.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -230,7 +232,7 @@ const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
         <div className={styles.container}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>차별화 요소를 불러오는 중...</p>
+            <p>{t('differentiators.loading')}</p>
           </div>
         </div>
       </section>
@@ -244,7 +246,7 @@ const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
           <div className={styles.error}>
             <p>{error}</p>
             <button onClick={fetchDifferentiators} className={styles.retryButton}>
-              다시 시도
+              {t('differentiators.error.retry')}
             </button>
           </div>
         </div>
@@ -256,8 +258,8 @@ const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h2 className={styles.title}>{title || t('differentiators.title')}</h2>
+          <p className={styles.subtitle}>{subtitle || t('differentiators.subtitle')}</p>
         </div>
 
         <div className={styles.differentiatorsGrid}>
@@ -325,7 +327,7 @@ const DifferentiatorsSection: React.FC<DifferentiatorsSectionProps> = ({
 
         {differentiators.length === 0 && (
           <div className={styles.noDifferentiators}>
-            <p>차별화 요소가 없습니다.</p>
+            <p>{t('differentiators.noDifferentiators')}</p>
           </div>
         )}
       </div>

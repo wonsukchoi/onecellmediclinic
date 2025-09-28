@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
 import styles from './EventsSection.module.css'
 
@@ -26,11 +27,12 @@ interface EventsSectionProps {
 }
 
 const EventsSection: React.FC<EventsSectionProps> = ({
-  title = "원셀 이벤트",
-  subtitle = "특별한 혜택과 프로모션으로 더욱 아름다운 변화를 경험하세요",
+  title,
+  subtitle,
   showEventTypes = true,
   maxItems = 6
 }) => {
+  const { t } = useTranslation()
   const [events, setEvents] = useState<EventBanner[]>([])
   const [filteredEvents, setFilteredEvents] = useState<EventBanner[]>([])
   const [activeEventType, setActiveEventType] = useState<string>('all')
@@ -38,12 +40,12 @@ const EventsSection: React.FC<EventsSectionProps> = ({
   const [error, setError] = useState<string | null>(null)
 
   const eventTypes = [
-    { key: 'all', label: '전체' },
-    { key: 'promotion', label: '프로모션' },
-    { key: 'discount', label: '할인' },
-    { key: 'consultation', label: '상담' },
-    { key: 'event', label: '이벤트' },
-    { key: 'seminar', label: '세미나' }
+    { key: 'all', label: t('events.categories.all') },
+    { key: 'promotion', label: t('events.categories.promotion') },
+    { key: 'discount', label: t('events.categories.discount') },
+    { key: 'consultation', label: t('events.categories.consultation') },
+    { key: 'event', label: t('events.categories.event') },
+    { key: 'seminar', label: t('events.categories.seminar') }
   ]
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
       setError(null)
     } catch (error) {
       console.error('Error fetching events:', error)
-      setError('이벤트를 불러오는데 실패했습니다.')
+      setError(t('events.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -79,7 +81,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
       fetchEvents()
     } catch (error) {
       console.error('Error registering for event:', error)
-      alert('참가 신청에 실패했습니다. 다시 시도해주세요.')
+      alert(t('events.error.registrationFailed'))
     }
   }
 
@@ -106,7 +108,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
         <div className={styles.container}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>이벤트를 불러오는 중...</p>
+            <p>{t('events.loading')}</p>
           </div>
         </div>
       </section>
@@ -120,7 +122,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
           <div className={styles.error}>
             <p>{error}</p>
             <button onClick={fetchEvents} className={styles.retryButton}>
-              다시 시도
+              {t('events.error.retry')}
             </button>
           </div>
         </div>
@@ -132,8 +134,8 @@ const EventsSection: React.FC<EventsSectionProps> = ({
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h2 className={styles.title}>{title || t('events.title')}</h2>
+          <p className={styles.subtitle}>{subtitle || t('events.subtitle')}</p>
         </div>
 
         {showEventTypes && (
@@ -168,7 +170,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
 
                 {daysRemaining !== null && daysRemaining <= 7 && (
                   <div className={styles.urgencyBadge}>
-                    <span>{daysRemaining}일 남음</span>
+                    <span>{t('events.daysRemaining', { days: daysRemaining })}</span>
                   </div>
                 )}
 
@@ -190,7 +192,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
                     <span className={styles.eventType}>{event.event_type}</span>
                     {daysRemaining !== null && (
                       <span className={styles.timeRemaining}>
-                        {daysRemaining > 0 ? `${daysRemaining}일 남음` : '오늘 마감'}
+                        {daysRemaining > 0 ? t('events.daysRemaining', { days: daysRemaining }) : t('events.endsToday')}
                       </span>
                     )}
                   </div>
@@ -229,12 +231,12 @@ const EventsSection: React.FC<EventsSectionProps> = ({
                           ></div>
                         </div>
                         <span className={styles.participantText}>
-                          {event.participants_count} / {event.max_participants}명
+                          {t('events.participants', { current: event.participants_count, max: event.max_participants })}
                         </span>
                       </div>
                       {availableSpots !== null && availableSpots > 0 && (
                         <span className={styles.availableSpots}>
-                          {availableSpots}자리 남음
+                          {t('events.spotsRemaining', { count: availableSpots })}
                         </span>
                       )}
                     </div>
@@ -256,7 +258,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
                           }
                         }}
                       >
-                        {eventFull ? '마감' : '참가 신청'}
+                        {eventFull ? t('events.soldOut') : t('events.register')}
                       </a>
                     ) : (
                       <button
@@ -266,12 +268,12 @@ const EventsSection: React.FC<EventsSectionProps> = ({
                         onClick={() => !eventFull && handleEventRegistration(event.id)}
                         disabled={eventFull}
                       >
-                        {eventFull ? '마감' : '참가 신청'}
+                        {eventFull ? t('events.soldOut') : t('events.register')}
                       </button>
                     )}
 
                     <button className={`${styles.actionButton} ${styles.secondaryButton}`}>
-                      자세히 보기
+                      {t('events.viewDetails')}
                     </button>
                   </div>
                 </div>
@@ -282,7 +284,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({
 
         {filteredEvents.length === 0 && (
           <div className={styles.noEvents}>
-            <p>현재 진행 중인 이벤트가 없습니다.</p>
+            <p>{t('events.noEvents')}</p>
           </div>
         )}
       </div>

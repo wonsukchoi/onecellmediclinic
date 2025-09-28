@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
 import styles from './ClinicFeaturesSection.module.css'
 
@@ -21,11 +22,12 @@ interface ClinicFeaturesProps {
 }
 
 const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
-  title = "차이를 만드는 원셀만의 디테일",
-  subtitle = "환자 안전과 만족을 위한 원셀 메디의원만의 특별한 시스템",
+  title,
+  subtitle,
   showCategories = true,
   maxItems = 8
 }) => {
+  const { t } = useTranslation()
   const [features, setFeatures] = useState<ClinicFeature[]>([])
   const [filteredFeatures, setFilteredFeatures] = useState<ClinicFeature[]>([])
   const [activeCategory, setActiveCategory] = useState<string>('all')
@@ -36,12 +38,12 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const categories = [
-    { key: 'all', label: '전체' },
-    { key: 'technology', label: '첨단기술' },
-    { key: 'expertise', label: '전문성' },
-    { key: 'safety', label: '안전' },
-    { key: 'consultation', label: '상담' },
-    { key: 'facility', label: '시설' }
+    { key: 'all', label: t('clinicFeatures.categories.all') },
+    { key: 'technology', label: t('clinicFeatures.categories.technology') },
+    { key: 'expertise', label: t('clinicFeatures.categories.expertise') },
+    { key: 'safety', label: t('clinicFeatures.categories.safety') },
+    { key: 'consultation', label: t('clinicFeatures.categories.consultation') },
+    { key: 'facility', label: t('clinicFeatures.categories.facility') }
   ]
 
   useEffect(() => {
@@ -101,7 +103,7 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
       setError(null)
     } catch (error) {
       console.error('Error fetching features:', error)
-      setError('특징을 불러오는데 실패했습니다.')
+      setError(t('clinicFeatures.error.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -117,7 +119,7 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
         <div className={styles.container}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>특징을 불러오는 중...</p>
+            <p>{t('clinicFeatures.loading')}</p>
           </div>
         </div>
       </section>
@@ -131,7 +133,7 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
           <div className={styles.error}>
             <p>{error}</p>
             <button onClick={fetchFeatures} className={styles.retryButton}>
-              다시 시도
+              {t('clinicFeatures.error.retry')}
             </button>
           </div>
         </div>
@@ -143,8 +145,8 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h2 className={styles.title}>{title || t('clinicFeatures.title')}</h2>
+          <p className={styles.subtitle}>{subtitle || t('clinicFeatures.subtitle')}</p>
         </div>
 
         {showCategories && (
@@ -234,7 +236,7 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
 
         {filteredFeatures.length === 0 && (
           <div className={styles.noFeatures}>
-            <p>선택한 카테고리에 특징이 없습니다.</p>
+            <p>{t('clinicFeatures.noFeatures')}</p>
           </div>
         )}
       </div>

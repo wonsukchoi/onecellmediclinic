@@ -54,7 +54,18 @@
     "sunday": "Sunday Closed",
     "quick_links": "Quick Links",
     "social_media": "Social Media",
-    "copyright": "© 2025 OneCell Medical Clinic. All rights reserved."
+    "copyright": "© 2025 OneCell Medical Clinic. All rights reserved.",
+    "full_address": "123 Teheran-ro, Gangnam-gu, Seoul, OneCell Medical Building",
+    "address_note": "5 min walk from Gangnam Station Exit 3",
+    "main_phone_label": "Main Phone",
+    "kakao_label": "KakaoTalk",
+    "hours_label": "Operating Hours",
+    "hours_detail": "Mon - Fri AM 10:00 - PM 07:00   Saturday AM 10:00 - PM 05:00",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "medical_fees_guide": "Non-Insurance Medical Fees Guide",
+    "company_info": "OneCell Medical Clinic | Address : 123 Teheran-ro, Gangnam-gu, Seoul, OneCell Medical Building | Chief Director : Dr. Kim OneCell | Business Registration : 123-45-67890",
+    "copyright_full": "COPYRIGHT © 2024 ONECELL MEDI. ALL RIGHTS RESERVED."
   },
   "homepage": {
     "hero_title": "Begin Your Beautiful Transformation",
@@ -121,7 +132,74 @@
     "login_success": "Successfully logged in",
     "login_error": "Login failed",
     "signup_success": "Sign up completed",
-    "signup_error": "Sign up failed"
+    "signup_error": "Sign up failed",
+    "login_page_title": "Member Login",
+    "login_page_subtitle": "Welcome to OneCell Medical Clinic member services",
+    "email_address": "Email Address",
+    "password_placeholder": "Enter your password",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "remember_me": "Remember me",
+    "forgot_password_question": "Forgot your password?",
+    "logging_in": "Logging in...",
+    "or": "Or",
+    "login_with_google": "Login with Google",
+    "login_with_kakao": "Login with Kakao",
+    "not_member_yet": "Not a member yet?",
+    "signup_link": "Sign up",
+    "help": "Help",
+    "customer_service": "Customer Service",
+    "privacy_policy": "Privacy Policy",
+    "email_required": "Please enter your email.",
+    "email_format_invalid": "Please enter a valid email format.",
+    "password_required": "Please enter your password.",
+    "invalid_credentials": "Email or password is incorrect.",
+    "email_not_verified": "Email verification is required. Please check your email.",
+    "login_general_error": "An error occurred during login.",
+    "login_retry_error": "An error occurred during login. Please try again.",
+    "social_login_coming_soon": "login is coming soon.",
+    "signup_page_title": "Sign Up",
+    "account_info_step": "Account Information",
+    "account_info_description": "Please enter your email and password for login",
+    "personal_info_step": "Personal Information",
+    "personal_info_description": "Please enter basic information for smooth medical care",
+    "terms_agreement_step": "Terms Agreement",
+    "terms_agreement_description": "Please agree to the terms for service use",
+    "password_requirements": "8+ characters, letters + numbers",
+    "confirm_password_placeholder": "Re-enter your password",
+    "name_label": "Name",
+    "name_placeholder": "Please enter your real name",
+    "phone_label": "Phone Number",
+    "birth_date_label": "Birth Date",
+    "gender_label": "Gender",
+    "gender_select_placeholder": "Please select",
+    "gender_male": "Male",
+    "gender_female": "Female",
+    "gender_other": "Other",
+    "terms_of_service": "Terms of Service",
+    "terms_agree_required": " (Required)",
+    "privacy_policy_agree": " (Required)",
+    "marketing_agree": "I agree to receive marketing information (Optional)",
+    "marketing_benefits_description": "By agreeing to receive marketing information, you can enjoy the following benefits:",
+    "marketing_benefit_events": "Event and promotion notifications",
+    "marketing_benefit_procedures": "New procedure information",
+    "marketing_benefit_health_tips": "Health care tips",
+    "marketing_benefit_notifications": "Appointment notification service",
+    "view_terms": "View",
+    "step_account_info": "Account Info",
+    "step_personal_info": "Personal Info",
+    "step_terms_agreement": "Terms Agreement",
+    "previous": "Previous",
+    "next": "Next",
+    "signing_up": "Signing up...",
+    "complete_signup": "Complete Sign Up",
+    "already_member": "Already a member?",
+    "login_link": "Login",
+    "signup_complete_message": "Sign up completed. Please check your email to verify your account.",
+    "email_already_exists": "This email is already registered.",
+    "password_too_weak": "Password is too weak. Please use a stronger password.",
+    "signup_general_error": "An error occurred during sign up.",
+    "signup_retry_error": "An error occurred during sign up. Please try again."
   },
   "validation": {
     "required": "This field is required",
@@ -129,7 +207,16 @@
     "invalid_phone": "Please enter a valid phone number",
     "password_min_length": "Password must be at least 8 characters",
     "password_mismatch": "Passwords do not match",
-    "invalid_date": "Please select a valid date"
+    "invalid_date": "Please select a valid date",
+    "name_required": "Please enter your name",
+    "phone_required": "Please enter your phone number",
+    "birth_date_required": "Please enter your birth date",
+    "gender_required": "Please select your gender",
+    "terms_agreement_required": "Please agree to the terms of service",
+    "privacy_agreement_required": "Please agree to the privacy policy",
+    "password_complexity_required": "Password must contain letters and numbers",
+    "name_min_length": "Name must be at least 2 characters",
+    "invalid_birth_date": "Please enter a valid birth date (YYYY-MM-DD)"
   },
   "consultation": {
     "title": "Online Consultation",
@@ -175,6 +262,148 @@
     "try_again": "Try Again",
     "network_error": "Network Error",
     "server_error": "Server Error"
+  },
+  "hero": {
+    "slide1": {
+      "title": "Beauty Revolution: OneCell Nose Surgery",
+      "subtitle": "SHORT × SELFIE",
+      "description": "Unparalleled excellence with customized nose surgery for long-lasting, natural results",
+      "cta": "Book Consultation"
+    },
+    "slide2": {
+      "title": "Dermatology Signature: OneCell Skin Care",
+      "subtitle": "DERM × SCIENCE",
+      "description": "VIP Premium Care Program",
+      "cta": "Learn More"
+    },
+    "slide3": {
+      "title": "Beauty Made Safe",
+      "subtitle": "SAFE × PREMIUM",
+      "description": "3D-CT precision surgery system for safer and more precise procedures",
+      "cta": "Book Appointment"
+    }
+  },
+  "videoShorts": {
+    "title": "Video Shorts",
+    "subtitle": "Discover OneCell Medical Clinic through short and impactful videos",
+    "loading": "Loading videos...",
+    "noVideos": "No videos available for the selected category.",
+    "categories": {
+      "all": "All",
+      "introduction": "Introduction",
+      "safety": "Safety",
+      "recovery": "Recovery",
+      "testimonial": "Testimonials",
+      "procedure": "Procedures"
+    },
+    "error": {
+      "fetchFailed": "Failed to load videos.",
+      "retry": "Try Again"
+    }
+  },
+  "clinicFeatures": {
+    "title": "OneCell's Unique Details That Make a Difference",
+    "subtitle": "OneCell Medical Clinic's special systems for patient safety and satisfaction",
+    "loading": "Loading features...",
+    "noFeatures": "No features available for the selected category.",
+    "categories": {
+      "all": "All",
+      "technology": "Advanced Technology",
+      "expertise": "Expertise",
+      "safety": "Safety",
+      "consultation": "Consultation",
+      "facility": "Facility"
+    },
+    "error": {
+      "fetchFailed": "Failed to load features.",
+      "retry": "Try Again"
+    }
+  },
+  "events": {
+    "title": "OneCell Events",
+    "subtitle": "Experience even more beautiful changes with special benefits and promotions",
+    "loading": "Loading events...",
+    "noEvents": "No events currently in progress.",
+    "daysRemaining": "{{days}} days left",
+    "endsToday": "Ends today",
+    "participants": "{{current}} / {{max}} people",
+    "spotsRemaining": "{{count}} spots left",
+    "soldOut": "Sold Out",
+    "register": "Register",
+    "viewDetails": "View Details",
+    "categories": {
+      "all": "All",
+      "promotion": "Promotion",
+      "discount": "Discount",
+      "consultation": "Consultation",
+      "event": "Event",
+      "seminar": "Seminar"
+    },
+    "error": {
+      "fetchFailed": "Failed to load events.",
+      "registrationFailed": "Registration failed. Please try again.",
+      "retry": "Try Again"
+    }
+  },
+  "reviews": {
+    "title": "Selfie Reviews",
+    "subtitle": "See OneCell's excellence through genuine selfie reviews from our customers",
+    "loading": "Loading reviews...",
+    "noReviews": "No reviews available for the selected procedure.",
+    "imageAlt": "{{name}}'s review",
+    "viewDetails": "View Details",
+    "verified": "Verified",
+    "verifiedReview": "Verified Review",
+    "patientReview": "{{name}}'s Review",
+    "procedure": "Procedure",
+    "ageRange": "Age Range",
+    "treatmentDate": "Treatment Date",
+    "recoveryPeriod": "{{weeks}} weeks",
+    "categories": {
+      "all": "All",
+      "eye": "Eye Surgery",
+      "nose": "Nose Surgery",
+      "contouring": "Facial Contouring",
+      "breast": "Breast Surgery",
+      "liposuction": "Liposuction",
+      "wrinkle": "Wrinkle Improvement"
+    },
+    "error": {
+      "fetchFailed": "Failed to load reviews.",
+      "retry": "Try Again"
+    }
+  },
+  "youtube": {
+    "title": "YouTube Videos",
+    "subtitle": "Discover OneCell Medical Clinic's diverse information and expertise through videos",
+    "loading": "Loading videos...",
+    "noVideos": "No videos available for the selected category.",
+    "featured": "Featured",
+    "viewCount": "{{count}} views",
+    "watchOnYoutube": "Watch on YouTube",
+    "share": "Share",
+    "categories": {
+      "all": "All",
+      "facility": "Facility Tour",
+      "interview": "Doctor Interview",
+      "testimonial": "Customer Testimonials",
+      "procedure": "Procedure Introduction",
+      "education": "Educational Videos"
+    },
+    "error": {
+      "fetchFailed": "Failed to load videos.",
+      "retry": "Try Again"
+    }
+  },
+  "differentiators": {
+    "title": "Unique Reasons to Choose OneCell",
+    "subtitle": "Discover OneCell Medical Clinic's special qualities that set us apart from others",
+    "loading": "Loading differentiators...",
+    "noDifferentiators": "No differentiators available.",
+    "error": {
+      "fetchFailed": "Failed to load differentiators.",
+      "retry": "Try Again"
+    }
   },
   "language_switcher": {
     "korean": "한국어",
