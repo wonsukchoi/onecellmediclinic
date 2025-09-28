@@ -121,13 +121,20 @@
   backdrop-filter: none;
 }
 
+.categoryTitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary, #666);
+  margin: 0 0 10px var(--spacing-md);
+  font-weight: normal;
+}
+
 .dropdownList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0;
 }
 
 .dropdownItem {
@@ -139,7 +146,7 @@
   align-items: center;
   gap: var(--spacing-sm);
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 2px var(--spacing-md);
   background: none;
   border: none;
   color: var(--color-text-primary);
@@ -192,6 +199,23 @@
   line-height: 1.4;
 }
 
+/* Specific style for "원셀 소개" and "의료진 소개" menu items */
+.dropdownLink[data-label="원셀 소개"] .itemLabel,
+.dropdownLink[data-label="의료진 소개"] .itemLabel,
+.megaMenuItem[data-label="원셀 소개"] .itemLabel,
+.megaMenuItem[data-label="의료진 소개"] .itemLabel {
+  font-size: calc(var(--text-lg) * 1.4);
+  font-weight: normal;
+}
+
+/* Hide description for these specific menu items */
+.dropdownLink[data-label="원셀 소개"] .itemDescription,
+.dropdownLink[data-label="의료진 소개"] .itemDescription,
+.megaMenuItem[data-label="원셀 소개"] .itemDescription,
+.megaMenuItem[data-label="의료진 소개"] .itemDescription {
+  display: none;
+}
+
 .itemDescription {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
@@ -234,14 +258,14 @@
 .megaMenuItems {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-sm);
+  gap: 0;
 }
 
 .megaMenuItem {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  padding: 2px var(--spacing-md);
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
