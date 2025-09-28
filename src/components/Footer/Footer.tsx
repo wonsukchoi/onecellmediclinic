@@ -11,7 +11,8 @@ const Footer: React.FC = () => {
             <span className={styles.logoSubtitle}>MEDI</span>
           </div>
           <div className={styles.footerAddress}>
-            서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩{' '}
+            서울특별시 강남구 테헤란로 123, 원셀메디의원빌딩
+            <br />
             <span className={styles.addressNote}>강남역 3번출구 도보 5분</span>
           </div>
         </div>

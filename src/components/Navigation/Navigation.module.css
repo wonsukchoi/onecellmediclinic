@@ -53,8 +53,8 @@
 
 .navButton:hover,
 .navButton.active {
-  color: var(--color-primary);
-  background: var(--color-background-light);
+  color: #666;
+  background: transparent;
 }
 
 .navButton:hover .chevron,
@@ -70,43 +70,55 @@
 }
 
 .dropdown {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-background-white);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  position: fixed;
+  top: var(--header-height, 80px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  transform: none;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
-  min-width: 280px;
   z-index: 1001;
-  backdrop-filter: blur(8px);
 }
 
 .dropdown.open {
   opacity: 1;
   visibility: visible;
   pointer-events: all;
-  transform: translateX(-50%) translateY(8px);
+  transform: translateY(0);
 }
 
 .dropdown.megaMenu {
-  min-width: 600px;
-  max-width: 800px;
+  min-width: 100%;
+  max-width: 100%;
   left: 0;
-  transform: translateX(-25%);
+  transform: none;
 }
 
 .dropdown.megaMenu.open {
-  transform: translateX(-25%) translateY(8px);
+  transform: translateY(0);
 }
 
 .dropdownContent {
   padding: var(--spacing-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .dropdownList {
@@ -133,27 +145,28 @@
   color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
   position: relative;
 }
 
 .dropdownLink:hover {
-  background: var(--color-background-light);
-  color: var(--color-primary);
-  transform: translateX(4px);
+  background: transparent;
+  color: #666;
+  transform: none;
 }
 
 .dropdownLink.featured {
-  background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
-  color: var(--color-text-primary);
+  background: transparent;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
 .dropdownLink.featured:hover {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
-  transform: translateX(4px) translateY(-1px);
-  box-shadow: var(--shadow-md);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+  color: #666;
 }
 
 .itemIcon {
@@ -229,35 +242,39 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  background: none;
-  border: 1px solid var(--color-border-light);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
   position: relative;
   width: 100%;
 }
 
 .megaMenuItem:hover {
-  border-color: var(--color-primary-light);
-  background: var(--color-background-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  border-color: rgba(0, 0, 0, 0.05);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+  color: #666;
 }
 
 .megaMenuItem.featured {
-  background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent));
-  border-color: var(--color-accent);
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   font-weight: 600;
+  color: var(--color-primary);
 }
 
 .megaMenuItem.featured:hover {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
-  border-color: var(--color-accent-dark);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-xl);
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transform: none;
+  box-shadow: none;
+  color: #666;
 }
 
 /* Animations */
@@ -296,14 +313,19 @@
   }
 
   .dropdown {
-    position: static;
+    position: relative;
+    top: auto;
     transform: none;
     box-shadow: none;
-    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: none;
+    border-right: none;
     border-radius: 0;
-    background: var(--color-background-section);
-    min-width: auto;
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    width: 100%;
   }
 
   .dropdown.open {
@@ -311,7 +333,7 @@
   }
 
   .dropdown.megaMenu {
-    min-width: auto;
+    width: 100%;
     max-width: none;
     left: auto;
     transform: none;
@@ -319,6 +341,10 @@
 
   .dropdownContent {
     padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
   .dropdownLink {
