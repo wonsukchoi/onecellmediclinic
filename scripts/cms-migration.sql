@@ -449,30 +449,30 @@ INSERT INTO page_templates (name, description, template_code, available_blocks) 
 
 -- Insert default header navigation items
 INSERT INTO header_navigation (label, url, nav_type, sort_order, is_visible) VALUES
-('홈', '/', 'link', 1, true),
-('시술안내', '/procedures', 'dropdown', 2, true),
-('의료진', '/staff', 'link', 3, true),
-('시설안내', '/facility', 'link', 4, true),
-('갤러리', '/events', 'link', 5, true),
-('온라인상담', '/consultation', 'link', 6, true),
-('예약하기', '/reservation', 'link', 7, true);
+('홈', '/', 'link'::nav_type, 1, true),
+('시술안내', '/procedures', 'dropdown'::nav_type, 2, true),
+('의료진', '/staff', 'link'::nav_type, 3, true),
+('시설안내', '/facility', 'link'::nav_type, 4, true),
+('갤러리', '/events', 'link'::nav_type, 5, true),
+('온라인상담', '/consultation', 'link'::nav_type, 6, true),
+('예약하기', '/reservation', 'link'::nav_type, 7, true);
 
 -- Insert dropdown items for procedures
 WITH procedures_parent AS (
     SELECT id FROM header_navigation WHERE label = '시술안내' LIMIT 1
 )
 INSERT INTO header_navigation (label, url, nav_type, parent_id, sort_order, is_visible)
-SELECT '시술 개요', '/procedures', 'link', procedures_parent.id, 1, true FROM procedures_parent
+SELECT '시술 개요', '/procedures', 'link'::nav_type, procedures_parent.id, 1, true FROM procedures_parent
 UNION ALL
-SELECT '안면윤곽', '/procedures/facial-contouring', 'link', procedures_parent.id, 2, true FROM procedures_parent
+SELECT '안면윤곽', '/procedures/facial-contouring', 'link'::nav_type, procedures_parent.id, 2, true FROM procedures_parent
 UNION ALL
-SELECT '눈성형', '/procedures/eye-surgery', 'link', procedures_parent.id, 3, true FROM procedures_parent
+SELECT '눈성형', '/procedures/eye-surgery', 'link'::nav_type, procedures_parent.id, 3, true FROM procedures_parent
 UNION ALL
-SELECT '코성형', '/procedures/nose-surgery', 'link', procedures_parent.id, 4, true FROM procedures_parent
+SELECT '코성형', '/procedures/nose-surgery', 'link'::nav_type, procedures_parent.id, 4, true FROM procedures_parent
 UNION ALL
-SELECT '가슴성형', '/procedures/breast-surgery', 'link', procedures_parent.id, 5, true FROM procedures_parent
+SELECT '가슴성형', '/procedures/breast-surgery', 'link'::nav_type, procedures_parent.id, 5, true FROM procedures_parent
 UNION ALL
-SELECT '리프팅', '/procedures/lifting', 'link', procedures_parent.id, 6, true FROM procedures_parent;
+SELECT '리프팅', '/procedures/lifting', 'link'::nav_type, procedures_parent.id, 6, true FROM procedures_parent;
 
 -- =====================================================
 -- COMMIT TRANSACTION
