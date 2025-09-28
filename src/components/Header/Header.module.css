@@ -7,7 +7,7 @@
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
   height: var(--header-height);
 }
@@ -23,7 +23,7 @@
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .headerInner {
@@ -190,14 +190,14 @@
   align-items: center;
   justify-content: center;
   min-height: var(--button-height-base);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .btnCta:hover {
   background: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: none;
 }
 
 /* Mobile Styles */
@@ -205,7 +205,7 @@
   .siteHeader {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
   }
 
   .headerInner {
@@ -274,7 +274,7 @@
     flex-direction: column;
     gap: 0;
     padding: var(--spacing-lg) 0;
-    box-shadow: var(--shadow-lg);
+    box-shadow: none;
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;

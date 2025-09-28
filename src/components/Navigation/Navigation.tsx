@@ -351,6 +351,7 @@ const Navigation: React.FC<NavigationProps> = ({
                             key={item.path}
                             className={`${styles.megaMenuItem} ${item.featured ? styles.featured : ''}`}
                             onClick={() => handleNavItemClick(item)}
+                            data-label={item.label}
                           >
                             {item.icon && (
                               <span className={styles.itemIcon}>
@@ -372,12 +373,17 @@ const Navigation: React.FC<NavigationProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <ul className={styles.dropdownList}>
+                  <>
+                    {category.id === 'about' && (
+                      <div className={styles.categoryTitle}>병원소개</div>
+                    )}
+                    <ul className={styles.dropdownList}>
                     {category.items.map((item) => (
                       <li key={item.path} className={styles.dropdownItem}>
                         <button
                           className={`${styles.dropdownLink} ${item.featured ? styles.featured : ''}`}
                           onClick={() => handleNavItemClick(item)}
+                          data-label={item.label}
                         >
                           {item.icon && (
                             <span className={styles.itemIcon}>
@@ -397,6 +403,7 @@ const Navigation: React.FC<NavigationProps> = ({
                       </li>
                     ))}
                   </ul>
+                  </>
                 )}
               </div>
             </div>
