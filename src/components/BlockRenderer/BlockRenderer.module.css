@@ -1,0 +1,67 @@
+/* BlockRenderer.module.css */
+.block {
+  margin-bottom: 2rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.block:last-child {
+  margin-bottom: 0;
+}
+
+/* Block types */
+.block--text {
+  /* Text block specific styles */
+}
+
+.block--image {
+  /* Image block specific styles */
+}
+
+.block--video {
+  /* Video block specific styles */
+}
+
+.block--gallery {
+  /* Gallery block specific styles */
+}
+
+.block--cta {
+  /* CTA block specific styles */
+  margin: 2rem 0;
+}
+
+.block--spacer {
+  /* Spacer block specific styles */
+}
+
+.block--html {
+  /* HTML block specific styles */
+}
+
+.blockTitle {
+  margin-bottom: 1rem;
+}
+
+.blockTitle h2 {
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.blockContent {
+  /* Block content wrapper */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .block {
+    margin-bottom: 1.5rem;
+  }
+
+  .blockTitle h2 {
+    font-size: 1.25rem;
+  }
+}

@@ -148,6 +148,25 @@ export interface NavigationItem {
   children?: NavigationItem[]
 }
 
+// Extended Navigation types for Navigation component
+export interface NavItem {
+  label: string
+  path: string
+  description?: string
+  icon?: string
+  featured?: boolean
+  target_blank?: boolean
+  page_id?: string
+}
+
+export interface NavCategory {
+  id: string
+  title: string
+  items: NavItem[]
+  featured?: boolean
+  megaMenu?: boolean
+}
+
 // Context Types
 export interface AuthContextType {
   user: UserProfile | null
@@ -360,4 +379,127 @@ export interface AdminContextType {
   loading: boolean
   stats: AdminStats | null
   refreshStats: () => Promise<void>
+}
+
+// CMS Types
+export type PageStatus = 'draft' | 'published' | 'archived'
+export type BlockType = 'text' | 'image' | 'video' | 'gallery' | 'cta' | 'spacer' | 'html'
+export type NavType = 'link' | 'dropdown' | 'megamenu' | 'divider'
+
+export interface DynamicPage {
+  id: string
+  title: string
+  slug: string
+  description?: string
+  keywords?: string
+  meta_title?: string
+  meta_description?: string
+  template_id: string
+  status: PageStatus
+  featured_image?: string
+  author_id?: string
+  published_at?: string
+  created_at: string
+  updated_at: string
+  view_count: number
+  seo_canonical_url?: string
+  seo_og_image?: string
+  custom_css?: string
+  custom_js?: string
+  blocks?: PageBlock[]
+}
+
+export interface PageBlock {
+  id: string
+  page_id: string
+  block_type: BlockType
+  title?: string
+  content: Record<string, any>
+  styles?: Record<string, any>
+  sort_order: number
+  is_visible: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface HeaderNavigation {
+  id: string
+  label: string
+  url?: string
+  page_id?: string
+  nav_type: NavType
+  parent_id?: string
+  sort_order: number
+  is_visible: boolean
+  icon_name?: string
+  target_blank: boolean
+  css_classes?: string
+  access_level: string
+  created_at: string
+  updated_at: string
+  children?: HeaderNavigation[]
+}
+
+export interface PageTemplate {
+  id: string
+  name: string
+  description?: string
+  template_code: string
+  css_classes?: string
+  available_blocks: string[]
+  is_active: boolean
+  preview_image?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PageAnalytics {
+  id: string
+  page_id: string
+  visitor_ip?: string
+  user_agent?: string
+  referrer?: string
+  session_id?: string
+  visited_at: string
+  time_on_page?: number
+  bounce: boolean
+}
+
+export interface PageFormData {
+  title: string
+  slug: string
+  description?: string
+  keywords?: string
+  meta_title?: string
+  meta_description?: string
+  template_id: string
+  status: PageStatus
+  featured_image?: string
+  seo_canonical_url?: string
+  seo_og_image?: string
+  custom_css?: string
+  custom_js?: string
+}
+
+export interface BlockFormData {
+  block_type: BlockType
+  title?: string
+  content: Record<string, any>
+  styles?: Record<string, any>
+  sort_order: number
+  is_visible: boolean
+}
+
+export interface NavigationFormData {
+  label: string
+  url?: string
+  page_id?: string
+  nav_type: NavType
+  parent_id?: string
+  sort_order: number
+  is_visible: boolean
+  icon_name?: string
+  target_blank: boolean
+  css_classes?: string
+  access_level: string
 }

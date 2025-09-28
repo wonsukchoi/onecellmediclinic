@@ -25,6 +25,8 @@ import NoticesPage from "./pages/NoticesPage";
 import FAQPage from "./pages/FAQPage";
 import ModelProgramPage from "./pages/ModelProgramPage";
 import PriceGuidePage from "./pages/PriceGuidePage";
+import DynamicPage from "./pages/DynamicPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 // Admin imports
 import { AdminProvider } from "./contexts/AdminContext";
@@ -45,6 +47,12 @@ import SelfieReviewsPage from "./pages/admin/SelfieReviewsPage";
 import VideoShortsFormPage from "./pages/admin/VideoShortsFormPage";
 import YouTubeVideosFormPage from "./pages/admin/YouTubeVideosFormPage";
 import SelfieReviewsFormPage from "./pages/admin/SelfieReviewsFormPage";
+
+// CMS imports
+import DynamicPagesPage from "./pages/admin/DynamicPagesPage";
+import DynamicPageFormPage from "./pages/admin/DynamicPageFormPage";
+import HeaderNavigationPage from "./pages/admin/HeaderNavigationPage";
+import PageTemplatesPage from "./pages/admin/PageTemplatesPage";
 
 import "./styles/globals.css";
 
@@ -79,6 +87,14 @@ const App: React.FC = () => {
                       <Route path="/selfie-reviews" element={<SelfieReviewsPage />} />
                       <Route path="/selfie-reviews/new" element={<SelfieReviewsFormPage />} />
                       <Route path="/selfie-reviews/:id/edit" element={<SelfieReviewsFormPage />} />
+
+                      {/* CMS Routes */}
+                      <Route path="/cms/pages" element={<DynamicPagesPage />} />
+                      <Route path="/cms/pages/new" element={<DynamicPageFormPage />} />
+                      <Route path="/cms/pages/:id/edit" element={<DynamicPageFormPage />} />
+                      <Route path="/cms/navigation" element={<HeaderNavigationPage />} />
+                      <Route path="/cms/templates" element={<PageTemplatesPage />} />
+
                       {/* Additional admin routes can be added here for:
                           - procedure-categories
                           - clinic-features
@@ -246,6 +262,24 @@ const App: React.FC = () => {
                           element={
                             <ErrorBoundary>
                               <PriceGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        {/* 404 Page */}
+                        <Route
+                          path="/404"
+                          element={
+                            <ErrorBoundary>
+                              <NotFoundPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        {/* Dynamic CMS Pages - Must be last to act as catch-all */}
+                        <Route
+                          path="/:slug"
+                          element={
+                            <ErrorBoundary>
+                              <DynamicPage />
                             </ErrorBoundary>
                           }
                         />

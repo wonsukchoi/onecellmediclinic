@@ -1,0 +1,103 @@
+/* HTMLBlockRenderer.module.css */
+.htmlBlock {
+  margin: 1rem 0;
+  position: relative;
+}
+
+.htmlContent {
+  /* Reset some default styles to ensure consistent rendering */
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Ensure embedded content is responsive */
+.htmlContent iframe,
+.htmlContent video,
+.htmlContent embed,
+.htmlContent object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Style tables within HTML content */
+.htmlContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.htmlContent th,
+.htmlContent td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.htmlContent th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+/* Style forms within HTML content */
+.htmlContent form {
+  margin: 1rem 0;
+}
+
+.htmlContent input,
+.htmlContent textarea,
+.htmlContent select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.htmlContent button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.htmlContent button:hover {
+  background-color: #0056b3;
+}
+
+/* Style links within HTML content */
+.htmlContent a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.htmlContent a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Responsive design for HTML content */
+@media (max-width: 768px) {
+  .htmlContent {
+    font-size: 0.875rem;
+  }
+
+  .htmlContent table {
+    font-size: 0.8rem;
+  }
+
+  .htmlContent th,
+  .htmlContent td {
+    padding: 0.5rem;
+  }
+
+  .htmlContent input,
+  .htmlContent textarea,
+  .htmlContent select {
+    font-size: 0.875rem;
+  }
+}

@@ -1,0 +1,21 @@
+/* SpacerBlockRenderer.module.css */
+.spacer {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .spacer {
+    /* Reduce spacing on mobile */
+    transform: scale(0.75);
+  }
+}
+
+@media (max-width: 480px) {
+  .spacer {
+    /* Further reduce spacing on small mobile */
+    transform: scale(0.5);
+  }
+}

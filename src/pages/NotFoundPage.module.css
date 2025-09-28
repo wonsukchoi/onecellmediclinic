@@ -1,0 +1,181 @@
+/* NotFoundPage.module.css */
+.notFoundContainer {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.notFoundContent {
+  text-align: center;
+  max-width: 600px;
+  padding: 3rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.errorCode {
+  font-size: 6rem;
+  font-weight: 800;
+  color: #007bff;
+  margin: 0 0 1rem 0;
+  line-height: 1;
+}
+
+.errorTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1rem 0;
+}
+
+.errorMessage {
+  font-size: 1.125rem;
+  color: #6c757d;
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.homeButton,
+.backButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.homeButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.homeButton:hover {
+  background-color: #0056b3;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.backButton {
+  background-color: transparent;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.backButton:hover {
+  background-color: #f8f9fa;
+  color: #495057;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions {
+  border-top: 1px solid #dee2e6;
+  padding-top: 2rem;
+}
+
+.suggestions h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 1rem 0;
+}
+
+.suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.suggestions li {
+  margin: 0;
+}
+
+.suggestions a {
+  color: #007bff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.suggestions a:hover {
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notFoundContainer {
+    padding: 1rem;
+  }
+
+  .notFoundContent {
+    padding: 2rem;
+  }
+
+  .errorCode {
+    font-size: 4rem;
+  }
+
+  .errorTitle {
+    font-size: 1.5rem;
+  }
+
+  .errorMessage {
+    font-size: 1rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .homeButton,
+  .backButton {
+    width: 200px;
+    text-align: center;
+  }
+
+  .suggestions ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .suggestions a {
+    width: 180px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .errorCode {
+    font-size: 3rem;
+  }
+
+  .errorTitle {
+    font-size: 1.25rem;
+  }
+}

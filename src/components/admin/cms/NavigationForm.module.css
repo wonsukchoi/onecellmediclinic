@@ -1,0 +1,190 @@
+.navigationForm {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.formContent {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.errorMessage {
+  padding: 12px 16px;
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.formSection {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.formSection:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.required {
+  color: #dc3545;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+}
+
+.radioGroup {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.radio {
+  width: 16px;
+  height: 16px;
+  accent-color: #0066cc;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #0066cc;
+}
+
+.checkboxText {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.formFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+.cancelButton,
+.saveButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.cancelButton {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.saveButton {
+  background: #28a745;
+  color: white;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #218838;
+}
+
+.cancelButton:disabled,
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .formContent {
+    padding: 16px;
+  }
+
+  .formFooter {
+    flex-direction: column;
+    padding: 12px 16px;
+  }
+
+  .cancelButton,
+  .saveButton {
+    width: 100%;
+  }
+
+  .radioGroup {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

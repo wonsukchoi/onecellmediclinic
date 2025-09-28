@@ -1,21 +1,53 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CMSService } from '../../services/cms.service'
+import { Icon, type IconName } from '../icons'
+import type { HeaderNavigation, NavCategory, NavItem } from '../../types'
 import styles from './Navigation.module.css'
 
-interface NavItem {
-  label: string
-  path: string
-  description?: string
-  icon?: string
-  featured?: boolean
+// Icon mapping from CMS icon names to Icon component names
+const iconMapping: Record<string, IconName> = {
+  'hospital': 'medical',
+  'doctor': 'user',
+  'building': 'medical',
+  'clipboard': 'calendar',
+  'sparkles': 'star',
+  'star': 'star',
+  'woman': 'user',
+  'shield': 'check',
+  'camera': 'image',
+  'video': 'video',
+  'play': 'video',
+  'selfie': 'selfie',
+  'party': 'star',
+  'gift': 'star',
+  'fire': 'warning',
+  'calendar': 'calendar',
+  'laptop': 'medical',
+  'emergency': 'warning',
+  'location': 'medical',
+  'phone': 'phone',
+  'mail': 'mail',
+  'menu': 'menu',
+  'search': 'search',
+  'plus': 'plus',
+  'edit': 'edit',
+  'delete': 'delete',
+  'view': 'view',
+  'close': 'close',
+  'chevron-down': 'chevronDown',
+  'chevron-right': 'chevronRight',
+  'chevron-left': 'chevronLeft',
+  'chevron-up': 'chevronUp'
 }
 
-interface NavCategory {
-  id: string
-  title: string
-  items: NavItem[]
-  featured?: boolean
-  megaMenu?: boolean
+// Cache configuration
+const NAVIGATION_CACHE_KEY = 'cms_navigation_cache'
+const NAVIGATION_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes in milliseconds
+
+interface NavigationCache {
+  data: NavCategory[]
+  timestamp: number
 }
 
 interface NavigationProps {
@@ -23,7 +55,8 @@ interface NavigationProps {
   onNavigate?: () => void
 }
 
-const navigationCategories: NavCategory[] = [
+// Fallback navigation for when CMS fails to load
+const fallbackNavigation: NavCategory[] = [
   {
     id: 'about',
     title: '병원소개',
@@ -31,119 +64,12 @@ const navigationCategories: NavCategory[] = [
       {
         label: '원셀 소개',
         path: '#about',
-        description: '원셀 메디의원 소개',
-        icon: '🏥'
+        description: '원셀 메디의원 소개'
       },
       {
         label: '의료진 소개',
         path: '#doctors',
-        description: '전문 의료진 프로필',
-        icon: '👨‍⚕️'
-      },
-      {
-        label: '시설 둘러보기',
-        path: '#tour',
-        description: '최신 의료 시설 안내',
-        icon: '🏢'
-      },
-      {
-        label: '진료안내',
-        path: '#info',
-        description: '진료시간 및 예약 안내',
-        icon: '📋'
-      }
-    ]
-  },
-  {
-    id: 'services',
-    title: '진료과목',
-    megaMenu: true,
-    items: [
-      {
-        label: '성형외과',
-        path: '/services/plastic-surgery',
-        description: '전문 성형외과 진료',
-        icon: '✨'
-      },
-      {
-        label: '피부과',
-        path: '/services/dermatology',
-        description: '피부 질환 및 미용 치료',
-        icon: '🌟'
-      },
-      {
-        label: '미용의학과',
-        path: '/services/aesthetic',
-        description: '비수술 미용 치료',
-        icon: '💆‍♀️'
-      },
-      {
-        label: '예방의학과',
-        path: '/services/preventive',
-        description: '건강 검진 및 예방',
-        icon: '🛡️'
-      },
-      {
-        label: '성형 이벤트',
-        path: '#plastic-events',
-        description: '특별 할인 이벤트',
-        icon: '🎉',
-        featured: true
-      },
-      {
-        label: '피부 이벤트',
-        path: '#skin-events',
-        description: '피부 치료 프로모션',
-        icon: '💝',
-        featured: true
-      }
-    ]
-  },
-  {
-    id: 'content',
-    title: '콘텐츠',
-    items: [
-      {
-        label: '원셀숏츠',
-        path: '#shorts',
-        description: '짧은 영상으로 보는 시술 과정',
-        icon: '📹'
-      },
-      {
-        label: 'YOUTUBE',
-        path: '#youtube',
-        description: '유튜브 채널',
-        icon: '▶️'
-      },
-      {
-        label: '셀카후기',
-        path: '#reviews',
-        description: '실제 고객 후기',
-        icon: '📸'
-      }
-    ]
-  },
-  {
-    id: 'events',
-    title: '이벤트',
-    items: [
-      {
-        label: '이벤트 갤러리',
-        path: '/events',
-        description: '모든 이벤트 및 프로모션 보기',
-        icon: '🎊'
-      },
-      {
-        label: '진행중 이벤트',
-        path: '/events?status=active',
-        description: '현재 진행 중인 특별 이벤트',
-        icon: '🔥'
-      },
-      {
-        label: '추천 이벤트',
-        path: '/events?status=featured',
-        description: '추천하는 인기 이벤트',
-        icon: '⭐'
+        description: '전문 의료진 프로필'
       }
     ]
   },
@@ -156,31 +82,100 @@ const navigationCategories: NavCategory[] = [
         label: '온라인 상담',
         path: '/booking/consultation',
         description: '비대면 전문의 상담',
-        icon: '💻',
         featured: true
       },
       {
         label: '방문 예약',
         path: '/reservation',
         description: '직접 방문 예약',
-        icon: '📅',
         featured: true
-      },
-      {
-        label: '응급 상담',
-        path: '/booking/emergency',
-        description: '응급 상황 즉시 상담',
-        icon: '🚨'
-      },
-      {
-        label: '오시는길',
-        path: '#contact',
-        description: '병원 위치 및 교통편',
-        icon: '📍'
       }
     ]
   }
 ]
+
+// Helper functions
+const getCachedNavigation = (): NavigationCache | null => {
+  try {
+    const cached = localStorage.getItem(NAVIGATION_CACHE_KEY)
+    if (!cached) return null
+
+    const cache: NavigationCache = JSON.parse(cached)
+    const now = Date.now()
+
+    if (now - cache.timestamp > NAVIGATION_CACHE_DURATION) {
+      localStorage.removeItem(NAVIGATION_CACHE_KEY)
+      return null
+    }
+
+    return cache
+  } catch (error) {
+    console.error('Error reading navigation cache:', error)
+    localStorage.removeItem(NAVIGATION_CACHE_KEY)
+    return null
+  }
+}
+
+const setCachedNavigation = (data: NavCategory[]): void => {
+  try {
+    const cache: NavigationCache = {
+      data,
+      timestamp: Date.now()
+    }
+    localStorage.setItem(NAVIGATION_CACHE_KEY, JSON.stringify(cache))
+  } catch (error) {
+    console.error('Error caching navigation:', error)
+  }
+}
+
+const getIconName = (iconName: string | null | undefined): IconName | undefined => {
+  if (!iconName) return undefined
+  const mappedIcon = iconMapping[iconName.toLowerCase()]
+  return mappedIcon as IconName || 'menu'
+}
+
+const constructPageUrl = (navItem: HeaderNavigation): string => {
+  // If it's a direct URL, use it
+  if (navItem.url) return navItem.url
+
+  // If it has a page_id, construct dynamic page URL
+  if (navItem.page_id) return `/page/${navItem.page_id}`
+
+  // Default fallback
+  return '#'
+}
+
+const transformCMSNavigationToCategories = (cmsNavigation: HeaderNavigation[]): NavCategory[] => {
+  return cmsNavigation
+    .filter(item => item.is_visible)
+    .map(parentItem => {
+      const children = parentItem.children || []
+
+      // Determine if this should be a mega menu (more than 4 items or specific nav_type)
+      const megaMenu = parentItem.nav_type === 'megamenu' || children.length > 4
+
+      // Transform children to NavItems
+      const items: NavItem[] = children
+        .filter(child => child.is_visible)
+        .map(child => ({
+          label: child.label,
+          path: constructPageUrl(child),
+          description: '', // CMS doesn't have description field yet
+          icon: getIconName(child.icon_name),
+          featured: child.css_classes?.includes('featured') || false,
+          target_blank: child.target_blank,
+          page_id: child.page_id || undefined
+        }))
+
+      return {
+        id: parentItem.id,
+        title: parentItem.label,
+        items,
+        featured: parentItem.css_classes?.includes('featured') || false,
+        megaMenu
+      }
+    })
+}
 
 const Navigation: React.FC<NavigationProps> = ({
   className,
@@ -188,8 +183,46 @@ const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [navigationCategories, setNavigationCategories] = useState<NavCategory[]>(fallbackNavigation)
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Load navigation data from CMS
+  useEffect(() => {
+    const loadNavigation = async () => {
+      try {
+        setIsLoading(true)
+
+        // Check cache first
+        const cached = getCachedNavigation()
+        if (cached) {
+          setNavigationCategories(cached.data)
+          setIsLoading(false)
+          return
+        }
+
+        // Fetch from CMS
+        const response = await CMSService.getNavigation()
+
+        if (response.success && response.data) {
+          const transformedNavigation = transformCMSNavigationToCategories(response.data)
+          setNavigationCategories(transformedNavigation)
+          setCachedNavigation(transformedNavigation)
+        } else {
+          throw new Error(response.error || 'Failed to load navigation')
+        }
+      } catch (error) {
+        console.error('Error loading navigation:', error)
+        // Keep fallback navigation on error
+        setNavigationCategories(fallbackNavigation)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadNavigation()
+  }, [])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -225,13 +258,26 @@ const Navigation: React.FC<NavigationProps> = ({
     }
   }
 
-  const handleNavItemClick = (path: string) => {
+  const handleNavItemClick = (item: NavItem) => {
+    const { path, target_blank } = item
+
+    // Handle anchor links
     if (path.startsWith('#')) {
       const element = document.querySelector(path)
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
       }
-    } else {
+    }
+    // Handle external links
+    else if (path.startsWith('http://') || path.startsWith('https://')) {
+      if (target_blank) {
+        window.open(path, '_blank', 'noopener,noreferrer')
+      } else {
+        window.location.href = path
+      }
+    }
+    // Handle internal navigation
+    else {
       navigate(path)
     }
 
@@ -243,6 +289,19 @@ const Navigation: React.FC<NavigationProps> = ({
     styles.navigation,
     className
   ].filter(Boolean).join(' ')
+
+  // Show loading state without blocking navigation render
+  if (isLoading && navigationCategories === fallbackNavigation) {
+    return (
+      <nav className={navigationClasses}>
+        <ul className={styles.navList}>
+          <li className={styles.navItem}>
+            <span className={styles.loadingText}>Loading navigation...</span>
+          </li>
+        </ul>
+      </nav>
+    )
+  }
 
   return (
     <nav className={navigationClasses}>
@@ -291,9 +350,13 @@ const Navigation: React.FC<NavigationProps> = ({
                           <button
                             key={item.path}
                             className={`${styles.megaMenuItem} ${item.featured ? styles.featured : ''}`}
-                            onClick={() => handleNavItemClick(item.path)}
+                            onClick={() => handleNavItemClick(item)}
                           >
-                            {item.icon && <span className={styles.itemIcon}>{item.icon}</span>}
+                            {item.icon && (
+                              <span className={styles.itemIcon}>
+                                <Icon name={item.icon as IconName} size="sm" />
+                              </span>
+                            )}
                             <div className={styles.itemContent}>
                               <span className={styles.itemLabel}>{item.label}</span>
                               {item.description && (
@@ -314,9 +377,13 @@ const Navigation: React.FC<NavigationProps> = ({
                       <li key={item.path} className={styles.dropdownItem}>
                         <button
                           className={`${styles.dropdownLink} ${item.featured ? styles.featured : ''}`}
-                          onClick={() => handleNavItemClick(item.path)}
+                          onClick={() => handleNavItemClick(item)}
                         >
-                          {item.icon && <span className={styles.itemIcon}>{item.icon}</span>}
+                          {item.icon && (
+                            <span className={styles.itemIcon}>
+                              <Icon name={item.icon as IconName} size="sm" />
+                            </span>
+                          )}
                           <div className={styles.itemContent}>
                             <span className={styles.itemLabel}>{item.label}</span>
                             {item.description && (

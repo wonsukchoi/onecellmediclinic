@@ -1,0 +1,164 @@
+/* TextBlockRenderer.module.css */
+.textBlock {
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Text alignment */
+.align--left {
+  text-align: left;
+}
+
+.align--center {
+  text-align: center;
+}
+
+.align--right {
+  text-align: right;
+}
+
+.align--justify {
+  text-align: justify;
+}
+
+/* Font sizes */
+.size--small {
+  font-size: 0.875rem;
+}
+
+.size--medium {
+  font-size: 1rem;
+}
+
+.size--large {
+  font-size: 1.125rem;
+}
+
+.size--xlarge {
+  font-size: 1.25rem;
+}
+
+/* Typography enhancements */
+.textBlock h1,
+.textBlock h2,
+.textBlock h3,
+.textBlock h4,
+.textBlock h5,
+.textBlock h6 {
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #222;
+}
+
+.textBlock h1 {
+  font-size: 2rem;
+}
+
+.textBlock h2 {
+  font-size: 1.75rem;
+}
+
+.textBlock h3 {
+  font-size: 1.5rem;
+}
+
+.textBlock h4 {
+  font-size: 1.25rem;
+}
+
+.textBlock h5 {
+  font-size: 1.125rem;
+}
+
+.textBlock h6 {
+  font-size: 1rem;
+}
+
+.textBlock p {
+  margin: 0 0 1rem 0;
+}
+
+.textBlock ul,
+.textBlock ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.textBlock li {
+  margin-bottom: 0.5rem;
+}
+
+.textBlock blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #007bff;
+  background-color: #f8f9fa;
+  font-style: italic;
+}
+
+.textBlock a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.textBlock a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.textBlock img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.textBlock table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.textBlock th,
+.textBlock td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.textBlock th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.textBlock strong {
+  font-weight: 600;
+}
+
+.textBlock em {
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .textBlock h1 {
+    font-size: 1.75rem;
+  }
+
+  .textBlock h2 {
+    font-size: 1.5rem;
+  }
+
+  .textBlock h3 {
+    font-size: 1.25rem;
+  }
+
+  .textBlock table {
+    font-size: 0.875rem;
+  }
+
+  .textBlock th,
+  .textBlock td {
+    padding: 0.5rem;
+  }
+}
