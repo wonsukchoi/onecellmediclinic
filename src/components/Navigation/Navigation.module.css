@@ -91,8 +91,8 @@
 }
 
 .dropdownContent {
-  padding: calc(var(--spacing-lg) * 2) var(--spacing-lg);
-  max-width: 1200px;
+  padding: calc(var(--spacing-lg) * 2) 20px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
   background: rgba(255, 255, 255, 0);
