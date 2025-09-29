@@ -31,9 +31,9 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
-  max-width: 1200px;
+  max-width: 1400px; /* Updated from 1200px to 1400px to match other sections */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 20px; /* Updated from 1rem to 20px to match other sections */
 }
 
 .logo {
@@ -214,7 +214,7 @@
   }
 
   .headerInner {
-    padding: 0 1rem;
+    padding: 0 16px; /* Updated to match other sections' mobile padding */
   }
   
   .rightSection {
