@@ -341,9 +341,6 @@ export class DatabaseService {
 
   static async signOut(): Promise<ApiResponse> {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
       // Clear the session cache when user logs out
       clearSessionCache();
 
@@ -377,9 +374,8 @@ export class DatabaseService {
       const userProfile: UserProfile = {
         id: user.id,
         email: user.email || "",
-        full_name: (user.user_metadata?.name || user.user_metadata?.full_name) as
-          | string
-          | undefined,
+        full_name: (user.user_metadata?.name ||
+          user.user_metadata?.full_name) as string | undefined,
         phone: user.user_metadata?.phone as string | undefined,
         role: isAdmin ? "admin" : "patient",
         created_at: user.created_at as string | undefined,
@@ -427,20 +423,20 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'get_all',
+            action: "get_all",
             table,
-            params
-          })
+            params,
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to fetch data');
+        throw new Error(result.error || "Failed to fetch data");
       }
 
       return result;
@@ -460,20 +456,20 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'get_by_id',
+            action: "get_by_id",
             table,
-            id
-          })
+            id,
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to get record');
+        throw new Error(result.error || "Failed to get record");
       }
 
       return result;
@@ -493,20 +489,20 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'create',
+            action: "create",
             table,
-            data
-          })
+            data,
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to create record');
+        throw new Error(result.error || "Failed to create record");
       }
 
       return result;
@@ -527,21 +523,21 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'update',
+            action: "update",
             table,
             id,
-            data
-          })
+            data,
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to update record');
+        throw new Error(result.error || "Failed to update record");
       }
 
       return result;
@@ -561,20 +557,20 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'delete',
+            action: "delete",
             table,
-            id
-          })
+            id,
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to delete record');
+        throw new Error(result.error || "Failed to delete record");
       }
 
       return result;
@@ -592,18 +588,18 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'get_admin_stats'
-          })
+            action: "get_admin_stats",
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to get admin stats');
+        throw new Error(result.error || "Failed to get admin stats");
       }
 
       return result;
@@ -656,20 +652,20 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'bulk_delete',
+            action: "bulk_delete",
             table,
-            params: { ids }
-          })
+            params: { ids },
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to bulk delete');
+        throw new Error(result.error || "Failed to bulk delete");
       }
 
       return result;
@@ -689,20 +685,20 @@ export class AdminService {
       const response = await fetch(
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
-          method: 'POST',
+          method: "POST",
           headers: getAuthHeadersFast(),
           body: JSON.stringify({
-            action: 'bulk_update',
+            action: "bulk_update",
             table,
-            params: { updates }
-          })
+            params: { updates },
+          }),
         }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to bulk update');
+        throw new Error(result.error || "Failed to bulk update");
       }
 
       return result;
