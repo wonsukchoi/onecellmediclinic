@@ -55,6 +55,12 @@
   }
 }
 
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .nav {
   position: relative;
 }
@@ -85,6 +91,7 @@
 
 .languageSwitcher {
   /* Language switcher styles are defined in its own module */
+  margin-left: var(--spacing-sm);
 }
 
 .navItem {
@@ -177,14 +184,14 @@
 }
 
 .btnCta {
-  background: var(--color-primary);
-  color: var(--color-text-white);
+  background: transparent;
+  color: #000;
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-full);
-  font-weight: 600;
+  font-weight: 400;
   text-decoration: none;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
-  border: 2px solid var(--color-primary);
+  border: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -194,9 +201,7 @@
 }
 
 .btnCta:hover {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
-  transform: translateY(-1px);
+  /* No hover effect */
   box-shadow: none;
 }
 
@@ -210,6 +215,12 @@
 
   .headerInner {
     padding: 0 1rem;
+  }
+  
+  .rightSection {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
   }
 
   .navToggle {

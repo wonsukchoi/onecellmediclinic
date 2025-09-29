@@ -59,35 +59,38 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
           />
         </Link>
 
-        <nav className={styles.nav} aria-label="Primary">
-          <button
-            className={toggleClasses}
-            aria-controls="nav-menu"
-            aria-expanded={isMobileMenuOpen}
-            aria-label={t('navigation.menu')}
-            onClick={toggleMobileMenu}
-          >
-            <span></span>
-          </button>
+        <div className={styles.rightSection}>
+          <nav className={styles.nav} aria-label="Primary">
+            <button
+              className={toggleClasses}
+              aria-controls="nav-menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-label={t('navigation.menu')}
+              onClick={toggleMobileMenu}
+            >
+              <span></span>
+            </button>
 
-          <div id="nav-menu" className={menuClasses}>
-            <Navigation
-              className={styles.navigation}
-              onNavigate={handleNavigationClose}
-            />
+            <div id="nav-menu" className={menuClasses}>
+              <Navigation
+                className={styles.navigation}
+                onNavigate={handleNavigationClose}
+              />
 
-            <div className={styles.ctaContainer}>
-              <LanguageSwitcher className={styles.languageSwitcher} variant="toggle" />
-              <Link
-                to="/reservation"
-                className={styles.btnCta}
-                onClick={handleNavigationClose}
-              >
-                {t('header.reservation_cta')}
-              </Link>
+              <div className={styles.ctaContainer}>
+                <Link
+                  to="/reservation"
+                  className={styles.btnCta}
+                  onClick={handleNavigationClose}
+                >
+                  {t('header.reservation_cta')}
+                </Link>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+          
+          <LanguageSwitcher className={styles.languageSwitcher} variant="toggle" />
+        </div>
       </div>
     </header>
   )

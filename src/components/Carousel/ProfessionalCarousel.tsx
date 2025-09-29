@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay, EffectFade, Thumbs } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
+import BlurText from '../BlurText'
 
 // Note: Swiper styles will be handled by the CSS module
 
@@ -141,13 +142,31 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
                 >
                   <div className={styles.contentInner}>
                     {item.subtitle && (
-                      <p className={styles.slideSubtitle}>{item.subtitle}</p>
+                      <BlurText 
+                        text={item.subtitle}
+                        delay={150}
+                        animateBy="words"
+                        direction="top"
+                        className={styles.slideSubtitle}
+                      />
                     )}
                     {item.title && (
-                      <h2 className={styles.slideTitle}>{item.title}</h2>
+                      <BlurText 
+                        text={item.title}
+                        delay={200}
+                        animateBy="words"
+                        direction="top"
+                        className={styles.slideTitle}
+                      />
                     )}
                     {item.description && (
-                      <p className={styles.slideDescription}>{item.description}</p>
+                      <BlurText 
+                        text={item.description}
+                        delay={250}
+                        animateBy="words"
+                        direction="top"
+                        className={styles.slideDescription}
+                      />
                     )}
                     {item.cta && (
                       <button
