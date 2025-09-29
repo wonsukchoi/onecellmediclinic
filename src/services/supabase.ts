@@ -18,7 +18,7 @@ const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXFra253cGdyZW1mdWdjYnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzAwNTAsImV4cCI6MjA3NDQ0NjA1MH0.llYPWCVtWr6OWI_zRFYkeYMzGqaw9nfAQKU3VUV-Fgg";
 
 // Singleton pattern for Supabase client
-class SupabaseService {
+export class SupabaseService {
   private static instance: SupabaseClient | null = null;
   private static publicInstance: SupabaseClient | null = null;
 

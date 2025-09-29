@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DatabaseService, AdminService } from '../services/supabase';
+import { DatabaseService, AdminService, supabase } from '../services/supabase';
 import type { AdminContextType, AdminStats } from '../types/admin';
 import type { UserProfile } from '../types';
 
@@ -27,7 +27,11 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
         if (userData.role === 'admin' || userData.email?.includes('admin')) {
           setUser(userData);
           setIsAuthenticated(true);
-          await loadStats();
+          // Load stats in the background, don't wait for it
+          loadStats().catch(error => {
+            console.error('Error loading initial stats:', error);
+            // Continue even if stats fail to load
+          });
         } else {
           setUser(null);
           setIsAuthenticated(false);
@@ -69,7 +73,10 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
           if (userData.role === 'admin' || userData.email?.includes('admin')) {
             setUser(userData);
             setIsAuthenticated(true);
-            await loadStats();
+            // Load stats in the background, don't wait for it
+            loadStats().catch(error => {
+              console.error('Error loading stats after login:', error);
+            });
             return { success: true };
           } else {
             await DatabaseService.signOut();
@@ -112,7 +119,48 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
+    // Check initial auth status
     checkAuthStatus();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          // User signed in - verify admin role
+          const result = await DatabaseService.getCurrentUser();
+          if (result.success && result.data) {
+            const userData = result.data;
+            if (userData.role === 'admin' || userData.email?.includes('admin')) {
+              setUser(userData);
+              setIsAuthenticated(true);
+              setLoading(false);
+              // Load stats in background
+              loadStats().catch(error => {
+                console.error('Error loading stats on auth change:', error);
+              });
+            } else {
+              setUser(null);
+              setIsAuthenticated(false);
+              setLoading(false);
+            }
+          } else {
+            setUser(null);
+            setIsAuthenticated(false);
+            setLoading(false);
+          }
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setIsAuthenticated(false);
+          setStats(null);
+          setLoading(false);
+        } else if (event === 'TOKEN_REFRESHED' && session) {
+          // Session refreshed - just ensure loading is false
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const value: AdminContextType = {
