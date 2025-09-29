@@ -1,41 +1,34 @@
 .container {
+  width: 100%;
   min-height: 100vh;
-  background: #f8fafc;
+  padding-top: calc(var(--header-height) + 2rem);
+  padding-bottom: 4rem;
+  background-color: var(--color-background-white);
 }
 
-.hero {
-  background: #f8fafc;
-  color: #000000;
-  padding: 80px 20px 60px;
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+
+.heroTitle {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #000;
   text-align: center;
 }
 
-.heroContent {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.heroTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.heroDescription {
-  font-size: 1.2rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto;
-}
 
 .notice {
-  padding: 40px 20px;
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 0 20px 40px;
+  background: var(--color-background-white);
 }
 
 .noticeContent {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -85,11 +78,11 @@
 }
 
 .feesSection {
-  padding: 60px 20px;
+  padding: 0 20px 40px;
 }
 
 .feesContent {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './MedicalFeesGuidePage.module.css';
 
@@ -13,6 +13,18 @@ interface FeeItem {
 const MedicalFeesGuidePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isKorean = i18n.language === 'kr';
+  
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // For Safari
+    
+    // Fallback with timeout
+    setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+  }, []);
 
   // Medical fees data
   const feeData: FeeItem[] = [
@@ -85,73 +97,68 @@ const MedicalFeesGuidePage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>
-            {isKorean ? '비급여 진료비용 안내' : 'Non-Covered Medical Fees Guide'}
-          </h1>
-          <p className={styles.heroDescription}>
-            {isKorean ? '투명하고 합리적인 가격으로 최고의 서비스를 제공합니다' : 'We provide the best service with transparent and reasonable prices'}
-          </p>
-        </div>
-      </section>
-
-      <section className={styles.feesSection}>
-        <div className={styles.feesContent}>
-          <div className={styles.tableContainer}>
-            <table className={styles.feesTable}>
-              <thead>
-                <tr>
-                  <th>{isKorean ? '기본항목' : 'Category'}</th>
-                  <th>{isKorean ? '코드' : 'Code'}</th>
-                  <th>{isKorean ? '세부항목' : 'Detail'}</th>
-                  <th>{isKorean ? '단위' : 'Unit'}</th>
-                  <th>{isKorean ? '가격(단위:원)' : 'Price (KRW)'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.map(category => (
-                  <React.Fragment key={category}>
-                    {groupedData[category].map((item, index) => (
-                      <tr key={`${category}-${index}`} className={index === 0 ? styles.categoryStart : ''}>
-                        {index === 0 ? (
-                          <td rowSpan={groupedData[category].length} className={styles.categoryCell}>
-                            {item.category}
-                          </td>
-                        ) : null}
-                        <td className={styles.codeCell}>{item.code}</td>
-                        <td className={styles.detailCell}>{item.detail}</td>
-                        <td className={styles.unitCell}>{item.unit}</td>
-                        <td className={styles.priceCell}>{item.price}</td>
-                      </tr>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.notice}>
-        <div className={styles.noticeContent}>
-          <div className={styles.noticeCard}>
-            <div className={styles.noticeIcon}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-              </svg>
-            </div>
-            <div className={styles.noticeText}>
-              <h3>{isKorean ? '비급여 진료비용 안내 유의사항' : 'Important Notes on Non-Covered Medical Fees'}</h3>
-              <ul>
-                <li>{isKorean ? '표시된 가격은 기본 시술 기준이며, 개인의 상태에 따라 달라질 수 있습니다.' : 'Listed prices are based on standard procedures and may vary depending on individual conditions.'}</li>
-                <li>{isKorean ? '정확한 비용은 전문의 상담 후 확정됩니다.' : 'Exact costs are determined after consultation with a specialist.'}</li>
-                <li>{isKorean ? '모든 시술은 사전 상담이 필요합니다.' : 'All procedures require prior consultation.'}</li>
-              </ul>
+      <div className={styles.content}>
+        <h1 className={styles.heroTitle}>
+          {isKorean ? '비급여 진료비용 안내' : 'Non-Covered Medical Fees Guide'}
+        </h1>
+        
+        <section className={styles.feesSection}>
+          <div className={styles.feesContent}>
+            <div className={styles.tableContainer}>
+              <table className={styles.feesTable}>
+                <thead>
+                  <tr>
+                    <th>{isKorean ? '기본항목' : 'Category'}</th>
+                    <th>{isKorean ? '코드' : 'Code'}</th>
+                    <th>{isKorean ? '세부항목' : 'Detail'}</th>
+                    <th>{isKorean ? '단위' : 'Unit'}</th>
+                    <th>{isKorean ? '가격(단위:원)' : 'Price (KRW)'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories.map(category => (
+                    <React.Fragment key={category}>
+                      {groupedData[category].map((item, index) => (
+                        <tr key={`${category}-${index}`} className={index === 0 ? styles.categoryStart : ''}>
+                          {index === 0 ? (
+                            <td rowSpan={groupedData[category].length} className={styles.categoryCell}>
+                              {item.category}
+                            </td>
+                          ) : null}
+                          <td className={styles.codeCell}>{item.code}</td>
+                          <td className={styles.detailCell}>{item.detail}</td>
+                          <td className={styles.unitCell}>{item.unit}</td>
+                          <td className={styles.priceCell}>{item.price}</td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <section className={styles.notice}>
+          <div className={styles.noticeContent}>
+            <div className={styles.noticeCard}>
+              <div className={styles.noticeIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+              </div>
+              <div className={styles.noticeText}>
+                <h3>{isKorean ? '비급여 진료비용 안내 유의사항' : 'Important Notes on Non-Covered Medical Fees'}</h3>
+                <ul>
+                  <li>{isKorean ? '표시된 가격은 기본 시술 기준이며, 개인의 상태에 따라 달라질 수 있습니다.' : 'Listed prices are based on standard procedures and may vary depending on individual conditions.'}</li>
+                  <li>{isKorean ? '정확한 비용은 전문의 상담 후 확정됩니다.' : 'Exact costs are determined after consultation with a specialist.'}</li>
+                  <li>{isKorean ? '모든 시술은 사전 상담이 필요합니다.' : 'All procedures require prior consultation.'}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

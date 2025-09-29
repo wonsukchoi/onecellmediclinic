@@ -60,11 +60,11 @@ const Footer: React.FC = () => {
 
       <div className={styles.footerBottom}>
         <div className={styles.footerPolicies}>
-          <Link to="/privacy-policy">{t('footer.privacy_policy')}</Link>
+          <Link to="/privacy-policy" onClick={() => window.scrollTo(0, 0)}>{t('footer.privacy_policy')}</Link>
           <span className={styles.separator}>|</span>
-          <Link to="/terms-and-conditions">{t('footer.terms_of_service')}</Link>
+          <Link to="/terms-and-conditions" onClick={() => window.scrollTo(0, 0)}>{t('footer.terms_of_service')}</Link>
           <span className={styles.separator}>|</span>
-          <Link to="/medical-fees">{t('footer.medical_fees_guide')}</Link>
+          <Link to="/medical-fees" onClick={() => window.scrollTo(0, 0)}>{t('footer.medical_fees_guide')}</Link>
         </div>
 
         <div className={styles.footerMeta}>

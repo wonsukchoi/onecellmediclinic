@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './PrivacyPolicyPage.module.css';
 
 const PrivacyPolicyPage: React.FC = () => {
   const { i18n } = useTranslation();
   const isKorean = i18n.language === 'kr';
+  
+  useEffect(() => {
+    // Reset scroll position when component mounts
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // For Safari
+    
+    // Fallback with timeout
+    setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+  }, []);
 
   return (
     <div className={styles.container}>
