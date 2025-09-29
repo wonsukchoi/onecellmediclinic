@@ -30,6 +30,7 @@ import DynamicPage from "./pages/DynamicPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
+import MedicalFeesGuidePage from "./pages/MedicalFeesGuidePage";
 
 // Member imports
 import { MemberProvider } from "./contexts/MemberContext";
@@ -480,6 +481,24 @@ const App: React.FC = () => {
                           element={
                             <ErrorBoundary>
                               <TermsAndConditionsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Medical Fees Guide Page */}
+                        <Route
+                          path="/medical-fees"
+                          element={
+                            <ErrorBoundary>
+                              <MedicalFeesGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/medical-fees"
+                          element={
+                            <ErrorBoundary>
+                              <MedicalFeesGuidePage />
                             </ErrorBoundary>
                           }
                         />

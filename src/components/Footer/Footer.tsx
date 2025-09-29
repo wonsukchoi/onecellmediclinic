@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
           <span className={styles.separator}>|</span>
           <Link to="/terms-and-conditions">{t('footer.terms_of_service')}</Link>
           <span className={styles.separator}>|</span>
-          <a href="#">{t('footer.medical_fees_guide')}</a>
+          <Link to="/medical-fees">{t('footer.medical_fees_guide')}</Link>
         </div>
 
         <div className={styles.footerMeta}>

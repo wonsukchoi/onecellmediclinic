@@ -1,0 +1,187 @@
+.container {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.hero {
+  background: #f8fafc;
+  color: #000000;
+  padding: 80px 20px 60px;
+  text-align: center;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.heroDescription {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.notice {
+  padding: 40px 20px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.noticeContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.noticeCard {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  align-items: flex-start;
+}
+
+.noticeIcon {
+  color: #000000;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.noticeText h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 0.75rem;
+}
+
+.noticeText ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.noticeText li {
+  position: relative;
+  padding-left: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333333;
+  line-height: 1.5;
+}
+
+.noticeText li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #000000;
+  font-weight: bold;
+}
+
+.feesSection {
+  padding: 60px 20px;
+}
+
+.feesContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: white;
+}
+
+.feesTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.feesTable th {
+  background-color: #000000;
+  color: white;
+  text-align: left;
+  padding: 16px;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.feesTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.feesTable tr:last-child td {
+  border-bottom: none;
+}
+
+.feesTable tr:hover {
+  background-color: #f7fafc;
+}
+
+.categoryCell {
+  font-weight: 600;
+  background-color: #f5f5f5;
+  color: #000000;
+  border-right: 1px solid #e2e8f0;
+}
+
+.categoryStart td {
+  border-top: 2px solid #e0e0e0;
+}
+
+.codeCell {
+  font-family: monospace;
+  color: #718096;
+}
+
+.detailCell {
+  font-weight: 500;
+}
+
+.unitCell {
+  text-align: center;
+  color: #4a5568;
+}
+
+.priceCell {
+  text-align: right;
+  font-weight: 600;
+  color: #000000;
+}
+
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .noticeCard {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .feesTable {
+    font-size: 0.85rem;
+  }
+
+  .feesTable th {
+    padding: 12px 8px;
+  }
+
+  .feesTable td {
+    padding: 10px 8px;
+  }
+}
