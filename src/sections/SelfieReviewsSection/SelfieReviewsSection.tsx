@@ -172,6 +172,10 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
             tablet: 3,
             mobile: 1.5
           }}
+          autoScroll={true}
+          autoScrollInterval={4000}
+          pauseOnHover={true}
+          pauseOnInteraction={true}
         >
           {filteredReviews.map((review) => (
             <div
