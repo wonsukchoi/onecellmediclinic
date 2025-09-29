@@ -33,6 +33,14 @@ import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import MedicalFeesGuidePage from "./pages/MedicalFeesGuidePage";
 import PatientsRightsPage from "./pages/PatientsRightsPage";
 
+// Context imports
+import { SupabaseProvider } from "./contexts/SupabaseContext";
+import { DatabaseProvider } from "./contexts/DatabaseContext";
+import { BookingProvider } from "./contexts/BookingContext";
+import { CMSProvider } from "./contexts/CMSContext";
+import { ConsultationProvider } from "./contexts/ConsultationContext";
+import { FeaturesProvider } from "./contexts/FeaturesContext";
+
 // Member imports
 import { MemberProvider } from "./contexts/MemberContext";
 import MemberProtectedRoute from "./components/member/MemberProtectedRoute";
@@ -75,10 +83,16 @@ import "./styles/globals.css";
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <AdminProvider>
-        <MemberProvider>
-          <Router>
-            <LanguageRouter>
+      <SupabaseProvider>
+        <DatabaseProvider>
+          <BookingProvider>
+            <CMSProvider>
+              <ConsultationProvider>
+                <FeaturesProvider>
+                  <AdminProvider>
+                    <MemberProvider>
+                      <Router>
+                        <LanguageRouter>
               <Routes>
             {/* Member routes */}
             <Route path="/member/login" element={<MemberLoginPage />} />
@@ -562,10 +576,16 @@ const App: React.FC = () => {
               }
             />
               </Routes>
-            </LanguageRouter>
-          </Router>
-        </MemberProvider>
-      </AdminProvider>
+                        </LanguageRouter>
+                      </Router>
+                    </MemberProvider>
+                  </AdminProvider>
+                </FeaturesProvider>
+              </ConsultationProvider>
+            </CMSProvider>
+          </BookingProvider>
+        </DatabaseProvider>
+      </SupabaseProvider>
     </ErrorBoundary>
   );
 };

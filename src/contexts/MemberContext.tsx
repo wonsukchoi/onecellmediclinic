@@ -1,20 +1,31 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import { supabase } from '../services/supabase';
-import { MemberService } from '../services/member.service';
-import type { MemberProfile, ApiResponse } from '../types';
-import { getAuthStateFast, clearAuthFast } from '../utils/fast-auth';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
+import type { UserProfile, ApiResponse } from "../types";
+import {
+  getAuthStateFast,
+  clearAuthFast,
+  getFunctionsUrl,
+  getAuthHeaders,
+  getUserCached,
+} from "../utils/fast-auth";
+import { useSupabase } from "./SupabaseContext";
 
 interface MemberContextType {
-  member: MemberProfile | null;
+  member: UserProfile | null;
   loading: boolean;
-  signIn: (email: string, password: string, rememberMe?: boolean) => Promise<ApiResponse>;
+  signIn: (
+    email: string,
+    password: string,
+    rememberMe?: boolean
+  ) => Promise<ApiResponse>;
   signUp: (signupData: any) => Promise<ApiResponse>;
   signOut: () => Promise<ApiResponse>;
-  updateProfile: (profileData: Partial<MemberProfile>) => Promise<ApiResponse>;
+  updateProfile: (profileData: Partial<UserProfile>) => Promise<ApiResponse>;
   refreshMember: () => Promise<void>;
   resetPassword: (email: string) => Promise<ApiResponse>;
-  updatePassword: (newPassword: string) => Promise<ApiResponse>;
+  verifyEmail: (token: string) => Promise<ApiResponse>;
+  uploadAvatar: (file: File) => Promise<ApiResponse<string>>;
+  resendVerificationEmail: () => Promise<ApiResponse>;
 }
 
 const MemberContext = createContext<MemberContextType | undefined>(undefined);
@@ -24,94 +35,142 @@ interface MemberProviderProps {
 }
 
 export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
-  const [member, setMember] = useState<MemberProfile | null>(null);
+  const [member, setMember] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const supabaseContext = useSupabase();
+  const supabase = supabaseContext?.client;
 
   useEffect(() => {
-    // Get initial session
-    initializeAuth();
+    if (!supabase) return;
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        await loadMemberProfile(session.user.id);
-      } else if (event === 'SIGNED_OUT') {
+    } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
+      if (session?.user) {
+        void loadMemberProfile(session.user.id, session.access_token);
+      } else {
         setMember(null);
-      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-        await loadMemberProfile(session.user.id);
       }
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    void refreshMemberData();
 
-  const initializeAuth = async () => {
-    try {
-      // Use fast auth check instead of slow getSession()
-      const authState = getAuthStateFast();
-      if (authState.user && !authState.isExpired) {
-        await loadMemberProfile(authState.user.id);
-      }
-    } catch (error) {
-      console.error('Error initializing auth:', error);
-    } finally {
-      setLoading(false);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  const refreshMemberData = async () => {
+    setLoading(true);
+    const auth = await getAuthStateFast();
+    if (auth?.user?.id) {
+      await loadMemberProfile(auth.user.id);
     }
+    setLoading(false);
   };
 
-  const loadMemberProfile = async (userId: string) => {
+  const loadMemberProfile = async (
+    userId: string,
+    jwt?: string | undefined
+  ): Promise<void> => {
+    if (!supabase) return;
+
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = jwt ? await supabase.auth.getUser(jwt) : await getUserCached(supabase);
 
-      // Only load profile for members (not admins or providers)
-      if (user?.user_metadata?.role === 'member' || !user?.user_metadata?.role) {
-        const result = await MemberService.getMemberProfile(userId);
-        if (result.success && result.data) {
-          setMember(result.data);
-        } else {
-          // If profile doesn't exist, create it from auth user data
-          if (user) {
-            const profileData = {
-              id: user.id,
-              email: user.email!,
-              name: user.user_metadata?.name || user.user_metadata?.full_name,
-              phone: user.user_metadata?.phone,
-              date_of_birth: user.user_metadata?.date_of_birth,
-              gender: user.user_metadata?.gender,
-              membership_type: 'basic' as const,
-              member_since: user.created_at,
-              total_visits: 0
-            };
-
-            const createResult = await MemberService.createMemberProfile(profileData);
-            if (createResult.success) {
-              setMember(createResult.data!);
-            }
-          }
+      if (
+        !user?.user_metadata?.role ||
+        user?.user_metadata?.role === "member"
+      ) {
+        if (user) {
+          const profileData = {
+            id: user.id,
+            email: user.email!,
+            full_name:
+              user.user_metadata?.name || user.user_metadata?.full_name,
+            phone: user.user_metadata?.phone,
+            date_of_birth: user.user_metadata?.date_of_birth,
+            gender: user.user_metadata?.gender,
+            membership_type: (user.user_metadata?.membership_type as "basic" | "premium" | "vip") || "basic",
+            member_since: user.created_at,
+            total_visits: user.user_metadata?.total_visits || 0,
+            profile_image_url: user.user_metadata?.profile_image_url,
+          };
+          setMember(profileData);
         }
       }
     } catch (error) {
-      console.error('Error loading member profile:', error);
+      console.error("Error loading member profile:", error);
     }
   };
 
-  const signIn = async (email: string, password: string, rememberMe?: boolean): Promise<ApiResponse> => {
-    try {
-      setLoading(true);
-      const result = await MemberService.signIn({ email, password, rememberMe });
 
-      if (result.success && result.data?.user) {
-        await loadMemberProfile(result.data.user.id);
+  const createMemberProfile = async (
+    profileData: any
+  ): Promise<ApiResponse<UserProfile>> => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await fetch(`${getFunctionsUrl()}/member-operations`, {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "create_profile",
+          profileData,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: data.error || "Failed to create member profile",
+        };
       }
 
-      return result;
-    } catch (error) {
+      return { success: true, data: data.profile };
+    } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error:
+          error.message || "An error occurred while creating member profile",
+      };
+    }
+  };
+
+  const signIn = async (
+    email: string,
+    password: string,
+    _rememberMe?: boolean
+  ): Promise<ApiResponse> => {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized" };
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        await loadMemberProfile(data.user.id, data.session?.access_token);
+      }
+
+      return { success: true, data };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || "Sign in failed",
       };
     } finally {
       setLoading(false);
@@ -119,14 +178,50 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
   };
 
   const signUp = async (signupData: any): Promise<ApiResponse> => {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized" };
+    }
+
     try {
       setLoading(true);
-      const result = await MemberService.signUp(signupData);
-      return result;
-    } catch (error) {
+      const { data, error } = await supabase.auth.signUp({
+        email: signupData.email,
+        password: signupData.password,
+        options: {
+          data: {
+            name: signupData.name,
+            phone: signupData.phone,
+            date_of_birth: signupData.dateOfBirth,
+            gender: signupData.gender,
+            role: "member",
+          },
+          emailRedirectTo: `${window.location.origin}/member/verify-email`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        const profileData = {
+          id: data.user.id,
+          email: signupData.email,
+          full_name: signupData.name,
+          phone: signupData.phone,
+          date_of_birth: signupData.dateOfBirth,
+          gender: signupData.gender,
+          membership_type: "basic" as const,
+          member_since: new Date().toISOString(),
+          total_visits: 0,
+        };
+        await createMemberProfile(profileData);
+        setMember(profileData);
+      }
+
+      return { success: true, data };
+    } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error.message || "Sign up failed",
       };
     } finally {
       setLoading(false);
@@ -134,76 +229,161 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
   };
 
   const signOut = async (): Promise<ApiResponse> => {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized" };
+    }
+
     try {
       setLoading(true);
-      const result = await MemberService.signOut();
-      if (result.success) {
-        // Clear fast auth cache
-        clearAuthFast();
-        setMember(null);
-      }
-      return result;
-    } catch (error) {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      clearAuthFast();
+      setMember(null);
+
+      return { success: true };
+    } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error.message || "Sign out failed",
       };
     } finally {
       setLoading(false);
     }
   };
 
-  const updateProfile = async (profileData: Partial<MemberProfile>): Promise<ApiResponse> => {
+  const updateProfile = async (
+    profileData: Partial<UserProfile>
+  ): Promise<ApiResponse> => {
+    if (!member || !supabase) {
+      return { success: false, error: "No member logged in" };
+    }
+
     try {
-      if (!member) {
-        throw new Error('No member logged in');
-      }
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          ...profileData,
+          membership_type: profileData.membership_type || member.membership_type,
+          total_visits: profileData.total_visits ?? member.total_visits,
+        },
+      });
 
-      const result = await MemberService.updateMemberProfile(member.id, profileData);
+      if (error) throw error;
 
-      if (result.success && result.data) {
-        setMember(result.data);
-      }
+      const updatedMember = { ...member, ...profileData };
+      setMember(updatedMember);
 
-      return result;
-    } catch (error) {
+      return { success: true, data: updatedMember };
+    } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error.message || "An error occurred while updating profile",
       };
-    }
-  };
-
-  const refreshMember = async (): Promise<void> => {
-    try {
-      if (member) {
-        await loadMemberProfile(member.id);
-      }
-    } catch (error) {
-      console.error('Error refreshing member:', error);
     }
   };
 
   const resetPassword = async (email: string): Promise<ApiResponse> => {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized" };
+    }
+
     try {
-      return await MemberService.resetPassword(email);
-    } catch (error) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/member/reset-password`,
+      });
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error.message || "Password reset failed",
       };
     }
   };
 
-  const updatePassword = async (newPassword: string): Promise<ApiResponse> => {
+  const verifyEmail = async (token: string): Promise<ApiResponse> => {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized" };
+    }
+
     try {
-      return await MemberService.updatePassword(newPassword);
-    } catch (error) {
+      const { error } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: "email",
+      });
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error.message || "Email verification failed",
       };
     }
+  };
+
+  const uploadAvatar = async (file: File): Promise<ApiResponse<string>> => {
+    if (!supabase || !member) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${member.id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, file, {
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
+      const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
+
+      await updateProfile({ profile_image_url: avatarUrl });
+
+      return { success: true, data: avatarUrl };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || "Avatar upload failed",
+      };
+    }
+  };
+
+  const resendVerificationEmail = async (): Promise<ApiResponse> => {
+    if (!supabase || !member) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: member.email || "",
+        options: {
+          emailRedirectTo: `${window.location.origin}/member/verify-email`,
+        },
+      });
+
+      if (error) throw error;
+
+      return { success: true };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || "Failed to resend verification email",
+      };
+    }
+  };
+
+  const refreshMember = async () => {
+    await refreshMemberData();
   };
 
   const value: MemberContextType = {
@@ -215,22 +395,20 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
     updateProfile,
     refreshMember,
     resetPassword,
-    updatePassword
+    verifyEmail,
+    uploadAvatar,
+    resendVerificationEmail,
   };
 
   return (
-    <MemberContext.Provider value={value}>
-      {children}
-    </MemberContext.Provider>
+    <MemberContext.Provider value={value}>{children}</MemberContext.Provider>
   );
 };
 
-export const useMember = (): MemberContextType => {
+export const useMember = () => {
   const context = useContext(MemberContext);
-  if (context === undefined) {
-    throw new Error('useMember must be used within a MemberProvider');
+  if (!context) {
+    throw new Error("useMember must be used within a MemberProvider");
   }
   return context;
 };
-
-export default MemberContext;

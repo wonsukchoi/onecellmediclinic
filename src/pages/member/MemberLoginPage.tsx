@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MemberService } from '../../services/member.service';
+import { useMember } from '../../contexts/MemberContext';
 import type { MemberLoginFormData } from '../../types';
 import MainLayout from '../../components/MainLayout/MainLayout';
 import styles from './MemberLoginPage.module.css';
@@ -10,6 +10,7 @@ const MemberLoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { member, signIn } = useMember();
 
   const [formData, setFormData] = useState<MemberLoginFormData>({
     email: '',
@@ -26,23 +27,19 @@ const MemberLoginPage: React.FC = () => {
     // Reset scroll position when component mounts
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0; // For Safari
-    
+
     // Fallback with timeout
     setTimeout(() => {
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
     }, 100);
 
-    const checkUser = async () => {
-      const result = await MemberService.getCurrentMember();
-      if (result.success && result.data) {
-        // Redirect to mypage if already logged in
-        const from = location.state?.from?.pathname || '/member/mypage';
-        navigate(from, { replace: true });
-      }
-    };
-    checkUser();
-  }, [navigate, location]);
+    // Redirect if already logged in
+    if (member) {
+      const from = location.state?.from?.pathname || '/member/mypage';
+      navigate(from, { replace: true });
+    }
+  }, [member, location.state?.from?.pathname, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -82,7 +79,7 @@ const MemberLoginPage: React.FC = () => {
     setError('');
 
     try {
-      const result = await MemberService.signIn(formData);
+      const result = await signIn(formData.email, formData.password, formData.rememberMe);
 
       if (result.success) {
         // Redirect to intended page or mypage

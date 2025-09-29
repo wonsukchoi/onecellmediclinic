@@ -24,7 +24,7 @@ const ReservationPage: React.FC = () => {
     if (member) {
       setFormData(prev => ({
         ...prev,
-        patientName: member.name || '',
+        patientName: member.full_name || '',
         patientEmail: member.email || '',
         patientPhone: member.phone || ''
       }));
@@ -51,7 +51,7 @@ const ReservationPage: React.FC = () => {
       if (result.success) {
         setSuccess(true);
         setFormData({
-          patientName: member?.name || '',
+          patientName: member?.full_name || '',
           patientEmail: member?.email || '',
           patientPhone: member?.phone || '',
           serviceType: '',
