@@ -12,8 +12,8 @@ interface StickyScrollBarProps {
 interface AppointmentFormState {
   patientName: string;
   patientPhone: string;
-  preferredDate: string;
-  preferredTime: string;
+  consultationItem: string;
+  memo: string;
   privacyConsent: boolean; // Privacy policy consent
   marketingConsent: boolean; // Marketing consent
   isSubmitting: boolean;
@@ -34,8 +34,8 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
   const [appointmentForm, setAppointmentForm] = useState<AppointmentFormState>({
     patientName: "",
     patientPhone: "",
-    preferredDate: "",
-    preferredTime: "",
+    consultationItem: "",
+    memo: "",
     privacyConsent: false,
     marketingConsent: false,
     isSubmitting: false,
@@ -104,8 +104,7 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
       if (
         !appointmentForm.patientName.trim() ||
         !appointmentForm.patientPhone.trim() ||
-        !appointmentForm.preferredDate ||
-        !appointmentForm.preferredTime ||
+        !appointmentForm.consultationItem.trim() ||
         !appointmentForm.privacyConsent
       ) {
         setAppointmentForm((prev) => ({
@@ -126,10 +125,10 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
           patientName: appointmentForm.patientName.trim(),
           patientEmail: "quickbooking@clinic.temp", // Placeholder email for quick bookings from homepage
           patientPhone: appointmentForm.patientPhone.trim(),
-          serviceType: "상담", // Default to consultation
-          preferredDate: appointmentForm.preferredDate,
-          preferredTime: appointmentForm.preferredTime,
-          notes: "홈페이지 하단 바에서 빠른 예약",
+          serviceType: appointmentForm.consultationItem.trim(),
+          preferredDate: new Date().toISOString().split('T')[0], // Use today's date as default
+          preferredTime: "09:00", // Default time
+          notes: appointmentForm.memo.trim() || "홈페이지 하단 바에서 빠른 상담 문의",
         };
 
         const result = await DatabaseService.bookAppointment(appointmentData);
@@ -138,8 +137,8 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
           setAppointmentForm({
             patientName: "",
             patientPhone: "",
-            preferredDate: "",
-            preferredTime: "",
+            consultationItem: "",
+            memo: "",
             privacyConsent: false,
             marketingConsent: false,
             isSubmitting: false,
@@ -155,22 +154,20 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
           setAppointmentForm((prev) => ({
             ...prev,
             isSubmitting: false,
-            error: result.error || "예약 중 오류가 발생했습니다.",
+            error: result.error || "상담 문의 중 오류가 발생했습니다.",
           }));
         }
       } catch (error) {
         setAppointmentForm((prev) => ({
           ...prev,
           isSubmitting: false,
-          error: "예약 중 오류가 발생했습니다.",
+          error: "상담 문의 중 오류가 발생했습니다.",
         }));
       }
     },
     [appointmentForm]
   );
 
-  // Get today's date for min date attribute
-  const today = new Date().toISOString().split("T")[0];
 
   const stickyBarClasses = [styles.stickyScrollBar, styles.visible, className]
     .filter(Boolean)
@@ -187,7 +184,7 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
           {appointmentForm.success && (
             <div className={styles.successMessage}>
               <Icon name="check" size="sm" />
-              <span>예약이 성공적으로 접수되었습니다!</span>
+              <span>상담 문의가 성공적으로 접수되었습니다!</span>
             </div>
           )}
 
@@ -236,55 +233,45 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="preferredDate" className={styles.formLabel}>
-                예약일
-              </label>
-              <input
-                id="preferredDate"
-                type="date"
-                className={styles.formInput}
-                value={appointmentForm.preferredDate}
-                min={today}
-                onChange={(e) =>
-                  handleAppointmentFormChange("preferredDate", e.target.value)
-                }
-                disabled={appointmentForm.isSubmitting}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="preferredTime" className={styles.formLabel}>
-                예약시간
+              <label htmlFor="consultationItem" className={styles.formLabel}>
+                상담 항목
               </label>
               <select
-                id="preferredTime"
+                id="consultationItem"
                 className={styles.formSelect}
-                value={appointmentForm.preferredTime}
+                value={appointmentForm.consultationItem}
                 onChange={(e) =>
-                  handleAppointmentFormChange("preferredTime", e.target.value)
+                  handleAppointmentFormChange("consultationItem", e.target.value)
                 }
                 disabled={appointmentForm.isSubmitting}
                 required
               >
-                <option value="">시간 선택</option>
-                <option value="09:00">09:00</option>
-                <option value="09:30">09:30</option>
-                <option value="10:00">10:00</option>
-                <option value="10:30">10:30</option>
-                <option value="11:00">11:00</option>
-                <option value="11:30">11:30</option>
-                <option value="12:00">12:00</option>
-                <option value="14:00">14:00</option>
-                <option value="14:30">14:30</option>
-                <option value="15:00">15:00</option>
-                <option value="15:30">15:30</option>
-                <option value="16:00">16:00</option>
-                <option value="16:30">16:30</option>
-                <option value="17:00">17:00</option>
-                <option value="17:30">17:30</option>
-                <option value="18:00">18:00</option>
+                <option value="">상담 항목 선택</option>
+                <option value="성형외과 상담">성형외과 상담</option>
+                <option value="피부과 상담">피부과 상담</option>
+                <option value="미용 시술 상담">미용 시술 상담</option>
+                <option value="레이저 치료 상담">레이저 치료 상담</option>
+                <option value="주름 개선 상담">주름 개선 상담</option>
+                <option value="여드름 치료 상담">여드름 치료 상담</option>
+                <option value="기타 상담">기타 상담</option>
               </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="memo" className={styles.formLabel}>
+                남길 메모
+              </label>
+              <textarea
+                id="memo"
+                className={styles.formTextarea}
+                placeholder="궁금한 사항이나 요청사항을 자유롭게 남겨주세요"
+                value={appointmentForm.memo}
+                onChange={(e) =>
+                  handleAppointmentFormChange("memo", e.target.value)
+                }
+                disabled={appointmentForm.isSubmitting}
+                rows={3}
+              />
             </div>
 
             <div className={styles.actionGroup}>
@@ -296,11 +283,11 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
                 {appointmentForm.isSubmitting ? (
                   <>
                     <Icon name="loader" size="sm" />
-                    <span>예약 중...</span>
+                    <span>문의 중...</span>
                   </>
                 ) : (
                   <>
-                    <span>예약하기</span>
+                    <span>상담 문의</span>
                   </>
                 )}
               </button>

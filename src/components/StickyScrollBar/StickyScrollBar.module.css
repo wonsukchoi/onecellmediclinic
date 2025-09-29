@@ -236,7 +236,8 @@
 }
 
 .formInput,
-.formSelect {
+.formSelect,
+.formTextarea {
   padding: 12px 14px; /* Increased padding */
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
@@ -247,21 +248,30 @@
   min-height: 44px; /* Taller input fields */
 }
 
+.formTextarea {
+  resize: vertical;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
 .formInput:focus,
-.formSelect:focus {
+.formSelect:focus,
+.formTextarea:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: none; /* Removed shadow effects */
 }
 
 .formInput:disabled,
-.formSelect:disabled {
+.formSelect:disabled,
+.formTextarea:disabled {
   background: var(--color-background-light);
   color: var(--color-text-light);
   cursor: not-allowed;
 }
 
-.formInput::placeholder {
+.formInput::placeholder,
+.formTextarea::placeholder {
   color: var(--color-text-light);
   font-size: 13px;
 }
@@ -536,7 +546,8 @@
   }
 
   .formInput,
-  .formSelect {
+  .formSelect,
+  .formTextarea {
     font-size: 13px;
     padding: 8px 10px;
     min-height: 36px;
@@ -616,7 +627,8 @@
   }
 
   .formInput,
-  .formSelect {
+  .formSelect,
+  .formTextarea {
     font-size: 12px;
     padding: 7px 8px;
     min-height: 34px;
@@ -676,7 +688,8 @@
   }
 
   .formInput,
-  .formSelect {
+  .formSelect,
+  .formTextarea {
     font-size: 11px;
     padding: 6px 7px;
     min-height: 32px;
@@ -765,6 +778,7 @@
 .homepageButton:focus-visible,
 .formInput:focus-visible,
 .formSelect:focus-visible,
+.formTextarea:focus-visible,
 .submitButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -793,6 +807,7 @@
   .homepageButton,
   .formInput,
   .formSelect,
+  .formTextarea,
   .submitButton {
     transition: none;
   }
