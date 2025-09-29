@@ -1,6 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { MantineProvider } from '@mantine/core'
 import App from './App.tsx'
+
+// Import Mantine CSS
+import '@mantine/core/styles.css'
 
 // Import Swiper CSS
 import 'swiper/swiper-bundle.css'
@@ -31,6 +35,8 @@ window.addEventListener('resize', setScrollbarWidth)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <MantineProvider>
+      <App />
+    </MantineProvider>
   </StrictMode>,
 )

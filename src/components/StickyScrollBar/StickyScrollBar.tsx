@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Select } from "@mantine/core";
 import { Icon } from "../icons";
 import { DatabaseService } from "../../services/supabase";
 import type { AppointmentFormData } from "../../types";
@@ -21,13 +21,19 @@ interface AppointmentFormState {
   success: boolean;
 }
 
+const consultationOptions = [
+  { value: "성형외과 상담", label: "성형외과 상담" },
+  { value: "피부과 상담", label: "피부과 상담" },
+  { value: "미용 시술 상담", label: "미용 시술 상담" },
+  { value: "레이저 치료 상담", label: "레이저 치료 상담" },
+  { value: "주름 개선 상담", label: "주름 개선 상담" },
+  { value: "여드름 치료 상담", label: "여드름 치료 상담" },
+  { value: "기타 상담", label: "기타 상담" },
+];
+
 const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
-  const [isVisible, setIsVisible] = useState(true); // Changed to true for immediate visibility
-  const [scrollDirection, setScrollDirection] = useState<"up" | "down">("up");
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+  // Removed unused variables: isCollapsed, setIsCollapsed, navigate, location, isVisible, scrollDirection
 
   // Check if current page is homepage
   // Appointment form state
@@ -43,24 +49,10 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     success: false,
   });
 
-  // Handle scroll direction and visibility
+  // Handle scroll tracking for future use
   useEffect(() => {
-    // Force visibility on component mount
-    setIsVisible(true);
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // Always keep visible
-      setIsVisible(true);
-
-      // Determine scroll direction
-      if (currentScrollY > lastScrollY && currentScrollY > 200) {
-        setScrollDirection("down");
-      } else {
-        setScrollDirection("up");
-      }
-
       setLastScrollY(currentScrollY);
     };
 
@@ -86,9 +78,10 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
       setAppointmentForm((prev) => ({
         ...prev,
         // Handle checkbox fields (convert string 'true'/'false' to boolean)
-        [field]: field === 'privacyConsent' || field === 'marketingConsent' 
-          ? value === 'true' 
-          : value,
+        [field]:
+          field === "privacyConsent" || field === "marketingConsent"
+            ? value === "true"
+            : value,
         error: null, // Clear error when user starts typing
         success: false, // Clear success when user modifies form
       }));
@@ -126,9 +119,11 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
           patientEmail: "quickbooking@clinic.temp", // Placeholder email for quick bookings from homepage
           patientPhone: appointmentForm.patientPhone.trim(),
           serviceType: appointmentForm.consultationItem.trim(),
-          preferredDate: new Date().toISOString().split('T')[0], // Use today's date as default
+          preferredDate: new Date().toISOString().split("T")[0], // Use today's date as default
           preferredTime: "09:00", // Default time
-          notes: appointmentForm.memo.trim() || "홈페이지 하단 바에서 빠른 상담 문의",
+          notes:
+            appointmentForm.memo.trim() ||
+            "홈페이지 하단 바에서 빠른 상담 문의",
         };
 
         const result = await DatabaseService.bookAppointment(appointmentData);
@@ -168,7 +163,6 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     [appointmentForm]
   );
 
-
   const stickyBarClasses = [styles.stickyScrollBar, styles.visible, className]
     .filter(Boolean)
     .join(" ");
@@ -197,14 +191,11 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
 
           <div className={styles.formFields}>
             <div className={styles.formGroup}>
-              <label htmlFor="patientName" className={styles.formLabel}>
-                이름
-              </label>
               <input
                 id="patientName"
                 type="text"
                 className={styles.formInput}
-                placeholder="이름을 입력하세요"
+                placeholder="이름"
                 value={appointmentForm.patientName}
                 onChange={(e) =>
                   handleAppointmentFormChange("patientName", e.target.value)
@@ -215,14 +206,11 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="patientPhone" className={styles.formLabel}>
-                연락처
-              </label>
               <input
                 id="patientPhone"
                 type="tel"
                 className={styles.formInput}
-                placeholder="010-0000-0000"
+                placeholder="연락처"
                 value={appointmentForm.patientPhone}
                 onChange={(e) =>
                   handleAppointmentFormChange("patientPhone", e.target.value)
@@ -233,38 +221,28 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="consultationItem" className={styles.formLabel}>
-                상담 항목
-              </label>
-              <select
+              <Select
                 id="consultationItem"
                 className={styles.formSelect}
+                placeholder="상담 항목"
+                data={consultationOptions}
                 value={appointmentForm.consultationItem}
-                onChange={(e) =>
-                  handleAppointmentFormChange("consultationItem", e.target.value)
+                onChange={(value) =>
+                  handleAppointmentFormChange("consultationItem", value || "")
                 }
                 disabled={appointmentForm.isSubmitting}
                 required
-              >
-                <option value="">상담 항목 선택</option>
-                <option value="성형외과 상담">성형외과 상담</option>
-                <option value="피부과 상담">피부과 상담</option>
-                <option value="미용 시술 상담">미용 시술 상담</option>
-                <option value="레이저 치료 상담">레이저 치료 상담</option>
-                <option value="주름 개선 상담">주름 개선 상담</option>
-                <option value="여드름 치료 상담">여드름 치료 상담</option>
-                <option value="기타 상담">기타 상담</option>
-              </select>
+                clearable={false}
+                searchable={false}
+                allowDeselect={false}
+              />
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="memo" className={styles.formLabel}>
-                남길 메모
-              </label>
               <textarea
                 id="memo"
                 className={styles.formTextarea}
-                placeholder="궁금한 사항이나 요청사항을 자유롭게 남겨주세요"
+                placeholder="남길 메모"
                 value={appointmentForm.memo}
                 onChange={(e) =>
                   handleAppointmentFormChange("memo", e.target.value)
@@ -275,6 +253,53 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
             </div>
 
             <div className={styles.actionGroup}>
+              <div className={styles.consentContainer}>
+                <div className={styles.consentItem}>
+                  <input
+                    type="checkbox"
+                    id="privacyConsent"
+                    checked={appointmentForm.privacyConsent}
+                    onChange={(e) =>
+                      handleAppointmentFormChange(
+                        "privacyConsent",
+                        e.target.checked.toString()
+                      )
+                    }
+                    className={styles.consentCheckbox}
+                    required
+                  />
+                  <label
+                    htmlFor="privacyConsent"
+                    className={styles.consentLabel}
+                  >
+                    개인정보 수집 및 이용 동의{" "}
+                    <span className={styles.requiredMark}>(필수)</span>
+                  </label>
+                </div>
+                <div className={styles.consentItem}>
+                  <input
+                    type="checkbox"
+                    id="marketingConsent"
+                    checked={appointmentForm.marketingConsent}
+                    onChange={(e) =>
+                      handleAppointmentFormChange(
+                        "marketingConsent",
+                        e.target.checked.toString()
+                      )
+                    }
+                    className={styles.consentCheckbox}
+                  />
+                  <label
+                    htmlFor="marketingConsent"
+                    className={styles.consentLabel}
+                  >
+                    마케팅 및 광고 동의{" "}
+                    <span className={styles.optionalMark}>(선택)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div>
               <button
                 type="submit"
                 className={styles.submitButton}
@@ -291,34 +316,6 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
                   </>
                 )}
               </button>
-              
-              <div className={styles.consentContainer}>
-                <div className={styles.consentItem}>
-                  <input
-                    type="checkbox"
-                    id="privacyConsent"
-                    checked={appointmentForm.privacyConsent}
-                    onChange={(e) => handleAppointmentFormChange("privacyConsent", e.target.checked.toString())}
-                    className={styles.consentCheckbox}
-                    required
-                  />
-                  <label htmlFor="privacyConsent" className={styles.consentLabel}>
-                    개인정보 수집 및 이용 동의 <span className={styles.requiredMark}>(필수)</span>
-                  </label>
-                </div>
-                <div className={styles.consentItem}>
-                  <input
-                    type="checkbox"
-                    id="marketingConsent"
-                    checked={appointmentForm.marketingConsent}
-                    onChange={(e) => handleAppointmentFormChange("marketingConsent", e.target.checked.toString())}
-                    className={styles.consentCheckbox}
-                  />
-                  <label htmlFor="marketingConsent" className={styles.consentLabel}>
-                    마케팅 및 광고 동의 <span className={styles.optionalMark}>(선택)</span>
-                  </label>
-                </div>
-              </div>
             </div>
           </div>
         </form>
