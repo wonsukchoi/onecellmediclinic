@@ -129,6 +129,8 @@
 .hoursText {
   color: #e2e8f0;
   font-size: 0.9rem;
+  white-space: pre-line;
+  line-height: 1.6;
 }
 
 .footerBottom {
@@ -225,6 +227,7 @@
 
   .hoursText {
     font-size: 0.85rem;
+    line-height: 1.7;
   }
 
   .footerBottom {
@@ -251,7 +254,7 @@
 
   .hoursText {
     font-size: 0.8rem;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   .footerPolicies {

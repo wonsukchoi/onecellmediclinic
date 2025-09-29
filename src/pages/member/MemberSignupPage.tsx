@@ -28,8 +28,18 @@ const MemberSignupPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [step, setStep] = useState(1); // Multi-step form
 
-  // Check if user is already logged in
+  // Check if user is already logged in and scroll to top
   useEffect(() => {
+    // Reset scroll position when component mounts
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // For Safari
+    
+    // Fallback with timeout
+    setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+
     const checkUser = async () => {
       const result = await MemberService.getCurrentMember();
       if (result.success && result.data) {

@@ -44,7 +44,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   };
 
   const getLanguageFlag = (language: SupportedLanguage): string => {
-    return language === 'kr' ? '🇰🇷' : '🇺🇸';
+    return language === 'kr' ? 'KR' : 'EN';
   };
 
   if (variant === 'toggle') {

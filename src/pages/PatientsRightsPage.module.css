@@ -1,0 +1,89 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary-900);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--color-primary-800);
+}
+
+.subTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-gray-200);
+  color: var(--color-primary-700);
+}
+
+.rightsList,
+.obligationsList {
+  padding-left: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.rightsItem,
+.obligationsItem {
+  margin-bottom: 1.5rem;
+}
+
+.rightsItem strong,
+.obligationsItem strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--color-primary-600);
+}
+
+.rightsItem p,
+.obligationsItem p {
+  line-height: 1.6;
+  color: var(--color-gray-700);
+}
+
+.rightsSection,
+.obligationsSection {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+  
+  .subTitle {
+    font-size: 1.125rem;
+  }
+}

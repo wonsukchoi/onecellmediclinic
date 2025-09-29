@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
 
 const Footer: React.FC = () => {
@@ -40,8 +41,8 @@ const Footer: React.FC = () => {
 
         <div className={styles.footerContact}>
           <div className={styles.contactSection}>
-            <div className={styles.contactLabel}>{t('footer.main_phone_label')}</div>
-            <div className={styles.contactNumber}>02. 1234. 5678</div>
+            <div className={styles.contactLabel}>{t('footer.consultation_label')}</div>
+            <div className={styles.contactNumber}>02-515-1114</div>
           </div>
           <div className={styles.contactSection}>
             <div className={styles.contactLabel}>{t('footer.kakao_label')}</div>
@@ -59,11 +60,13 @@ const Footer: React.FC = () => {
 
       <div className={styles.footerBottom}>
         <div className={styles.footerPolicies}>
-          <a href="#">{t('footer.privacy_policy')}</a>
+          <Link to="/privacy-policy" onClick={() => window.scrollTo(0, 0)}>{t('footer.privacy_policy')}</Link>
           <span className={styles.separator}>|</span>
-          <a href="#">{t('footer.terms_of_service')}</a>
+          <Link to="/terms-and-conditions" onClick={() => window.scrollTo(0, 0)}>{t('footer.terms_of_service')}</Link>
           <span className={styles.separator}>|</span>
-          <a href="#">{t('footer.medical_fees_guide')}</a>
+          <Link to="/medical-fees" onClick={() => window.scrollTo(0, 0)}>{t('footer.medical_fees_guide')}</Link>
+          <span className={styles.separator}>|</span>
+          <Link to="/patients-rights" onClick={() => window.scrollTo(0, 0)}>{t('footer.patients_rights')}</Link>
         </div>
 
         <div className={styles.footerMeta}>

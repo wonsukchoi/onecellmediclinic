@@ -15,7 +15,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <ErrorBoundary>
-      <div className="app">
+      <div id="top" className="app">
         <a href="#main-content" className="skip-link">
           {t("header.skip_to_main")}
         </a>

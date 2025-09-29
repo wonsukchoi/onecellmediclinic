@@ -28,6 +28,10 @@ import ModelProgramPage from "./pages/ModelProgramPage";
 import PriceGuidePage from "./pages/PriceGuidePage";
 import DynamicPage from "./pages/DynamicPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
+import MedicalFeesGuidePage from "./pages/MedicalFeesGuidePage";
+import PatientsRightsPage from "./pages/PatientsRightsPage";
 
 // Member imports
 import { MemberProvider } from "./contexts/MemberContext";
@@ -442,6 +446,78 @@ const App: React.FC = () => {
                           element={
                             <ErrorBoundary>
                               <PriceGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Privacy Policy Page */}
+                        <Route
+                          path="/privacy-policy"
+                          element={
+                            <ErrorBoundary>
+                              <PrivacyPolicyPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/privacy-policy"
+                          element={
+                            <ErrorBoundary>
+                              <PrivacyPolicyPage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Terms and Conditions Page */}
+                        <Route
+                          path="/terms-and-conditions"
+                          element={
+                            <ErrorBoundary>
+                              <TermsAndConditionsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/terms-and-conditions"
+                          element={
+                            <ErrorBoundary>
+                              <TermsAndConditionsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Medical Fees Guide Page */}
+                        <Route
+                          path="/medical-fees"
+                          element={
+                            <ErrorBoundary>
+                              <MedicalFeesGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/medical-fees"
+                          element={
+                            <ErrorBoundary>
+                              <MedicalFeesGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Patients' Rights Charter Page */}
+                        <Route
+                          path="/patients-rights"
+                          element={
+                            <ErrorBoundary>
+                              <PatientsRightsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/patients-rights"
+                          element={
+                            <ErrorBoundary>
+                              <PatientsRightsPage />
                             </ErrorBoundary>
                           }
                         />

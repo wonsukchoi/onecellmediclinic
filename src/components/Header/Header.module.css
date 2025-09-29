@@ -31,9 +31,9 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
-  max-width: 1200px;
+  max-width: 1400px; /* Updated from 1200px to 1400px to match other sections */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 20px; /* Updated from 1rem to 20px to match other sections */
 }
 
 .logo {
@@ -92,6 +92,8 @@
 .languageSwitcher {
   /* Language switcher styles are defined in its own module */
   margin-left: var(--spacing-sm);
+  position: relative;
+  z-index: 1001; /* Ensure dropdown appears above other elements */
 }
 
 .navItem {
@@ -186,9 +188,9 @@
 .btnCta {
   background: transparent;
   color: #000;
-  padding: var(--spacing-sm) var(--spacing-lg);
+  padding: 0.25rem 0.4rem;
   border-radius: var(--radius-full);
-  font-weight: 400;
+  font-weight: normal;
   text-decoration: none;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
   border: none;
@@ -196,8 +198,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--button-height-base);
+  font-size: 0.8rem;
   box-shadow: none;
+  white-space: nowrap;
 }
 
 .btnCta:hover {
@@ -214,13 +217,18 @@
   }
 
   .headerInner {
-    padding: 0 1rem;
+    padding: 0 16px; /* Updated to match other sections' mobile padding */
   }
   
   .rightSection {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+  }
+  
+  .languageSwitcher {
+    margin-left: 0;
+    margin-right: 8px; /* Add some space between language switcher and menu button */
   }
 
   .navToggle {
@@ -374,5 +382,7 @@
     text-align: center;
     display: block;
     width: 100%;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.4rem;
   }
 }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Navigation from '../Navigation/Navigation'
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher'
+import { useMember } from '../../contexts/MemberContext'
 import styles from './Header.module.css'
 
 interface HeaderProps {
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
   const { t } = useTranslation()
+  const { member } = useMember()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -78,18 +80,23 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
               />
 
               <div className={styles.ctaContainer}>
-                <Link
-                  to="/reservation"
-                  className={styles.btnCta}
-                  onClick={handleNavigationClose}
-                >
-                  {t('header.reservation_cta')}
-                </Link>
+                {!member && (
+                  <Link
+                    to="/member/login"
+                    className={styles.btnCta}
+                    onClick={() => {
+                      handleNavigationClose();
+                      window.scrollTo(0, 0);
+                    }}
+                  >
+                    {t('member.login')} | {t('member.signup')}
+                  </Link>
+                )}
               </div>
             </div>
           </nav>
           
-          <LanguageSwitcher className={styles.languageSwitcher} variant="toggle" />
+          <LanguageSwitcher className={styles.languageSwitcher} variant="dropdown" />
         </div>
       </div>
     </header>

@@ -74,8 +74,8 @@
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end; /* Changed from center to flex-end to align at bottom */
+  justify-content: flex-start; /* Changed from center to flex-start to align at left */
   padding: var(--spacing-xl);
 }
 
@@ -89,8 +89,9 @@
 
 .contentInner {
   max-width: 600px;
-  text-align: center;
+  text-align: left; /* Changed from center to left */
   animation: slideContentFadeIn 0.8s var(--easing-ease-out);
+  padding-bottom: var(--spacing-lg); /* Added padding at the bottom for better spacing */
 }
 
 .contentLeft .contentInner {
@@ -113,25 +114,27 @@
 }
 
 .slideTitle {
-  margin: 0 0 var(--spacing-lg) 0;
+  margin: 0 0 var(--spacing-md) 0; /* Reduced bottom margin */
   font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
   font-weight: 700;
   line-height: 1.2;
   color: var(--color-text-white);
-  /* Removed text shadow */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Added subtle text shadow for better readability */
   opacity: 0;
   animation: slideTextUp 0.8s var(--easing-ease-out) 0.4s forwards;
+  max-width: 90%; /* Limit width for better readability */
 }
 
 .slideDescription {
-  margin: 0 0 var(--spacing-2xl) 0;
+  margin: 0 0 var(--spacing-xl) 0; /* Reduced bottom margin */
   font-size: var(--text-lg);
   font-weight: 400;
   line-height: 1.6;
   color: var(--color-text-white);
-  /* Removed text shadow */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Added subtle text shadow for better readability */
   opacity: 0;
   animation: slideTextUp 0.8s var(--easing-ease-out) 0.6s forwards;
+  max-width: 80%; /* Limit width for better readability */
 }
 
 .slideCta {
@@ -384,6 +387,7 @@
 
   .slideContent {
     padding: var(--spacing-lg);
+    padding-bottom: var(--spacing-xl); /* Add extra padding at the bottom for mobile */
   }
 
   .slideTitle {
@@ -440,6 +444,7 @@
 
   .slideContent {
     padding: var(--spacing-md);
+    padding-bottom: var(--spacing-lg); /* Add extra padding at the bottom for small mobile */
   }
 
   .slideSubtitle {
