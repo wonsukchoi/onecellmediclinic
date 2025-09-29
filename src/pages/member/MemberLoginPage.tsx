@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MemberService } from '../../services/member.service';
 import type { MemberLoginFormData } from '../../types';
+import MainLayout from '../../components/MainLayout/MainLayout';
 import styles from './MemberLoginPage.module.css';
 
 const MemberLoginPage: React.FC = () => {
@@ -101,26 +102,19 @@ const MemberLoginPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
-      <div className={styles.loginCard}>
-        <button 
-          onClick={() => navigate(-1)} 
-          className={styles.backButton}
-        >
-          ← 뒤로가기
-        </button>
-        <div className={styles.logoSection}>
-          <img
-            src="/images/logo-dark.png"
-            alt={t('header.logo_alt')}
-            className={styles.logo}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/images/logo.png';
-            }}
-          />
-          <h1 className={styles.title}>{t('member.login_page_title')}</h1>
-          <p className={styles.subtitle}>{t('member.login_page_subtitle')}</p>
-        </div>
+    <MainLayout>
+      <div className={styles.loginContainer}>
+        <div className={styles.loginCard}>
+          <button 
+            onClick={() => navigate(-1)} 
+            className={styles.backButton}
+          >
+            ← 뒤로가기
+          </button>
+          <div className={styles.logoSection}>
+            <h1 className={styles.title}>{t('member.login_page_title')}</h1>
+            <p className={styles.subtitle}>{t('member.login_page_subtitle')}</p>
+          </div>
 
         <form onSubmit={handleSubmit} className={styles.loginForm}>
           {error && (
@@ -274,6 +268,7 @@ const MemberLoginPage: React.FC = () => {
         </div>
       </div>
     </div>
+    </MainLayout>
   );
 };
 

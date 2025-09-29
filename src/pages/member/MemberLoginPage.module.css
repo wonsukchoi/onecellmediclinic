@@ -1,44 +1,45 @@
 /* Member Login Page Styles */
 .loginContainer {
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: white;
+  padding: 100px 20px 40px;
   font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin-top: var(--header-height);
 }
 
 /* Back Button */
 .backButton {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  background: rgba(255, 255, 255, 0.8);
+  top: calc(var(--header-height) + 10px); /* Position right below the navbar */
+  left: 50%;
+  transform: translateX(-50%);
+  margin-left: -680px; /* Half of max-width (1400px/2 = 700px) minus 20px padding */
+  background: transparent;
   color: #1f2937;
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400; /* Changed from 600 to 400 for normal text weight */
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .backButton:hover {
-  background: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateX(-50%);
+  box-shadow: none;
 }
 
 .loginCard {
   background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   padding: 40px;
   width: 100%;
   max-width: 440px;
@@ -62,11 +63,7 @@
   margin-bottom: 32px;
 }
 
-.logo {
-  height: 48px;
-  width: auto;
-  margin-bottom: 16px;
-}
+/* Logo removed */
 
 .title {
   font-size: 28px;
@@ -400,6 +397,20 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1440px) {
+  .backButton {
+    margin-left: -47vw; /* Adjust for smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .backButton {
+    left: 20px;
+    transform: none;
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .loginContainer {
     padding: 16px;
@@ -437,7 +448,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .loginContainer {
-    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    background: white;
   }
 }
 

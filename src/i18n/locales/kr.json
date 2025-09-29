@@ -134,7 +134,7 @@
     "signup_success": "회원가입이 완료되었습니다",
     "signup_error": "회원가입에 실패했습니다",
     "login_page_title": "회원 로그인",
-    "login_page_subtitle": "원셀 메디클리닉 회원 서비스에 오신 것을 환영합니다",
+    "login_page_subtitle": "원셀메디의원 회원 서비스에 오신 것을 환영합니다",
     "email_address": "이메일 주소",
     "password_placeholder": "비밀번호를 입력하세요",
     "show_password": "비밀번호 보기",
