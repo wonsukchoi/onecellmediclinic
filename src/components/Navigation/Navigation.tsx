@@ -42,7 +42,6 @@ const iconMapping: Record<string, IconName> = {
   'chevron-up': 'chevronUp'
 }
 
-
 interface NavigationProps {
   className?: string
   onNavigate?: () => void
@@ -56,13 +55,93 @@ const fallbackNavigation: NavCategory[] = [
     items: [
       {
         label: '원셀 소개',
-        path: '#about',
+        path: '/about',
         description: '원셀 메디의원 소개'
       },
       {
         label: '의료진 소개',
-        path: '#doctors',
+        path: '/staff',
         description: '전문 의료진 프로필'
+      }
+    ]
+  },
+  {
+    id: 'stemcell',
+    title: '줄기세포',
+    items: [
+      {
+        label: '줄기세포 소개',
+        path: '/procedures/stemcell',
+        description: '줄기세포 치료 소개'
+      },
+      {
+        label: '줄기세포 시술',
+        path: '/procedures/stemcell-treatment',
+        description: '줄기세포 시술 안내'
+      }
+    ]
+  },
+  {
+    id: 'immune',
+    title: '면역치료',
+    items: [
+      {
+        label: '면역치료 소개',
+        path: '/procedures/immune',
+        description: '면역치료 소개'
+      },
+      {
+        label: '면역치료 시술',
+        path: '/procedures/immune-treatment',
+        description: '면역치료 시술 안내'
+      }
+    ]
+  },
+  {
+    id: 'dermatology',
+    title: '피부',
+    items: [
+      {
+        label: '피부 시술 소개',
+        path: '/procedures/dermatology',
+        description: '피부 시술 소개'
+      },
+      {
+        label: '피부 관리',
+        path: '/procedures/skin-care',
+        description: '피부 관리 프로그램'
+      }
+    ]
+  },
+  {
+    id: 'plastic',
+    title: '성형',
+    items: [
+      {
+        label: '성형 시술 소개',
+        path: '/procedures/plastic',
+        description: '성형 시술 소개'
+      },
+      {
+        label: '성형 프로그램',
+        path: '/procedures/plastic-programs',
+        description: '성형 프로그램 안내'
+      }
+    ]
+  },
+  {
+    id: 'pain',
+    title: '통증클리닉',
+    items: [
+      {
+        label: '통증 치료 소개',
+        path: '/procedures/pain',
+        description: '통증 치료 소개'
+      },
+      {
+        label: '통증 관리',
+        path: '/procedures/pain-management',
+        description: '통증 관리 프로그램'
       }
     ]
   },
@@ -73,7 +152,7 @@ const fallbackNavigation: NavCategory[] = [
     items: [
       {
         label: '온라인 상담',
-        path: '/booking/consultation',
+        path: '/consultation',
         description: '비대면 전문의 상담',
         featured: false
       },
@@ -88,7 +167,6 @@ const fallbackNavigation: NavCategory[] = [
 ]
 
 // Helper functions
-
 const getIconName = (iconName: string | null | undefined): IconName | undefined => {
   if (!iconName) return undefined
   const mappedIcon = iconMapping[iconName.toLowerCase()]
@@ -156,6 +234,13 @@ const Navigation: React.FC<NavigationProps> = ({
       try {
         setIsLoading(true)
 
+        // For now, use fallback navigation to ensure our new menu items are shown
+        setNavigationCategories(fallbackNavigation)
+        setIsLoading(false)
+        return;
+
+        // Commented out CMS navigation loading for now to use our custom menu
+        /*
         // Fetch from CMS with current language
         const currentLanguage = i18n.language === 'en' ? 'en' : 'kr'
         const response = await CMSService.getNavigation(currentLanguage)
@@ -169,6 +254,7 @@ const Navigation: React.FC<NavigationProps> = ({
           console.error('CMS Navigation Error:', response.error)
           throw new Error(response.error || 'Failed to load navigation')
         }
+        */
       } catch (error) {
         console.error('Error loading navigation:', error)
         // Keep fallback navigation on error
