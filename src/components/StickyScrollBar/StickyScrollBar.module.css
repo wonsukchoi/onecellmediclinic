@@ -196,7 +196,7 @@
   gap: 0;
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
-  padding: 16px 5%;
+  padding: 20px 0; /* Increased vertical padding for more breathing room */
   box-shadow: none; /* Removed shadow effects */
   border-top: 1px solid rgba(229, 231, 235, 0.8);
   z-index: 9999;
@@ -207,23 +207,24 @@
 /* Appointment Form Styles */
 .appointmentForm {
   width: 100%;
-  max-width: 100%; /* Full width */
+  max-width: 1400px; /* Match navbar width */
   margin: 0 auto;
+  padding: 0 20px; /* Match navbar padding */
 }
 
 .formFields {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columns for better distribution */
+  gap: 16px; /* Gap between form fields */
   align-items: flex-end;
-  gap: 12px;
-  flex-wrap: nowrap;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px; /* Increased gap between label and input */
   flex: 1;
-  min-width: 120px;
+  min-width: 130px; /* Slightly wider minimum width */
 }
 
 .formLabel {
@@ -236,14 +237,14 @@
 
 .formInput,
 .formSelect {
-  padding: 10px 12px;
+  padding: 12px 14px; /* Increased padding */
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
   font-size: 14px;
   background: var(--color-background-white);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--color-text-primary);
-  min-height: 40px;
+  min-height: 44px; /* Taller input fields */
 }
 
 .formInput:focus,
@@ -266,12 +267,12 @@
 }
 
 .submitButton {
-  padding: 10px 20px;
+  padding: 12px 24px; /* More padding */
   background: var(--color-primary);
   color: var(--color-text-white);
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 15px; /* Slightly larger font */
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -280,7 +281,7 @@
   justify-content: center;
   gap: 6px;
   white-space: nowrap;
-  min-height: 40px;
+  min-height: 44px; /* Taller button to match inputs */
   flex-shrink: 0;
 }
 
@@ -296,6 +297,54 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* Action Group (Submit + Consent) */
+.actionGroup {
+  grid-column: span 1; /* Takes one column */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+/* Consent Checkboxes Styles */
+.consentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Gap between consent items */
+  width: 100%;
+}
+
+.consentItem {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Increased gap between checkbox and label */
+}
+
+.consentCheckbox {
+  width: 18px; /* Larger checkbox */
+  height: 18px; /* Larger checkbox */
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.consentLabel {
+  font-size: 13px; /* Larger font size */
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4; /* Better line height for readability */
+}
+
+.requiredMark {
+  color: var(--color-status-error);
+  font-weight: 500;
+}
+
+.optionalMark {
+  color: var(--color-text-light);
+  font-weight: normal;
 }
 
 .successMessage,
@@ -468,28 +517,18 @@
 
   /* Mobile appointment form adjustments */
   .formFields {
-    flex-wrap: wrap;
-    gap: 8px;
+    grid-template-columns: 1fr 1fr; /* Two columns on mobile */
+    gap: 10px;
   }
-
-  .formGroup {
-    min-width: calc(50% - 4px);
+  
+  .actionGroup {
+    grid-column: span 2; /* Full width on mobile */
+    flex-direction: column-reverse; /* Consent above button on mobile */
+    gap: 12px;
   }
-
-  .formGroup:nth-child(1),
-  .formGroup:nth-child(2) {
-    flex: 1;
-  }
-
-  .formGroup:nth-child(3),
-  .formGroup:nth-child(4) {
-    flex: 1;
-  }
-
+  
   .submitButton {
-    flex: 1;
-    min-width: 100%;
-    margin-top: 8px;
+    width: 100%;
   }
 
   .formLabel {
@@ -507,6 +546,15 @@
     font-size: 13px;
     padding: 8px 16px;
     min-height: 36px;
+  }
+  
+  .consentContainer {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .consentLabel {
+    font-size: 11px;
   }
 
   .successMessage,
@@ -536,7 +584,11 @@
   }
 
   .homepageBottomBar {
-    padding: 12px 16px;
+    padding: 12px 0;
+  }
+  
+  .appointmentForm {
+    padding: 0 16px; /* Match navbar mobile padding */
   }
 
   .homepageButton {
@@ -551,11 +603,12 @@
 
   /* Small mobile appointment form */
   .formFields {
-    gap: 6px;
+    grid-template-columns: 1fr; /* Single column on small mobile */
+    gap: 8px;
   }
-
-  .formGroup {
-    min-width: 100%;
+  
+  .actionGroup {
+    grid-column: span 1; /* Match the single column layout */
   }
 
   .formLabel {
@@ -633,6 +686,15 @@
     font-size: 11px;
     padding: 6px 12px;
     min-height: 32px;
+  }
+  
+  .consentContainer {
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .consentLabel {
+    font-size: 10px;
   }
 
   .successMessage,

@@ -14,6 +14,8 @@ interface AppointmentFormState {
   patientPhone: string;
   preferredDate: string;
   preferredTime: string;
+  privacyConsent: boolean; // Privacy policy consent
+  marketingConsent: boolean; // Marketing consent
   isSubmitting: boolean;
   error: string | null;
   success: boolean;
@@ -34,6 +36,8 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     patientPhone: "",
     preferredDate: "",
     preferredTime: "",
+    privacyConsent: false,
+    marketingConsent: false,
     isSubmitting: false,
     error: null,
     success: false,
@@ -81,7 +85,10 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     (field: keyof AppointmentFormState, value: string) => {
       setAppointmentForm((prev) => ({
         ...prev,
-        [field]: value,
+        // Handle checkbox fields (convert string 'true'/'false' to boolean)
+        [field]: field === 'privacyConsent' || field === 'marketingConsent' 
+          ? value === 'true' 
+          : value,
         error: null, // Clear error when user starts typing
         success: false, // Clear success when user modifies form
       }));
@@ -98,11 +105,12 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
         !appointmentForm.patientName.trim() ||
         !appointmentForm.patientPhone.trim() ||
         !appointmentForm.preferredDate ||
-        !appointmentForm.preferredTime
+        !appointmentForm.preferredTime ||
+        !appointmentForm.privacyConsent
       ) {
         setAppointmentForm((prev) => ({
           ...prev,
-          error: "모든 필수 필드를 입력해주세요.",
+          error: "모든 필수 항목을 입력하고 개인정보 수집에 동의해주세요.",
         }));
         return;
       }
@@ -132,6 +140,8 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
             patientPhone: "",
             preferredDate: "",
             preferredTime: "",
+            privacyConsent: false,
+            marketingConsent: false,
             isSubmitting: false,
             error: null,
             success: true,
@@ -277,22 +287,52 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
               </select>
             </div>
 
-            <button
-              type="submit"
-              className={styles.submitButton}
-              disabled={appointmentForm.isSubmitting}
-            >
-              {appointmentForm.isSubmitting ? (
-                <>
-                  <Icon name="loader" size="sm" />
-                  <span>예약 중...</span>
-                </>
-              ) : (
-                <>
-                  <span>예약하기</span>
-                </>
-              )}
-            </button>
+            <div className={styles.actionGroup}>
+              <button
+                type="submit"
+                className={styles.submitButton}
+                disabled={appointmentForm.isSubmitting}
+              >
+                {appointmentForm.isSubmitting ? (
+                  <>
+                    <Icon name="loader" size="sm" />
+                    <span>예약 중...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>예약하기</span>
+                  </>
+                )}
+              </button>
+              
+              <div className={styles.consentContainer}>
+                <div className={styles.consentItem}>
+                  <input
+                    type="checkbox"
+                    id="privacyConsent"
+                    checked={appointmentForm.privacyConsent}
+                    onChange={(e) => handleAppointmentFormChange("privacyConsent", e.target.checked.toString())}
+                    className={styles.consentCheckbox}
+                    required
+                  />
+                  <label htmlFor="privacyConsent" className={styles.consentLabel}>
+                    개인정보 수집 및 이용 동의 <span className={styles.requiredMark}>(필수)</span>
+                  </label>
+                </div>
+                <div className={styles.consentItem}>
+                  <input
+                    type="checkbox"
+                    id="marketingConsent"
+                    checked={appointmentForm.marketingConsent}
+                    onChange={(e) => handleAppointmentFormChange("marketingConsent", e.target.checked.toString())}
+                    className={styles.consentCheckbox}
+                  />
+                  <label htmlFor="marketingConsent" className={styles.consentLabel}>
+                    마케팅 및 광고 동의 <span className={styles.optionalMark}>(선택)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
