@@ -264,24 +264,9 @@
     "server_error": "서버 오류"
   },
   "hero": {
-    "slide1": {
-      "title": "예쁨 급상승, 원셀 코성형",
-      "subtitle": "SHORT × SELFIE",
-      "description": "독보적인 이유, 맞춤형 코성형으로 오랫동안 자연스럽게",
-      "cta": "상담문의"
-    },
-    "slide2": {
-      "title": "피부과 시그니처, 원셀 피부과",
-      "subtitle": "DERM × SCIENCE",
-      "description": "VIP 프리미엄 케어 프로그램",
-      "cta": "더 알아보기"
-    },
-    "slide3": {
-      "title": "안전이 만든 아름다움",
-      "subtitle": "SAFE × PREMIUM",
-      "description": "3D-CT 정밀 수술 시스템으로 더욱 안전하고 정밀한 시술",
-      "cta": "예약하기"
-    }
+    "loading": "메인 슬라이드를 불러오는 중...",
+    "error": "슬라이드를 불러오는데 실패했습니다.",
+    "retry": "다시 시도"
   },
   "videoShorts": {
     "title": "비디오 쇼츠",

@@ -9,6 +9,7 @@ import type {
   ContactFormData,
   AppointmentFormData,
   ApiResponse,
+  HeroCarousel,
 } from "../types";
 
 // Supabase configuration
@@ -238,6 +239,27 @@ export class DatabaseService {
       return { success: true, data: result.data || [] };
     } catch (error) {
       console.error("Error fetching event banners:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
+
+  // Hero carousel
+  static async getHeroCarousel(): Promise<ApiResponse<HeroCarousel[]>> {
+    try {
+      const { data, error } = await supabase
+        .from('hero_carousel')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+
+      if (error) throw error;
+
+      return { success: true, data: data || [] };
+    } catch (error) {
+      console.error("Error fetching hero carousel:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",

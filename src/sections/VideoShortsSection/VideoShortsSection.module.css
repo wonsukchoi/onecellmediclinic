@@ -85,6 +85,10 @@
   box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
 }
 
+.horizontalScrollContainer {
+  margin-bottom: 40px;
+}
+
 .videosContainer {
   margin-bottom: 40px;
   display: grid;
@@ -105,6 +109,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  width: 300px;
+  flex-shrink: 0;
 }
 
 .videoCard:hover {
@@ -254,12 +260,20 @@
     padding: 0 15px;
     max-width: 800px;
   }
+
+  .videoCard {
+    width: 280px;
+  }
 }
 
 @media (max-width: 992px) {
   .videosContainer {
     grid-template-columns: repeat(2, 1fr);
     max-width: 600px;
+  }
+
+  .videoCard {
+    width: 260px;
   }
 }
 
@@ -290,6 +304,10 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     padding: 0 15px;
+  }
+
+  .videoCard {
+    width: 240px;
   }
 
   .videoInfo {
@@ -330,23 +348,27 @@
     gap: 10px;
   }
 
+  .videoCard {
+    width: 200px;
+  }
+
   .videoWrapper {
     aspect-ratio: 1/1.5;
   }
-  
+
   .videoInfo {
     padding: 20px;
     height: 45%;
   }
-  
+
   .videoTitle {
     font-size: 1rem;
   }
-  
+
   .videoDescription {
     font-size: 0.7rem;
   }
-  
+
   .brandTag {
     top: 12px;
     left: 12px;

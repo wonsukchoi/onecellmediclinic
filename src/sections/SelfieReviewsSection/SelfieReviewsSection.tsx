@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
+import HorizontalScroll from '../../components/HorizontalScroll'
 import styles from './SelfieReviewsSection.module.css'
 
 interface SelfieReview {
@@ -161,7 +162,17 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
           </div>
         )}
 
-        <div className={styles.reviewsGrid}>
+        <HorizontalScroll
+          className={styles.horizontalScrollContainer}
+          showIndicators={true}
+          itemWidth={320}
+          gap={25}
+          visibleItems={{
+            desktop: 4,
+            tablet: 3,
+            mobile: 1.5
+          }}
+        >
           {filteredReviews.map((review) => (
             <div
               key={review.id}
@@ -245,7 +256,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
               </div>
             </div>
           ))}
-        </div>
+        </HorizontalScroll>
 
         {filteredReviews.length === 0 && (
           <div className={styles.noReviews}>

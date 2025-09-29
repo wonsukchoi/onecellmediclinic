@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
+import HorizontalScroll from '../../components/HorizontalScroll'
 import styles from './VideoShortsSection.module.css'
 
 interface VideoShort {
@@ -119,12 +120,22 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
           </div>
         )}
 
-        <div className={styles.videosContainer}>
+        <HorizontalScroll
+          className={styles.horizontalScrollContainer}
+          showIndicators={true}
+          itemWidth={300}
+          gap={20}
+          visibleItems={{
+            desktop: 3,
+            tablet: 2,
+            mobile: 1.5
+          }}
+        >
           {filteredVideos.map((video) => (
             <div key={video.id} className={styles.videoCard}>
               <div className={styles.videoWrapper}>
-                <img 
-                  src={video.thumbnail_url || 'https://via.placeholder.com/400x500'} 
+                <img
+                  src={video.thumbnail_url || 'https://via.placeholder.com/400x500'}
                   alt={video.title}
                   className={styles.video}
                 />
@@ -140,7 +151,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
               </div>
             </div>
           ))}
-        </div>
+        </HorizontalScroll>
 
         {filteredVideos.length === 0 && (
           <div className={styles.noVideos}>

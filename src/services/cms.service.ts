@@ -122,8 +122,8 @@ export class CMSService {
   }
 
   // Header Navigation Management
-  static async getNavigation(): Promise<ApiResponse<HeaderNavigation[]>> {
-    return callEdgeFunction('manage-cms-navigation', 'hierarchy');
+  static async getNavigation(language: string = 'kr'): Promise<ApiResponse<HeaderNavigation[]>> {
+    return callEdgeFunction('manage-cms-navigation', 'hierarchy', { language });
   }
 
   static async getAllNavigationItems(params: {

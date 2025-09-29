@@ -100,6 +100,10 @@
   box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
 }
 
+.horizontalScrollContainer {
+  margin-bottom: 50px;
+}
+
 .videosGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -116,6 +120,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 380px;
+  flex-shrink: 0;
 }
 
 .videoCard:hover {
@@ -415,6 +421,10 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 25px;
   }
+
+  .videoCard {
+    width: 350px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -443,6 +453,10 @@
   .videosGrid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+
+  .videoCard {
+    width: 320px;
   }
 
   .videoInfo {
@@ -487,6 +501,10 @@
   .categoryButton {
     white-space: nowrap;
     flex-shrink: 0;
+  }
+
+  .videoCard {
+    width: 280px;
   }
 
   .videoInfo {
