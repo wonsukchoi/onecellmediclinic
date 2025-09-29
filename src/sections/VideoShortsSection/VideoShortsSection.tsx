@@ -130,6 +130,10 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
             tablet: 2,
             mobile: 1.5
           }}
+          autoScroll={true}
+          autoScrollInterval={4000}
+          pauseOnHover={true}
+          pauseOnInteraction={true}
         >
           {filteredVideos.map((video) => (
             <div key={video.id} className={styles.videoCard}>

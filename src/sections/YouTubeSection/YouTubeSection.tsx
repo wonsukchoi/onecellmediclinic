@@ -215,6 +215,10 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
             tablet: 2,
             mobile: 1.2
           }}
+          autoScroll={true}
+          autoScrollInterval={5000}
+          pauseOnHover={true}
+          pauseOnInteraction={true}
         >
           {filteredVideos.map((video) => (
             <div key={video.id} className={`${styles.videoCard} ${video.featured ? styles.featured : ''}`}>

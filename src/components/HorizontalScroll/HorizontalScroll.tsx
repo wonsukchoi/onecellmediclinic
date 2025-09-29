@@ -13,6 +13,10 @@ interface HorizontalScrollProps {
     tablet: number
     mobile: number
   }
+  autoScroll?: boolean
+  autoScrollInterval?: number
+  pauseOnHover?: boolean
+  pauseOnInteraction?: boolean
 }
 
 const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
@@ -22,7 +26,11 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
   itemWidth = 300,
   gap = 20,
   backgroundColor = '#ffffff',
-  visibleItems = { desktop: 4, tablet: 3, mobile: 2 }
+  visibleItems = { desktop: 4, tablet: 3, mobile: 2 },
+  autoScroll = false,
+  autoScrollInterval = 4000,
+  pauseOnHover = true,
+  pauseOnInteraction = true
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [scrollPosition, setScrollPosition] = useState(0)
@@ -30,6 +38,10 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, scrollLeft: 0 })
   const [currentVisibleItems, setCurrentVisibleItems] = useState(visibleItems.desktop)
+  const [isPaused, setIsPaused] = useState(false)
+  const [isUserInteracting, setIsUserInteracting] = useState(false)
+  const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const updateScrollMetrics = () => {
@@ -72,6 +84,52 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
     return () => container.removeEventListener('wheel', handleWheel)
   }, [])
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!autoScroll || isPaused || isUserInteracting || maxScroll === 0) {
+      if (autoScrollTimeoutRef.current) {
+        clearTimeout(autoScrollTimeoutRef.current)
+        autoScrollTimeoutRef.current = null
+      }
+      return
+    }
+
+    const startAutoScroll = () => {
+      if (autoScrollTimeoutRef.current) {
+        clearTimeout(autoScrollTimeoutRef.current)
+      }
+
+      autoScrollTimeoutRef.current = setTimeout(() => {
+        if (scrollContainerRef.current && !isPaused && !isUserInteracting) {
+          const currentScroll = scrollContainerRef.current.scrollLeft
+          const scrollAmount = itemWidth + gap
+
+          // Calculate next scroll position
+          let nextPosition = currentScroll + scrollAmount
+
+          // Loop back to beginning if we've reached or passed the end
+          if (nextPosition >= maxScroll) {
+            nextPosition = 0
+          }
+
+          // Smooth scroll to next position
+          scrollContainerRef.current.scrollTo({
+            left: nextPosition,
+            behavior: 'smooth'
+          })
+        }
+      }, autoScrollInterval)
+    }
+
+    startAutoScroll()
+
+    return () => {
+      if (autoScrollTimeoutRef.current) {
+        clearTimeout(autoScrollTimeoutRef.current)
+      }
+    }
+  }, [autoScroll, isPaused, isUserInteracting, maxScroll, autoScrollInterval, itemWidth, gap])
+
   // Handle scroll position tracking
   const handleScroll = () => {
     if (scrollContainerRef.current) {
@@ -79,9 +137,32 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
     }
   }
 
+  // User interaction handlers for auto-scroll pause
+  const handleUserInteractionStart = () => {
+    if (pauseOnInteraction) {
+      setIsUserInteracting(true)
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current)
+      }
+    }
+  }
+
+  const handleUserInteractionEnd = () => {
+    if (pauseOnInteraction) {
+      // Resume auto-scroll after a brief delay
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current)
+      }
+      pauseTimeoutRef.current = setTimeout(() => {
+        setIsUserInteracting(false)
+      }, 2000) // Resume after 2 seconds of no interaction
+    }
+  }
+
   // Touch/mouse drag handling
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true)
+    handleUserInteractionStart()
     setDragStart({
       x: e.pageX,
       scrollLeft: scrollContainerRef.current?.scrollLeft || 0
@@ -99,10 +180,12 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
 
   const handleMouseUp = () => {
     setIsDragging(false)
+    handleUserInteractionEnd()
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsDragging(true)
+    handleUserInteractionStart()
     setDragStart({
       x: e.touches[0].pageX,
       scrollLeft: scrollContainerRef.current?.scrollLeft || 0
@@ -119,6 +202,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
 
   const handleTouchEnd = () => {
     setIsDragging(false)
+    handleUserInteractionEnd()
   }
 
   // Navigation functions
@@ -129,15 +213,19 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
   }
 
   const scrollNext = () => {
+    handleUserInteractionStart()
     const scrollAmount = (itemWidth + gap) * currentVisibleItems
     const newPosition = Math.min(scrollPosition + scrollAmount, maxScroll)
     scrollToPosition(newPosition)
+    handleUserInteractionEnd()
   }
 
   const scrollPrev = () => {
+    handleUserInteractionStart()
     const scrollAmount = (itemWidth + gap) * currentVisibleItems
     const newPosition = Math.max(scrollPosition - scrollAmount, 0)
     scrollToPosition(newPosition)
+    handleUserInteractionEnd()
   }
 
   // Calculate progress for indicators
@@ -145,9 +233,47 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
   const canScrollLeft = scrollPosition > 0
   const canScrollRight = scrollPosition < maxScroll
 
+  // Hover handlers for auto-scroll pause
+  const handleMouseEnter = () => {
+    if (pauseOnHover) {
+      setIsPaused(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (pauseOnHover) {
+      setIsPaused(false)
+    }
+  }
+
+  // Focus handlers for accessibility
+  const handleFocus = () => {
+    setIsPaused(true)
+  }
+
+  const handleBlur = () => {
+    setIsPaused(false)
+  }
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (autoScrollTimeoutRef.current) {
+        clearTimeout(autoScrollTimeoutRef.current)
+      }
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
     <div
       className={`${styles.horizontalScrollWrapper} ${className}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       style={{
         '--fade-color': backgroundColor
       } as React.CSSProperties}

@@ -7,16 +7,18 @@ import EventsSection from "../sections/EventsSection";
 import SelfieReviewsSection from "../sections/SelfieReviewsSection";
 import YouTubeSection from "../sections/YouTubeSection";
 import DifferentiatorsSection from "../sections/DifferentiatorsSection";
+import StickyScrollBar from "../components/StickyScrollBar";
 
 const HomePage: React.FC = () => {
   return (
-    <main style={{ paddingBottom: "100px" }}>
+    <main>
       <HeroSection />
       <VideoShortsSection />
       <ClinicFeaturesSection />
       <EventsSection />
       <SelfieReviewsSection />
       <YouTubeSection />
+      <StickyScrollBar />
     </main>
   );
 };
