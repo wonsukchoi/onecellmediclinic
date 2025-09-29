@@ -84,7 +84,10 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
                   <Link
                     to="/member/login"
                     className={styles.btnCta}
-                    onClick={handleNavigationClose}
+                    onClick={() => {
+                      handleNavigationClose();
+                      window.scrollTo(0, 0);
+                    }}
                   >
                     {t('member.login')} | {t('member.signup')}
                   </Link>

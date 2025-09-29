@@ -57,15 +57,16 @@
     "copyright": "© 2025 OneCell Medical Clinic. All rights reserved.",
     "full_address": "9-21 Samsung-dong, Gangnam-gu, Seoul",
     "address_note": "(5 min walk from Gangnam-gu Office Station, Line 7, Suin-Bundang Line)",
-    "main_phone_label": "Main Phone",
+    "consultation_label": "Consultation",
     "kakao_label": "KakaoTalk",
     "hours_label": "Operating Hours",
-    "hours_detail": "Mon - Fri AM 10:00 - PM 07:00   Saturday AM 10:00 - PM 05:00",
+    "hours_detail": "Mon, Tue, Wed, Fri AM 10:00 ~ PM 07:00 (Wed closed biweekly) * Weekday last admission: 5:00 PM\nThursday AM 10:00 ~ PM 10:00 (Last admission 8:00 PM)\nSaturday AM 10:00 ~ PM 04:00 (Closed biweekly) * Saturday last admission: 1:30 PM\n* Closed on Sundays & Public Holidays\n* Please call during operating hours before visiting for assistance.",
     "privacy_policy": "Privacy Policy",
     "terms_of_service": "Terms of Service",
     "medical_fees_guide": "Non-Insurance Medical Fees Guide",
-    "company_info": "OneCell Medical Clinic | Address : 9-21 Samsung-dong, Gangnam-gu, Seoul | Chief Director : Dr. Kim OneCell | Business Registration : 123-45-67890",
-    "copyright_full": "COPYRIGHT © 2024 ONECELL MEDI. ALL RIGHTS RESERVED."
+    "patients_rights": "Patients' Rights Charter",
+    "company_info": "OneCell Medical Clinic | Address : 9-21 Samsung-dong, Gangnam-gu, Seoul | Representative : Seo Myung-won | Business Registration : 126-55-00753",
+    "copyright_full": "COPYRIGHT © 2025 ONECELL MEDI. ALL RIGHTS RESERVED."
   },
   "homepage": {
     "hero_title": "Begin Your Beautiful Transformation",
@@ -394,5 +395,24 @@
     "korean": "한국어",
     "english": "English",
     "change_language": "Change Language"
+  },
+  "patients_rights": {
+    "title": "Patients' Rights Charter",
+    "description": "OneCell Medical Clinic's Patients' Rights Charter. Information about the rights and obligations of patients.",
+    "charter_title": "Patients' Rights Charter",
+    "rights_title": "※ Patients' Rights",
+    "right1_title": "1. Right to Medical Treatment",
+    "right1_content": "Patients have the right to receive appropriate healthcare services for their health protection, without discrimination based on gender, age, religion, status, or economic circumstances. Medical professionals cannot refuse treatment without justifiable reason.",
+    "right2_title": "2. Right to Know and Self-Determination",
+    "right2_content": "Patients have the right to receive sufficient explanations from doctors, nurses, etc. about their medical condition, treatment methods, expected results (including side effects), and medical costs. They can ask detailed questions and have the right to decide whether to consent to treatment methods.",
+    "right3_title": "3. Right to Confidentiality",
+    "right3_content": "Patients have the right to have their physical and health-related information protected. Medical professionals and institutions cannot disclose or publish confidential information without the patient's consent, except in cases specified by law such as criminal investigations.",
+    "right4_title": "4. Right to Remedy for Damages",
+    "right4_content": "Patients can seek consultation and remedies if their rights are violated, resulting in harm to life, physical condition, or financial loss.",
+    "obligations_title": "※ Patients' Obligations",
+    "obligation1_title": "1. Obligation to Trust and Respect Medical Professionals",
+    "obligation1_content": "Patients must accurately inform medical professionals about their health-related information and trust and respect the treatment plans of medical professionals.",
+    "obligation2_title": "2. Obligation Not to Receive Medical Treatment by Fraudulent Means",
+    "obligation2_content": "Patients must identify themselves before treatment and must not receive medical treatment by fraudulent means, such as using another person's identity."
   }
 }

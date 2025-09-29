@@ -31,6 +31,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import MedicalFeesGuidePage from "./pages/MedicalFeesGuidePage";
+import PatientsRightsPage from "./pages/PatientsRightsPage";
 
 // Member imports
 import { MemberProvider } from "./contexts/MemberContext";
@@ -499,6 +500,24 @@ const App: React.FC = () => {
                           element={
                             <ErrorBoundary>
                               <MedicalFeesGuidePage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        {/* Patients' Rights Charter Page */}
+                        <Route
+                          path="/patients-rights"
+                          element={
+                            <ErrorBoundary>
+                              <PatientsRightsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/:lang/patients-rights"
+                          element={
+                            <ErrorBoundary>
+                              <PatientsRightsPage />
                             </ErrorBoundary>
                           }
                         />
