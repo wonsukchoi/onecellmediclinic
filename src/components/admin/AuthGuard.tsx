@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAdmin } from '../../contexts/AdminContext';
+import AdminContext from '../../contexts/AdminContext';
 
 interface AuthGuardProps {
   children: ReactNode;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
-  const { isAuthenticated, loading } = useAdmin();
+  const context = useContext(AdminContext);
   const location = useLocation();
+
+  // If context is not available, redirect to login
+  if (!context) {
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+  }
+
+  const { isAuthenticated, loading } = context;
 
   if (loading) {
     return (

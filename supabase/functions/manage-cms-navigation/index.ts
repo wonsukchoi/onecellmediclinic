@@ -60,6 +60,7 @@ serve(async (req) => {
         // Get language from params, default to 'kr'
         const language = params?.language || 'kr'
 
+        // Public endpoint - no authentication required for reading navigation hierarchy
         // Get navigation hierarchy for frontend display with language support
         const { data: navigation, error } = await supabaseClient.rpc('get_navigation_hierarchy', { lang: language })
 
@@ -83,6 +84,7 @@ serve(async (req) => {
       }
 
       case 'list': {
+        // Public endpoint - no authentication required for reading navigation items
         const {
           page = 1,
           limit = 50,
