@@ -53,7 +53,12 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
   return (
     <header className={headerClasses}>
       <div className={styles.headerInner}>
-        <Link to="/" className={styles.logo} aria-label={t('header.logo_alt')}>
+        <Link 
+          to="/" 
+          className={styles.logo} 
+          aria-label={t('header.logo_alt')}
+          onClick={() => window.scrollTo(0, 0)}
+        >
           <img
             className={styles.logoImg}
             src="/assets/oc-logo.png"
