@@ -23,6 +23,7 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
   const [isVisible, setIsVisible] = useState(true); // Changed to true for immediate visibility
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -42,10 +43,13 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
 
   // Handle scroll direction and visibility
   useEffect(() => {
+    // Force visibility on component mount
+    setIsVisible(true);
+    
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Always visible for now (for debugging)
+      // Always keep visible
       setIsVisible(true);
 
       // Determine scroll direction
@@ -74,12 +78,51 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     return () => window.removeEventListener('scroll', scrollListener);
   }, [lastScrollY]);
 
-  // Smooth scroll to top function
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+  // Final solution for scroll to top function
+  const scrollToTop = useCallback((e?: React.MouseEvent) => {
+    // Prevent default behavior
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Try multiple approaches to ensure scrolling works
+    
+    // 1. Try using the anchor approach
+    try {
+      const topElement = document.getElementById('top');
+      if (topElement) {
+        topElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (err) {
+      console.error('Error using scrollIntoView:', err);
+    }
+    
+    // 2. Try using window.location.hash as a backup
+    try {
+      // Save current position for history
+      const currentPosition = window.pageYOffset;
+      window.location.hash = 'top';
+      // Restore position to avoid page jump but allow smooth scroll
+      window.scrollTo(window.scrollX, currentPosition);
+    } catch (err) {
+      console.error('Error using location hash:', err);
+    }
+    
+    // 3. Use the most basic approach as final fallback
+    try {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    } catch (err) {
+      // Ultimate fallback for very old browsers
+      window.scrollTo(0, 0);
+    }
+  }, []);
+  
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed(prev => !prev);
   }, []);
 
   // Quick action handlers
@@ -176,7 +219,7 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
     <div className={stickyBarClasses}>
       {/* Desktop vertical sidebar - only show on non-homepage */}
       {!isHomepage && (
-        <div className={styles.desktopSidebar}>
+        <div className={`${styles.desktopSidebar} ${isCollapsed ? styles.collapsed : ''}`}>
           <button
             className={styles.actionButton}
             onClick={handleConsultation}
@@ -209,12 +252,24 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
 
           <button
             className={styles.actionButton}
-            onClick={scrollToTop}
+            onClick={(e) => scrollToTop(e)}
             aria-label="맨 위로"
             title="맨 위로"
           >
             <Icon name="arrowUp" size="md" />
             <span className={styles.buttonText}>맨 위로</span>
+          </button>
+          
+          <button
+            className={styles.toggleButton}
+            onClick={toggleCollapse}
+            aria-label={isCollapsed ? "메뉴 펼치기" : "메뉴 접기"}
+            title={isCollapsed ? "메뉴 펼치기" : "메뉴 접기"}
+          >
+            <span className={`${styles.toggleIcon} ${isCollapsed ? styles.collapsed : ''}`}>
+              <Icon name="chevronRight" size="md" />
+            </span>
+            <span className={styles.toggleText}>{isCollapsed ? "펼치기" : "접기"}</span>
           </button>
         </div>
       )}
@@ -251,7 +306,7 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
 
           <button
             className={styles.mobileButton}
-            onClick={scrollToTop}
+            onClick={(e) => scrollToTop(e)}
             aria-label="맨 위로"
           >
             <Icon name="arrowUp" size="sm" />
