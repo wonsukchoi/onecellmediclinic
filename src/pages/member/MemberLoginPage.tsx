@@ -103,6 +103,12 @@ const MemberLoginPage: React.FC = () => {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
+        <button 
+          onClick={() => navigate(-1)} 
+          className={styles.backButton}
+        >
+          ← 뒤로가기
+        </button>
         <div className={styles.logoSection}>
           <img
             src="/images/logo-dark.png"
@@ -262,7 +268,7 @@ const MemberLoginPage: React.FC = () => {
             {t('member.customer_service')}
           </Link>
           <span className={styles.linkDivider}>|</span>
-          <Link to="/privacy" className={styles.helpLink}>
+          <Link to="/privacy-policy" className={styles.helpLink}>
             {t('member.privacy_policy')}
           </Link>
         </div>
