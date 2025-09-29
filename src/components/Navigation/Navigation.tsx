@@ -76,19 +76,19 @@ const fallbackNavigation: NavCategory[] = [
   {
     id: 'booking',
     title: '예약 및 상담',
-    featured: true,
+    featured: false,
     items: [
       {
         label: '온라인 상담',
         path: '/booking/consultation',
         description: '비대면 전문의 상담',
-        featured: true
+        featured: false
       },
       {
         label: '방문 예약',
         path: '/reservation',
         description: '직접 방문 예약',
-        featured: true
+        featured: false
       }
     ]
   }
@@ -320,17 +320,6 @@ const Navigation: React.FC<NavigationProps> = ({
               aria-haspopup="true"
             >
               {category.title}
-              <span className={styles.chevron}>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M2 4.5L6 8.5L10 4.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
             </button>
 
             <div
