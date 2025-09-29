@@ -254,7 +254,13 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
 
             <div className={styles.actionGroup}>
               <div className={styles.consentContainer}>
-                <div className={styles.consentItem}>
+                <div className={styles.consentItem} onClick={(e) => {
+                    // Only toggle if the click wasn't directly on the checkbox
+                    if (e.target !== document.getElementById('privacyConsent')) {
+                      const newValue = !appointmentForm.privacyConsent;
+                      handleAppointmentFormChange("privacyConsent", newValue.toString());
+                    }
+                  }}>
                   <input
                     type="checkbox"
                     id="privacyConsent"
@@ -276,7 +282,13 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
                     <span className={styles.requiredMark}>(필수)</span>
                   </label>
                 </div>
-                <div className={styles.consentItem}>
+                <div className={styles.consentItem} onClick={(e) => {
+                    // Only toggle if the click wasn't directly on the checkbox
+                    if (e.target !== document.getElementById('marketingConsent')) {
+                      const newValue = !appointmentForm.marketingConsent;
+                      handleAppointmentFormChange("marketingConsent", newValue.toString());
+                    }
+                  }}>
                   <input
                     type="checkbox"
                     id="marketingConsent"

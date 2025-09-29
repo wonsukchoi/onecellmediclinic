@@ -350,22 +350,28 @@
 .consentItem {
   display: flex;
   align-items: center;
-  gap: 10px; /* Increased gap between checkbox and label */
+  gap: 4px; /* Further reduced gap between checkbox and label */
+  cursor: pointer; /* Make the entire item appear clickable */
 }
 
 .consentCheckbox {
-  width: 18px; /* Larger checkbox */
-  height: 18px; /* Larger checkbox */
+  width: 12px; /* Even smaller checkbox */
+  height: 12px; /* Even smaller checkbox */
   cursor: pointer;
   accent-color: var(--color-primary);
+  margin: 0; /* Remove default margins */
+  position: relative; /* For better positioning */
+  vertical-align: middle; /* Better alignment with text */
 }
 
 .consentLabel {
-  font-size: 13px; /* Larger font size */
+  font-size: 11px; /* Even smaller font size */
   color: var(--color-text-secondary);
   cursor: pointer;
   user-select: none;
-  line-height: 1.4; /* Better line height for readability */
+  line-height: 1.2; /* Further adjusted line height for readability */
+  display: inline-block; /* Ensure the label has block properties for better clickability */
+  width: calc(100% - 16px); /* Make label take up most of the available space */
 }
 
 .requiredMark {
@@ -596,7 +602,7 @@
   }
 
   .consentLabel {
-    font-size: 11px;
+    font-size: 9px;
   }
 
   .successMessage,
@@ -766,7 +772,7 @@
   }
 
   .consentLabel {
-    font-size: 10px;
+    font-size: 8px;
   }
 
   .successMessage,
