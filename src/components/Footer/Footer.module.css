@@ -131,6 +131,36 @@
   font-size: 0.9rem;
   white-space: pre-line;
   line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.hoursSection {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: 1rem;
+}
+
+.dayLabel {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.smallText {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.notesSection {
+  flex-basis: 100%;
+  margin-top: 0.5rem;
 }
 
 .footerBottom {
@@ -228,6 +258,20 @@
   .hoursText {
     font-size: 0.85rem;
     line-height: 1.7;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .hoursSection {
+    margin-bottom: 0.5rem;
+  }
+  
+  .dayLabel {
+    font-size: 1rem;
+  }
+  
+  .smallText {
+    font-size: 0.75rem;
   }
 
   .footerBottom {
@@ -255,6 +299,14 @@
   .hoursText {
     font-size: 0.8rem;
     line-height: 1.7;
+  }
+  
+  .dayLabel {
+    font-size: 0.95rem;
+  }
+  
+  .smallText {
+    font-size: 0.7rem;
   }
 
   .footerPolicies {

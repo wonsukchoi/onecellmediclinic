@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
 
 const Footer: React.FC = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isKorean = i18n.language === 'kr'
 
   return (
     <footer id="contact" className={styles.siteFooter}>
@@ -53,7 +54,55 @@ const Footer: React.FC = () => {
         <div className={styles.footerHours}>
           <div className={styles.hoursLabel}>{t('footer.hours_label')}</div>
           <div className={styles.hoursText}>
-            {t('footer.hours_detail')}
+            {isKorean ? (
+              <>
+                <div className={styles.hoursSection}>
+                  <span className={styles.dayLabel}>월,화,수,금</span>
+                  AM 10:00 ~ PM 07:00 (수요일 격주 휴무) 
+                  <span className={styles.smallText}>* 평일 접수마감 : 오후 5시</span>
+                </div>
+                
+                <div className={styles.hoursSection}>
+                  <span className={styles.dayLabel}>목요일</span>
+                  AM 10:00 ~ PM 10:00 (20:00 접수마감)
+                </div>
+                
+                <div className={styles.hoursSection}>
+                  <span className={styles.dayLabel}>토요일</span>
+                  AM 10:00 ~ PM 04:00 (격주 정기휴무) 
+                  <span className={styles.smallText}>* 토요일 접수마감 : 오후 1시 30분</span>
+                </div>
+                
+                <div className={styles.notesSection}>
+                  <span className={styles.smallText}>* 일요일 & 공휴일 휴무</span>
+                  <span className={styles.smallText}>* 방문 전 운영 시간 내에 연락 주시면 친절히 안내해드립니다.</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.hoursSection}>
+                  <span className={styles.dayLabel}>Mon, Tue, Wed, Fri</span>
+                  AM 10:00 ~ PM 07:00 (Wed closed biweekly) 
+                  <span className={styles.smallText}>* Weekday last admission: 5:00 PM</span>
+                </div>
+                
+                <div className={styles.hoursSection}>
+                  <span className={styles.dayLabel}>Thursday</span>
+                  AM 10:00 ~ PM 10:00 (Last admission 8:00 PM)
+                </div>
+                
+                <div className={styles.hoursSection}>
+                  <span className={styles.dayLabel}>Saturday</span>
+                  AM 10:00 ~ PM 04:00 (Closed biweekly) 
+                  <span className={styles.smallText}>* Saturday last admission: 1:30 PM</span>
+                </div>
+                
+                <div className={styles.notesSection}>
+                  <span className={styles.smallText}>* Closed on Sundays & Public Holidays</span>
+                  <span className={styles.smallText}>* Please call during operating hours before visiting for assistance.</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
