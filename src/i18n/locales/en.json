@@ -55,8 +55,8 @@
     "quick_links": "Quick Links",
     "social_media": "Social Media",
     "copyright": "© 2025 OneCell Medical Clinic. All rights reserved.",
-    "full_address": "123 Teheran-ro, Gangnam-gu, Seoul, OneCell Medical Building",
-    "address_note": "5 min walk from Gangnam Station Exit 3",
+    "full_address": "9-21 Samsung-dong, Gangnam-gu, Seoul",
+    "address_note": "(5 min walk from Gangnam-gu Office Station, Line 7, Suin-Bundang Line)",
     "main_phone_label": "Main Phone",
     "kakao_label": "KakaoTalk",
     "hours_label": "Operating Hours",
@@ -64,7 +64,7 @@
     "privacy_policy": "Privacy Policy",
     "terms_of_service": "Terms of Service",
     "medical_fees_guide": "Non-Insurance Medical Fees Guide",
-    "company_info": "OneCell Medical Clinic | Address : 123 Teheran-ro, Gangnam-gu, Seoul, OneCell Medical Building | Chief Director : Dr. Kim OneCell | Business Registration : 123-45-67890",
+    "company_info": "OneCell Medical Clinic | Address : 9-21 Samsung-dong, Gangnam-gu, Seoul | Chief Director : Dr. Kim OneCell | Business Registration : 123-45-67890",
     "copyright_full": "COPYRIGHT © 2024 ONECELL MEDI. ALL RIGHTS RESERVED."
   },
   "homepage": {
@@ -115,9 +115,9 @@
     "message_error": "An error occurred while sending your message."
   },
   "member": {
-    "login": "Login",
+    "login": "Log in",
     "logout": "Logout",
-    "signup": "Sign Up",
+    "signup": "Sign up",
     "mypage": "My Page",
     "profile": "Profile",
     "appointments": "Appointments",
