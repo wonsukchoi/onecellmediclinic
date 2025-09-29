@@ -121,9 +121,37 @@ export class CMSService {
     return callEdgeFunction('manage-cms-blocks', 'reorder', { block_ids: blockIds });
   }
 
-  // Header Navigation Management
+  // Header Navigation Management - Public endpoint (no auth required)
   static async getNavigation(language: string = 'kr'): Promise<ApiResponse<HeaderNavigation[]>> {
-    return callEdgeFunction('manage-cms-navigation', 'hierarchy', { language });
+    try {
+      const supabaseUrl = "https://weqqkknwpgremfugcbvz.supabase.co";
+
+      // Make public request without authentication headers
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/manage-cms-navigation`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ action: 'hierarchy', params: { language } })
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(`Error calling manage-cms-navigation edge function:`, error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
   }
 
   static async getAllNavigationItems(params: {

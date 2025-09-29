@@ -42,14 +42,6 @@ const iconMapping: Record<string, IconName> = {
   'chevron-up': 'chevronUp'
 }
 
-// Cache configuration
-const NAVIGATION_CACHE_KEY = 'cms_navigation_cache'
-const NAVIGATION_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes in milliseconds
-
-interface NavigationCache {
-  data: NavCategory[]
-  timestamp: number
-}
 
 interface NavigationProps {
   className?: string
@@ -96,38 +88,6 @@ const fallbackNavigation: NavCategory[] = [
 ]
 
 // Helper functions
-const getCachedNavigation = (): NavigationCache | null => {
-  try {
-    const cached = localStorage.getItem(NAVIGATION_CACHE_KEY)
-    if (!cached) return null
-
-    const cache: NavigationCache = JSON.parse(cached)
-    const now = Date.now()
-
-    if (now - cache.timestamp > NAVIGATION_CACHE_DURATION) {
-      localStorage.removeItem(NAVIGATION_CACHE_KEY)
-      return null
-    }
-
-    return cache
-  } catch (error) {
-    console.error('Error reading navigation cache:', error)
-    localStorage.removeItem(NAVIGATION_CACHE_KEY)
-    return null
-  }
-}
-
-const setCachedNavigation = (data: NavCategory[]): void => {
-  try {
-    const cache: NavigationCache = {
-      data,
-      timestamp: Date.now()
-    }
-    localStorage.setItem(NAVIGATION_CACHE_KEY, JSON.stringify(cache))
-  } catch (error) {
-    console.error('Error caching navigation:', error)
-  }
-}
 
 const getIconName = (iconName: string | null | undefined): IconName | undefined => {
   if (!iconName) return undefined
@@ -196,14 +156,6 @@ const Navigation: React.FC<NavigationProps> = ({
       try {
         setIsLoading(true)
 
-        // Check cache first
-        const cached = getCachedNavigation()
-        if (cached) {
-          setNavigationCategories(cached.data)
-          setIsLoading(false)
-          return
-        }
-
         // Fetch from CMS with current language
         const currentLanguage = i18n.language === 'en' ? 'en' : 'kr'
         const response = await CMSService.getNavigation(currentLanguage)
@@ -213,7 +165,6 @@ const Navigation: React.FC<NavigationProps> = ({
           const transformedNavigation = transformCMSNavigationToCategories(response.data)
           console.log('Transformed Navigation:', transformedNavigation)
           setNavigationCategories(transformedNavigation)
-          setCachedNavigation(transformedNavigation)
         } else {
           console.error('CMS Navigation Error:', response.error)
           throw new Error(response.error || 'Failed to load navigation')

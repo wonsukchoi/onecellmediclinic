@@ -217,7 +217,12 @@ CREATE TABLE IF NOT EXISTS providers (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Add foreign key constraints to appointments
+-- Add foreign key constraints to appointments (drop if exists first for idempotency)
+ALTER TABLE appointments
+DROP CONSTRAINT IF EXISTS appointments_provider_id_fkey,
+DROP CONSTRAINT IF EXISTS appointments_procedure_id_fkey,
+DROP CONSTRAINT IF EXISTS appointments_rescheduled_from_fkey;
+
 ALTER TABLE appointments
 ADD CONSTRAINT appointments_provider_id_fkey FOREIGN KEY (provider_id) REFERENCES providers(id),
 ADD CONSTRAINT appointments_procedure_id_fkey FOREIGN KEY (procedure_id) REFERENCES procedures(id),

@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Session } from "@supabase/supabase-js";
 import type {
   ContactSubmission,
@@ -17,17 +17,43 @@ const supabaseUrl = "https://weqqkknwpgremfugcbvz.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXFra253cGdyZW1mdWdjYnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzAwNTAsImV4cCI6MjA3NDQ0NjA1MH0.llYPWCVtWr6OWI_zRFYkeYMzGqaw9nfAQKU3VUV-Fgg";
 
-// Create Supabase client with proper session persistence
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    storage: typeof window !== "undefined" ? window.localStorage : undefined,
-    storageKey: "onecell-clinic-auth-token",
-    flowType: "pkce",
-  },
-});
+// Singleton pattern for Supabase client
+class SupabaseService {
+  private static instance: SupabaseClient | null = null;
+  private static publicInstance: SupabaseClient | null = null;
+
+  static getClient(): SupabaseClient {
+    if (!this.instance) {
+      this.instance = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storage: typeof window !== "undefined" ? window.localStorage : undefined,
+          storageKey: "onecell-clinic-auth-token",
+          flowType: "pkce",
+        },
+      });
+    }
+    return this.instance;
+  }
+
+  static getPublicClient(): SupabaseClient {
+    if (!this.publicInstance) {
+      this.publicInstance = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+        },
+      });
+    }
+    return this.publicInstance;
+  }
+}
+
+// Export the main client instance
+export const supabase = SupabaseService.getClient();
 
 // Database service class
 export class DatabaseService {
@@ -81,7 +107,6 @@ export class DatabaseService {
 
       return { success: true, data: contactSubmission };
     } catch (error) {
-      console.error("Error submitting contact form:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -131,7 +156,6 @@ export class DatabaseService {
 
       return { success: true, data: result.data };
     } catch (error) {
-      console.error("Error booking appointment:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -167,7 +191,6 @@ export class DatabaseService {
 
       return { success: true, data: result.data || [] };
     } catch (error) {
-      console.error("Error fetching blog posts:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -202,7 +225,6 @@ export class DatabaseService {
 
       return { success: true, data: result.data };
     } catch (error) {
-      console.error("Error fetching blog post:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -238,7 +260,6 @@ export class DatabaseService {
 
       return { success: true, data: result.data || [] };
     } catch (error) {
-      console.error("Error fetching event banners:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -246,20 +267,19 @@ export class DatabaseService {
     }
   }
 
-  // Hero carousel
+  // Hero carousel - Public endpoint (no auth required)
   static async getHeroCarousel(): Promise<ApiResponse<HeroCarousel[]>> {
     try {
-      const { data, error } = await supabase
-        .from('hero_carousel')
-        .select('*')
-        .eq('is_active', true)
-        .order('order_index', { ascending: true });
+      // Use the singleton public client to avoid multiple instances
+      const publicClient = SupabaseService.getPublicClient();
+
+      // Use the public function instead of direct table access
+      const { data, error } = await publicClient.rpc("get_hero_carousel");
 
       if (error) throw error;
 
       return { success: true, data: data || [] };
     } catch (error) {
-      console.error("Error fetching hero carousel:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -285,7 +305,6 @@ export class DatabaseService {
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
-      console.error("Error signing up:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -303,7 +322,6 @@ export class DatabaseService {
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
-      console.error("Error signing in:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -317,7 +335,6 @@ export class DatabaseService {
       if (error) throw error;
       return { success: true };
     } catch (error) {
-      console.error("Error signing out:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -328,13 +345,13 @@ export class DatabaseService {
   static async getCurrentUser(): Promise<ApiResponse<UserProfile | null>> {
     try {
       // First check for existing session with proper error handling
-      let {
-        data: { session },
+      const {
+        data: { session: initialSession },
         error: sessionError,
       } = await supabase.auth.getSession();
+      let session = initialSession;
 
       if (sessionError) {
-        console.warn("Session error:", sessionError.message);
         // Don't throw immediately, try to refresh session
         if (sessionError.message.includes("Auth session missing")) {
           // Attempt to refresh session
@@ -362,7 +379,6 @@ export class DatabaseService {
         session.expires_at &&
         session.expires_at < Math.floor(Date.now() / 1000)
       ) {
-        console.warn("Session expired, attempting refresh");
         const {
           data: { session: refreshedSession },
           error: refreshError,
@@ -379,7 +395,6 @@ export class DatabaseService {
         error,
       } = await supabase.auth.getUser();
       if (error) {
-        console.warn("User fetch error:", error.message);
         // If user fetch fails but we have a session, try to clear auth state
         if (error.message.includes("Auth session missing")) {
           await supabase.auth.signOut();
@@ -411,7 +426,6 @@ export class DatabaseService {
 
       return { success: true, data: userProfile };
     } catch (error) {
-      console.error("Error getting current user:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -436,29 +450,39 @@ export class AdminService {
       page?: number;
       limit?: number;
       search?: string;
-      filters?: Record<string, any>;
-      sort?: { field: string; direction: 'asc' | 'desc' };
+      filters?: Record<string, unknown>;
+      sort?: { field: string; direction: "asc" | "desc" };
     } = {}
-  ): Promise<ApiResponse<{ data: T[]; total: number; page: number; limit: number; totalPages: number }>> {
+  ): Promise<
+    ApiResponse<{
+      data: T[];
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    }>
+  > {
     try {
       const { page = 1, limit = 50, search, filters = {}, sort } = params;
 
-      let query = supabase.from(table).select('*', { count: 'exact' });
+      let query = supabase.from(table).select("*", { count: "exact" });
 
       // Apply search
       if (search) {
         // Basic search across common text fields - this should be customized per table
-        const searchFields = ['name', 'title', 'description', 'email'];
-        const searchConditions = searchFields.map(field => `${field}.ilike.%${search}%`).join(',');
+        const searchFields = ["name", "title", "description", "email"];
+        const searchConditions = searchFields
+          .map((field) => `${field}.ilike.%${search}%`)
+          .join(",");
         query = query.or(searchConditions);
       }
 
       // Apply filters
       Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          if (typeof value === 'boolean') {
+        if (value !== undefined && value !== null && value !== "") {
+          if (typeof value === "boolean") {
             query = query.eq(key, value);
-          } else if (typeof value === 'string') {
+          } else if (typeof value === "string") {
             query = query.ilike(key, `%${value}%`);
           } else {
             query = query.eq(key, value);
@@ -468,9 +492,11 @@ export class AdminService {
 
       // Apply sorting
       if (sort) {
-        query = query.order(sort.field, { ascending: sort.direction === 'asc' });
+        query = query.order(sort.field, {
+          ascending: sort.direction === "asc",
+        });
       } else {
-        query = query.order('created_at', { ascending: false });
+        query = query.order("created_at", { ascending: false });
       }
 
       // Apply pagination
@@ -491,39 +517,43 @@ export class AdminService {
           total: count || 0,
           page,
           limit,
-          totalPages
-        }
+          totalPages,
+        },
       };
     } catch (error) {
-      console.error(`Error fetching ${table}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
-  static async getById<T>(table: string, id: number | string): Promise<ApiResponse<T>> {
+  static async getById<T>(
+    table: string,
+    id: number | string
+  ): Promise<ApiResponse<T>> {
     try {
       const { data, error } = await supabase
         .from(table)
-        .select('*')
-        .eq('id', id)
+        .select("*")
+        .eq("id", id)
         .single();
 
       if (error) throw error;
 
       return { success: true, data: data as T };
     } catch (error) {
-      console.error(`Error fetching ${table} by id:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
-  static async create<T>(table: string, data: Partial<T>): Promise<ApiResponse<T>> {
+  static async create<T>(
+    table: string,
+    data: Partial<T>
+  ): Promise<ApiResponse<T>> {
     try {
       const { data: result, error } = await supabase
         .from(table)
@@ -535,20 +565,23 @@ export class AdminService {
 
       return { success: true, data: result as T };
     } catch (error) {
-      console.error(`Error creating ${table}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
-  static async update<T>(table: string, id: number | string, data: Partial<T>): Promise<ApiResponse<T>> {
+  static async update<T>(
+    table: string,
+    id: number | string,
+    data: Partial<T>
+  ): Promise<ApiResponse<T>> {
     try {
       const { data: result, error } = await supabase
         .from(table)
         .update(data)
-        .eq('id', id)
+        .eq("id", id)
         .select()
         .single();
 
@@ -556,54 +589,52 @@ export class AdminService {
 
       return { success: true, data: result as T };
     } catch (error) {
-      console.error(`Error updating ${table}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
-  static async delete(table: string, id: number | string): Promise<ApiResponse<void>> {
+  static async delete(
+    table: string,
+    id: number | string
+  ): Promise<ApiResponse<void>> {
     try {
-      const { error } = await supabase
-        .from(table)
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from(table).delete().eq("id", id);
 
       if (error) throw error;
 
       return { success: true };
     } catch (error) {
-      console.error(`Error deleting from ${table}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
   // Get admin dashboard statistics
-  static async getAdminStats(): Promise<ApiResponse<any>> {
+  static async getAdminStats(): Promise<ApiResponse<Record<string, number>>> {
     try {
       const tables = [
-        'appointments',
-        'consultation_requests',
-        'contact_submissions',
-        'procedures',
-        'providers',
-        'blog_posts',
-        'gallery_items',
-        'video_shorts',
-        'youtube_videos',
-        'selfie_reviews',
-        'event_banners'
+        "appointments",
+        "consultation_requests",
+        "contact_submissions",
+        "procedures",
+        "providers",
+        "blog_posts",
+        "gallery_items",
+        "video_shorts",
+        "youtube_videos",
+        "selfie_reviews",
+        "event_banners",
       ];
 
       const statsPromises = tables.map(async (table) => {
         const { count } = await supabase
           .from(table)
-          .select('*', { count: 'exact', head: true });
+          .select("*", { count: "exact", head: true });
         return { table, count: count || 0 };
       });
 
@@ -614,31 +645,33 @@ export class AdminService {
       }, {} as Record<string, number>);
 
       // Get today's appointments
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date().toISOString().split("T")[0];
       const { count: todayAppointments } = await supabase
-        .from('appointments')
-        .select('*', { count: 'exact', head: true })
-        .gte('preferred_date', today)
-        .lt('preferred_date', `${today}T23:59:59`);
+        .from("appointments")
+        .select("*", { count: "exact", head: true })
+        .gte("preferred_date", today)
+        .lt("preferred_date", `${today}T23:59:59`);
 
       // Get pending appointments
       const { count: pendingAppointments } = await supabase
-        .from('appointments')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
+        .from("appointments")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending");
 
       // Get new consultations (last 24 hours)
-      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const yesterday = new Date(
+        Date.now() - 24 * 60 * 60 * 1000
+      ).toISOString();
       const { count: newConsultations } = await supabase
-        .from('consultation_requests')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', yesterday);
+        .from("consultation_requests")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", yesterday);
 
       // Get new contact submissions (last 24 hours)
       const { count: newContactSubmissions } = await supabase
-        .from('contact_submissions')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', yesterday);
+        .from("contact_submissions")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", yesterday);
 
       const adminStats = {
         totalAppointments: stats.appointments || 0,
@@ -660,19 +693,24 @@ export class AdminService {
 
       return { success: true, data: adminStats };
     } catch (error) {
-      console.error('Error fetching admin stats:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
   // Upload file to Supabase storage
-  static async uploadFile(bucket: string, file: File, path?: string): Promise<ApiResponse<string>> {
+  static async uploadFile(
+    bucket: string,
+    file: File,
+    path?: string
+  ): Promise<ApiResponse<string>> {
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = path || `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const fileExt = file.name.split(".").pop();
+      const fileName =
+        path ||
+        `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
       const { error } = await supabase.storage
         .from(bucket)
@@ -681,36 +719,34 @@ export class AdminService {
       if (error) throw error;
 
       // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(fileName);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from(bucket).getPublicUrl(fileName);
 
       return { success: true, data: publicUrl };
     } catch (error) {
-      console.error('Error uploading file:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
   // Bulk operations
-  static async bulkDelete(table: string, ids: (number | string)[]): Promise<ApiResponse<void>> {
+  static async bulkDelete(
+    table: string,
+    ids: (number | string)[]
+  ): Promise<ApiResponse<void>> {
     try {
-      const { error } = await supabase
-        .from(table)
-        .delete()
-        .in('id', ids);
+      const { error } = await supabase.from(table).delete().in("id", ids);
 
       if (error) throw error;
 
       return { success: true };
     } catch (error) {
-      console.error(`Error bulk deleting from ${table}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -721,17 +757,16 @@ export class AdminService {
   ): Promise<ApiResponse<void>> {
     try {
       const promises = updates.map(({ id, data }) =>
-        supabase.from(table).update(data).eq('id', id)
+        supabase.from(table).update(data).eq("id", id)
       );
 
       await Promise.all(promises);
 
       return { success: true };
     } catch (error) {
-      console.error(`Error bulk updating ${table}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
