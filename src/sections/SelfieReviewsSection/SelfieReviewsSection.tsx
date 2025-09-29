@@ -67,7 +67,7 @@ const SelfieReviewsSection: React.FC<SelfieReviewsSectionProps> = ({
       setReviews(data)
       setError(null)
     } catch (error) {
-      console.error('Error fetching reviews:', error)
+      console.error('Error fetching selfie reviews:', error)
       setError(t('reviews.error.fetchFailed'))
     } finally {
       setLoading(false)

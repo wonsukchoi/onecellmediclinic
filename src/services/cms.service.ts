@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getAuthHeadersFast, SUPABASE_CONFIG } from '../utils/fast-auth';
 import type {
   ApiResponse,
   DynamicPage,
@@ -18,24 +19,15 @@ import type {
 async function callEdgeFunction(
   functionName: string,
   action: string,
-  params?: any,
-  data?: any
-): Promise<ApiResponse<any>> {
+  params?: Record<string, unknown>,
+  data?: Record<string, unknown>
+): Promise<ApiResponse<unknown>> {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    if (session?.access_token) {
-      headers['Authorization'] = `Bearer ${session.access_token}`;
-    }
-
-    const supabaseUrl = "https://weqqkknwpgremfugcbvz.supabase.co";
+    // Use fast auth helper instead of slow async getSession()
+    const headers = getAuthHeadersFast();
 
     const response = await fetch(
-      `${supabaseUrl}/functions/v1/${functionName}`,
+      `${SUPABASE_CONFIG.url}/functions/v1/${functionName}`,
       {
         method: 'POST',
         headers,
@@ -51,7 +43,6 @@ async function callEdgeFunction(
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error(`Error calling ${functionName} edge function:`, error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
@@ -124,11 +115,9 @@ export class CMSService {
   // Header Navigation Management - Public endpoint (no auth required)
   static async getNavigation(language: string = 'kr'): Promise<ApiResponse<HeaderNavigation[]>> {
     try {
-      const supabaseUrl = "https://weqqkknwpgremfugcbvz.supabase.co";
-
       // Make public request without authentication headers
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/manage-cms-navigation`,
+        `${SUPABASE_CONFIG.url}/functions/v1/manage-cms-navigation`,
         {
           method: 'POST',
           headers: {
@@ -146,7 +135,6 @@ export class CMSService {
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error(`Error calling manage-cms-navigation edge function:`, error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -196,18 +184,30 @@ export class CMSService {
   // Analytics
   static async trackPageView(pageId: string, analytics: Partial<PageAnalytics>): Promise<ApiResponse<void>> {
     try {
-      const { error } = await supabase
-        .from('page_analytics')
-        .insert({
-          page_id: pageId,
-          ...analytics
-        });
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/analytics-operations`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          },
+          body: JSON.stringify({
+            action: 'track_page_view',
+            pageId,
+            analytics
+          })
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true };
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to track page view');
+      }
+
+      return result;
     } catch (error) {
-      console.error('Error tracking page view:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -220,41 +220,30 @@ export class CMSService {
     to?: string;
   } = {}): Promise<ApiResponse<{ views: number; unique_visitors: number; avg_time_on_page: number; bounce_rate: number }>> {
     try {
-      const { from, to } = params;
-
-      let query = supabase
-        .from('page_analytics')
-        .select('*')
-        .eq('page_id', pageId);
-
-      if (from) {
-        query = query.gte('visited_at', from);
-      }
-      if (to) {
-        query = query.lte('visited_at', to);
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      const analytics = data as PageAnalytics[];
-      const views = analytics.length;
-      const unique_visitors = new Set(analytics.map(a => a.visitor_ip)).size;
-      const avg_time_on_page = analytics.reduce((sum, a) => sum + (a.time_on_page || 0), 0) / views || 0;
-      const bounce_rate = (analytics.filter(a => a.bounce).length / views) * 100 || 0;
-
-      return {
-        success: true,
-        data: {
-          views,
-          unique_visitors,
-          avg_time_on_page,
-          bounce_rate
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/analytics-operations`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          },
+          body: JSON.stringify({
+            action: 'get_page_analytics',
+            pageId,
+            params
+          })
         }
-      };
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get page analytics');
+      }
+
+      return result;
     } catch (error) {
-      console.error('Error fetching page analytics:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -274,24 +263,29 @@ export class CMSService {
 
   static async validateSlug(slug: string, excludeId?: string): Promise<boolean> {
     try {
-      // For now, keep direct database call for slug validation as it's a simple query
-      // and doesn't need the complexity of an edge function
-      let query = supabase
-        .from('dynamic_pages')
-        .select('id')
-        .eq('slug', slug);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/analytics-operations`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          },
+          body: JSON.stringify({
+            action: 'validate_slug',
+            params: { slug, excludeId }
+          })
+        }
+      );
 
-      if (excludeId) {
-        query = query.neq('id', excludeId);
+      const result = await response.json();
+
+      if (!response.ok) {
+        return false;
       }
 
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      return data.length === 0;
-    } catch (error) {
-      console.error('Error validating slug:', error);
+      return result.data?.isUnique || false;
+    } catch {
       return false;
     }
   }

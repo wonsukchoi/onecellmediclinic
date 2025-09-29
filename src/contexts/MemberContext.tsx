@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { supabase } from '../services/supabase';
 import { MemberService } from '../services/member.service';
 import type { MemberProfile, ApiResponse } from '../types';
+import { getAuthStateFast, clearAuthFast } from '../utils/fast-auth';
 
 interface MemberContextType {
   member: MemberProfile | null;
@@ -49,9 +50,10 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
 
   const initializeAuth = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await loadMemberProfile(session.user.id);
+      // Use fast auth check instead of slow getSession()
+      const authState = getAuthStateFast();
+      if (authState.user && !authState.isExpired) {
+        await loadMemberProfile(authState.user.id);
       }
     } catch (error) {
       console.error('Error initializing auth:', error);
@@ -136,6 +138,8 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
       setLoading(true);
       const result = await MemberService.signOut();
       if (result.success) {
+        // Clear fast auth cache
+        clearAuthFast();
         setMember(null);
       }
       return result;

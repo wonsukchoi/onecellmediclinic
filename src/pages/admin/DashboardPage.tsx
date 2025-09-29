@@ -62,17 +62,31 @@ const QuickAction: React.FC<QuickActionProps> = ({ title, description, icon, lin
 );
 
 const DashboardPage: React.FC = () => {
-  const { stats, refreshStats } = useAdmin();
+  const { stats, refreshStats, loading } = useAdmin();
 
   useEffect(() => {
-    refreshStats();
-  }, [refreshStats]);
+    // Only refresh stats if we don't have them yet and we're not loading
+    if (!stats && !loading) {
+      refreshStats();
+    }
+  }, [stats, refreshStats, loading]);
 
+  // Show loading only if admin context is loading, not if stats are missing
+  if (loading) {
+    return (
+      <div className={styles.loading}>
+        <div className={styles.loadingSpinner}></div>
+        <p>인증 확인 중...</p>
+      </div>
+    );
+  }
+
+  // If stats are null but we're not loading, show the dashboard with placeholder data
   if (!stats) {
     return (
       <div className={styles.loading}>
         <div className={styles.loadingSpinner}></div>
-        <p>대시보드 로딩 중...</p>
+        <p>대시보드 데이터 로딩 중...</p>
       </div>
     );
   }

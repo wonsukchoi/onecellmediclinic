@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAdmin } from '../../contexts/AdminContext';
-import { Icon } from '../../components/icons';
-import MainLayout from '../../components/MainLayout/MainLayout';
-import styles from './LoginPage.module.css';
+import React, { useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAdmin } from "../../contexts/AdminContext";
+import { Icon } from "../../components/icons";
+import MainLayout from "../../components/MainLayout/MainLayout";
+import { getAuthStateFast, isAdminFast } from "../../utils/fast-auth";
+import styles from "./LoginPage.module.css";
 
 interface LocationState {
   from?: Location;
@@ -11,46 +12,52 @@ interface LocationState {
 
 const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { isAuthenticated, signIn } = useAdmin();
   const location = useLocation();
   const state = location.state as LocationState;
 
-  // Redirect if already authenticated
-  if (isAuthenticated) {
-    const from = state?.from?.pathname || '/admin';
+  // Fast auth check - immediate redirect without waiting for AdminContext
+  const fastAuthState = getAuthStateFast();
+  const isFastAuthenticated = isAdminFast();
+
+  console.log("fastAuthState", fastAuthState, isFastAuthenticated);
+
+  // Redirect if already authenticated (either from context or fast auth)
+  if (isAuthenticated || isFastAuthenticated) {
+    const from = state?.from?.pathname || "/admin";
     return <Navigate to={from} replace />;
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
     // Clear error when user starts typing
-    if (error) setError('');
+    if (error) setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsSubmitting(true);
 
     try {
       const result = await signIn(formData.email, formData.password);
 
       if (!result.success) {
-        setError(result.error || '로그인에 실패했습니다');
+        setError(result.error || "로그인에 실패했습니다");
       }
       // If successful, the useAdmin context will handle the redirect
     } catch (err) {
-      setError('예상치 못한 오류가 발생했습니다');
+      setError("예상치 못한 오류가 발생했습니다");
     } finally {
       setIsSubmitting(false);
     }
@@ -73,11 +80,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit} className={styles.loginForm}>
-            {error && (
-              <div className={styles.errorMessage}>
-                {error}
-              </div>
-            )}
+            {error && <div className={styles.errorMessage}>{error}</div>}
 
             <div className={styles.formGroup}>
               <label htmlFor="email" className={styles.label}>
@@ -126,14 +129,15 @@ const LoginPage: React.FC = () => {
                   로그인 중...
                 </>
               ) : (
-                '로그인'
+                "로그인"
               )}
             </button>
           </form>
 
           <div className={styles.loginFooter}>
             <p className={styles.helpText}>
-              관리자 전용 접근입니다. 접근이 필요하시면 시스템 관리자에게 문의하세요.
+              관리자 전용 접근입니다. 접근이 필요하시면 시스템 관리자에게
+              문의하세요.
             </p>
           </div>
         </div>

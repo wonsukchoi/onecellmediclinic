@@ -86,7 +86,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
       setVideos(data)
       setError(null)
     } catch (error) {
-      console.error('Error fetching videos:', error)
+      console.error('Error fetching YouTube videos:', error)
       setError(t('youtube.error.fetchFailed'))
     } finally {
       setLoading(false)

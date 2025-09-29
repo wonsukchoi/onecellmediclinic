@@ -11,42 +11,52 @@ import type {
   ApiResponse,
   HeroCarousel,
 } from "../types";
-
-// Supabase configuration
-const supabaseUrl = "https://weqqkknwpgremfugcbvz.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXFra253cGdyZW1mdWdjYnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzAwNTAsImV4cCI6MjA3NDQ0NjA1MH0.llYPWCVtWr6OWI_zRFYkeYMzGqaw9nfAQKU3VUV-Fgg";
+import {
+  getAuthStateFast,
+  getAuthHeadersFast,
+  SUPABASE_CONFIG,
+  clearSessionCache,
+} from "../utils/fast-auth";
 
 // Singleton pattern for Supabase client
-class SupabaseService {
+export class SupabaseService {
   private static instance: SupabaseClient | null = null;
   private static publicInstance: SupabaseClient | null = null;
 
   static getClient(): SupabaseClient {
     if (!this.instance) {
-      this.instance = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storage: typeof window !== "undefined" ? window.localStorage : undefined,
-          storageKey: "onecell-clinic-auth-token",
-          flowType: "pkce",
-        },
-      });
+      this.instance = createClient(
+        SUPABASE_CONFIG.url,
+        SUPABASE_CONFIG.anonKey,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage:
+              typeof window !== "undefined" ? window.localStorage : undefined,
+            storageKey: "onecell-clinic-auth-token",
+            flowType: "pkce",
+          },
+        }
+      );
     }
     return this.instance;
   }
 
   static getPublicClient(): SupabaseClient {
     if (!this.publicInstance) {
-      this.publicInstance = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-          detectSessionInUrl: false,
-        },
-      });
+      this.publicInstance = createClient(
+        SUPABASE_CONFIG.url,
+        SUPABASE_CONFIG.anonKey,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false,
+          },
+        }
+      );
     }
     return this.publicInstance;
   }
@@ -63,12 +73,12 @@ export class DatabaseService {
   ): Promise<ApiResponse<ContactSubmission>> {
     try {
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/submit-contact-form`,
+        `${SUPABASE_CONFIG.url}/functions/v1/submit-contact-form`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${supabaseAnonKey}`,
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
           },
           body: JSON.stringify({
             name: formData.name,
@@ -120,12 +130,12 @@ export class DatabaseService {
   ): Promise<ApiResponse<Appointment>> {
     try {
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/manage-appointments`,
+        `${SUPABASE_CONFIG.url}/functions/v1/manage-appointments`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${supabaseAnonKey}`,
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
           },
           body: JSON.stringify({
             action: "book",
@@ -167,12 +177,12 @@ export class DatabaseService {
   static async getBlogPosts(limit = 10): Promise<ApiResponse<BlogPost[]>> {
     try {
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/manage-blog-posts?limit=${limit}`,
+        `${SUPABASE_CONFIG.url}/functions/v1/manage-blog-posts?limit=${limit}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${supabaseAnonKey}`,
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
           },
         }
       );
@@ -201,12 +211,12 @@ export class DatabaseService {
   static async getBlogPost(slug: string): Promise<ApiResponse<BlogPost>> {
     try {
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/manage-blog-posts?slug=${slug}`,
+        `${SUPABASE_CONFIG.url}/functions/v1/manage-blog-posts?slug=${slug}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${supabaseAnonKey}`,
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
           },
         }
       );
@@ -236,12 +246,12 @@ export class DatabaseService {
   static async getActiveEventBanners(): Promise<ApiResponse<EventBanner[]>> {
     try {
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/manage-event-banners`,
+        `${SUPABASE_CONFIG.url}/functions/v1/manage-event-banners`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${supabaseAnonKey}`,
+            Authorization: `Bearer ${SUPABASE_CONFIG.anonKey}`,
           },
         }
       );
@@ -331,8 +341,9 @@ export class DatabaseService {
 
   static async signOut(): Promise<ApiResponse> {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      // Clear the session cache when user logs out
+      clearSessionCache();
+
       return { success: true };
     } catch (error) {
       return {
@@ -344,71 +355,16 @@ export class DatabaseService {
 
   static async getCurrentUser(): Promise<ApiResponse<UserProfile | null>> {
     try {
-      // First check for existing session with proper error handling
-      const {
-        data: { session: initialSession },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-      let session = initialSession;
+      // Use fast auth check first for maximum performance
+      const authState = getAuthStateFast();
 
-      if (sessionError) {
-        // Don't throw immediately, try to refresh session
-        if (sessionError.message.includes("Auth session missing")) {
-          // Attempt to refresh session
-          const {
-            data: { session: refreshedSession },
-            error: refreshError,
-          } = await supabase.auth.refreshSession();
-          if (refreshError || !refreshedSession) {
-            return { success: true, data: null };
-          }
-          // Use refreshed session
-          session = refreshedSession;
-        } else {
-          throw sessionError;
-        }
-      }
-
-      // If no session, return null
-      if (!session) {
+      if (!authState.user || authState.isExpired) {
         return { success: true, data: null };
       }
 
-      // Verify session is still valid
-      if (
-        session.expires_at &&
-        session.expires_at < Math.floor(Date.now() / 1000)
-      ) {
-        const {
-          data: { session: refreshedSession },
-          error: refreshError,
-        } = await supabase.auth.refreshSession();
-        if (refreshError || !refreshedSession) {
-          return { success: true, data: null };
-        }
-        session = refreshedSession;
-      }
+      const user = authState.user;
 
-      // Get user from current session
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      if (error) {
-        // If user fetch fails but we have a session, try to clear auth state
-        if (error.message.includes("Auth session missing")) {
-          await supabase.auth.signOut();
-          return { success: true, data: null };
-        }
-        throw error;
-      }
-
-      if (!user) {
-        return { success: true, data: null };
-      }
-
-      // Check if user has admin role (for demo purposes, let's check email)
-      // In production, this should come from a user_profiles table or user metadata
+      // Check if user has admin role
       const isAdmin =
         user.email === "admin@onecellclinic.com" ||
         user.user_metadata?.role === "admin" ||
@@ -417,11 +373,12 @@ export class DatabaseService {
       // Transform auth user to UserProfile
       const userProfile: UserProfile = {
         id: user.id,
-        email: user.email!,
-        name: user.user_metadata?.name || user.user_metadata?.full_name,
-        phone: user.user_metadata?.phone,
-        role: isAdmin ? "admin" : "user",
-        created_at: user.created_at,
+        email: user.email || "",
+        full_name: (user.user_metadata?.name ||
+          user.user_metadata?.full_name) as string | undefined,
+        phone: user.user_metadata?.phone as string | undefined,
+        role: isAdmin ? "admin" : "patient",
+        created_at: user.created_at as string | undefined,
       };
 
       return { success: true, data: userProfile };
@@ -463,63 +420,26 @@ export class AdminService {
     }>
   > {
     try {
-      const { page = 1, limit = 50, search, filters = {}, sort } = params;
-
-      let query = supabase.from(table).select("*", { count: "exact" });
-
-      // Apply search
-      if (search) {
-        // Basic search across common text fields - this should be customized per table
-        const searchFields = ["name", "title", "description", "email"];
-        const searchConditions = searchFields
-          .map((field) => `${field}.ilike.%${search}%`)
-          .join(",");
-        query = query.or(searchConditions);
-      }
-
-      // Apply filters
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-          if (typeof value === "boolean") {
-            query = query.eq(key, value);
-          } else if (typeof value === "string") {
-            query = query.ilike(key, `%${value}%`);
-          } else {
-            query = query.eq(key, value);
-          }
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "get_all",
+            table,
+            params,
+          }),
         }
-      });
+      );
 
-      // Apply sorting
-      if (sort) {
-        query = query.order(sort.field, {
-          ascending: sort.direction === "asc",
-        });
-      } else {
-        query = query.order("created_at", { ascending: false });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to fetch data");
       }
 
-      // Apply pagination
-      const from = (page - 1) * limit;
-      const to = from + limit - 1;
-      query = query.range(from, to);
-
-      const { data, error, count } = await query;
-
-      if (error) throw error;
-
-      const totalPages = Math.ceil((count || 0) / limit);
-
-      return {
-        success: true,
-        data: {
-          data: data as T[],
-          total: count || 0,
-          page,
-          limit,
-          totalPages,
-        },
-      };
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -533,15 +453,26 @@ export class AdminService {
     id: number | string
   ): Promise<ApiResponse<T>> {
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select("*")
-        .eq("id", id)
-        .single();
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "get_by_id",
+            table,
+            id,
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true, data: data as T };
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to get record");
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -555,15 +486,26 @@ export class AdminService {
     data: Partial<T>
   ): Promise<ApiResponse<T>> {
     try {
-      const { data: result, error } = await supabase
-        .from(table)
-        .insert(data)
-        .select()
-        .single();
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "create",
+            table,
+            data,
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true, data: result as T };
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to create record");
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -578,16 +520,27 @@ export class AdminService {
     data: Partial<T>
   ): Promise<ApiResponse<T>> {
     try {
-      const { data: result, error } = await supabase
-        .from(table)
-        .update(data)
-        .eq("id", id)
-        .select()
-        .single();
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "update",
+            table,
+            id,
+            data,
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true, data: result as T };
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to update record");
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -601,11 +554,26 @@ export class AdminService {
     id: number | string
   ): Promise<ApiResponse<void>> {
     try {
-      const { error } = await supabase.from(table).delete().eq("id", id);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "delete",
+            table,
+            id,
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true };
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to delete record");
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -617,81 +585,24 @@ export class AdminService {
   // Get admin dashboard statistics
   static async getAdminStats(): Promise<ApiResponse<Record<string, number>>> {
     try {
-      const tables = [
-        "appointments",
-        "consultation_requests",
-        "contact_submissions",
-        "procedures",
-        "providers",
-        "blog_posts",
-        "gallery_items",
-        "video_shorts",
-        "youtube_videos",
-        "selfie_reviews",
-        "event_banners",
-      ];
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "get_admin_stats",
+          }),
+        }
+      );
 
-      const statsPromises = tables.map(async (table) => {
-        const { count } = await supabase
-          .from(table)
-          .select("*", { count: "exact", head: true });
-        return { table, count: count || 0 };
-      });
+      const result = await response.json();
 
-      const results = await Promise.all(statsPromises);
-      const stats = results.reduce((acc, { table, count }) => {
-        acc[table] = count;
-        return acc;
-      }, {} as Record<string, number>);
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to get admin stats");
+      }
 
-      // Get today's appointments
-      const today = new Date().toISOString().split("T")[0];
-      const { count: todayAppointments } = await supabase
-        .from("appointments")
-        .select("*", { count: "exact", head: true })
-        .gte("preferred_date", today)
-        .lt("preferred_date", `${today}T23:59:59`);
-
-      // Get pending appointments
-      const { count: pendingAppointments } = await supabase
-        .from("appointments")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "pending");
-
-      // Get new consultations (last 24 hours)
-      const yesterday = new Date(
-        Date.now() - 24 * 60 * 60 * 1000
-      ).toISOString();
-      const { count: newConsultations } = await supabase
-        .from("consultation_requests")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", yesterday);
-
-      // Get new contact submissions (last 24 hours)
-      const { count: newContactSubmissions } = await supabase
-        .from("contact_submissions")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", yesterday);
-
-      const adminStats = {
-        totalAppointments: stats.appointments || 0,
-        pendingAppointments: pendingAppointments || 0,
-        todayAppointments: todayAppointments || 0,
-        totalConsultations: stats.consultation_requests || 0,
-        newConsultations: newConsultations || 0,
-        totalContactSubmissions: stats.contact_submissions || 0,
-        newContactSubmissions: newContactSubmissions || 0,
-        totalProcedures: stats.procedures || 0,
-        totalProviders: stats.providers || 0,
-        totalBlogPosts: stats.blog_posts || 0,
-        totalGalleryItems: stats.gallery_items || 0,
-        totalVideoShorts: stats.video_shorts || 0,
-        totalYouTubeVideos: stats.youtube_videos || 0,
-        totalSelfieReviews: stats.selfie_reviews || 0,
-        totalEventBanners: stats.event_banners || 0,
-      };
-
-      return { success: true, data: adminStats };
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -738,11 +649,26 @@ export class AdminService {
     ids: (number | string)[]
   ): Promise<ApiResponse<void>> {
     try {
-      const { error } = await supabase.from(table).delete().in("id", ids);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "bulk_delete",
+            table,
+            params: { ids },
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true };
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to bulk delete");
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -756,13 +682,26 @@ export class AdminService {
     updates: { id: number | string; data: Partial<T> }[]
   ): Promise<ApiResponse<void>> {
     try {
-      const promises = updates.map(({ id, data }) =>
-        supabase.from(table).update(data).eq("id", id)
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
+        {
+          method: "POST",
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: "bulk_update",
+            table,
+            params: { updates },
+          }),
+        }
       );
 
-      await Promise.all(promises);
+      const result = await response.json();
 
-      return { success: true };
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to bulk update");
+      }
+
+      return result;
     } catch (error) {
       return {
         success: false,
