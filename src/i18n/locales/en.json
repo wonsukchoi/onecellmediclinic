@@ -264,24 +264,9 @@
     "server_error": "Server Error"
   },
   "hero": {
-    "slide1": {
-      "title": "Beauty Revolution: OneCell Nose Surgery",
-      "subtitle": "SHORT × SELFIE",
-      "description": "Unparalleled excellence with customized nose surgery for long-lasting, natural results",
-      "cta": "Book Consultation"
-    },
-    "slide2": {
-      "title": "Dermatology Signature: OneCell Skin Care",
-      "subtitle": "DERM × SCIENCE",
-      "description": "VIP Premium Care Program",
-      "cta": "Learn More"
-    },
-    "slide3": {
-      "title": "Beauty Made Safe",
-      "subtitle": "SAFE × PREMIUM",
-      "description": "3D-CT precision surgery system for safer and more precise procedures",
-      "cta": "Book Appointment"
-    }
+    "loading": "Loading hero slides...",
+    "error": "Failed to load slides.",
+    "retry": "Try Again"
   },
   "videoShorts": {
     "title": "Video Shorts",

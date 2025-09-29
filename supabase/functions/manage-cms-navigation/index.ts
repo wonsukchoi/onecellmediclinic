@@ -9,6 +9,7 @@ const corsHeaders = {
 interface HeaderNavigation {
   id?: string
   label: string
+  label_en?: string
   url?: string
   page_id?: string
   nav_type?: 'link' | 'dropdown' | 'megamenu' | 'divider'
@@ -56,13 +57,24 @@ serve(async (req) => {
 
     switch (action) {
       case 'hierarchy': {
-        // Get navigation hierarchy for frontend display
-        const { data: navigation, error } = await supabaseClient.rpc('get_navigation_hierarchy')
+        // Get language from params, default to 'kr'
+        const language = params?.language || 'kr'
+
+        // Get navigation hierarchy for frontend display with language support
+        const { data: navigation, error } = await supabaseClient.rpc('get_navigation_hierarchy', { lang: language })
 
         if (error) throw error
 
+        // Transform the data to match the expected frontend structure
+        const transformedNavigation = (navigation || []).map((item: any) => ({
+          ...item,
+          children: item.children && Array.isArray(item.children)
+            ? item.children
+            : (item.children ? JSON.parse(item.children) : [])
+        }))
+
         return new Response(
-          JSON.stringify({ success: true, data: navigation }),
+          JSON.stringify({ success: true, data: transformedNavigation }),
           {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 200,

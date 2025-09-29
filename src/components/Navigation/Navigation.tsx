@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { CMSService } from '../../services/cms.service'
 import { Icon, type IconName } from '../icons'
 import type { HeaderNavigation, NavCategory, NavItem } from '../../types'
@@ -156,14 +157,14 @@ const transformCMSNavigationToCategories = (cmsNavigation: HeaderNavigation[]): 
 
       // Transform children to NavItems
       const items: NavItem[] = children
-        .filter(child => child.is_visible)
-        .map(child => ({
+        .filter((child: HeaderNavigation) => child.is_visible)
+        .map((child: HeaderNavigation) => ({
           label: child.label,
           path: constructPageUrl(child),
           description: '', // CMS doesn't have description field yet
           icon: getIconName(child.icon_name),
           featured: child.css_classes?.includes('featured') || false,
-          target_blank: child.target_blank,
+          target_blank: child.target_blank || false,
           page_id: child.page_id || undefined
         }))
 
@@ -187,6 +188,7 @@ const Navigation: React.FC<NavigationProps> = ({
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const { i18n } = useTranslation()
 
   // Load navigation data from CMS
   useEffect(() => {
@@ -202,14 +204,18 @@ const Navigation: React.FC<NavigationProps> = ({
           return
         }
 
-        // Fetch from CMS
-        const response = await CMSService.getNavigation()
+        // Fetch from CMS with current language
+        const currentLanguage = i18n.language === 'en' ? 'en' : 'kr'
+        const response = await CMSService.getNavigation(currentLanguage)
 
         if (response.success && response.data) {
+          console.log('CMS Navigation Response:', response.data)
           const transformedNavigation = transformCMSNavigationToCategories(response.data)
+          console.log('Transformed Navigation:', transformedNavigation)
           setNavigationCategories(transformedNavigation)
           setCachedNavigation(transformedNavigation)
         } else {
+          console.error('CMS Navigation Error:', response.error)
           throw new Error(response.error || 'Failed to load navigation')
         }
       } catch (error) {
@@ -222,7 +228,7 @@ const Navigation: React.FC<NavigationProps> = ({
     }
 
     loadNavigation()
-  }, [])
+  }, [i18n.language])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -290,14 +296,11 @@ const Navigation: React.FC<NavigationProps> = ({
     className
   ].filter(Boolean).join(' ')
 
-  // Show loading state without blocking navigation render
+  // Show blank during loading - removed loading indicator as requested
   if (isLoading && navigationCategories === fallbackNavigation) {
     return (
       <nav className={navigationClasses}>
         <ul className={styles.navList}>
-          <li className={styles.navItem}>
-            <span className={styles.loadingText}>Loading navigation...</span>
-          </li>
         </ul>
       </nav>
     )

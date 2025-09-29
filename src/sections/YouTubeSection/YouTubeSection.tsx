@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ContentFeaturesService } from '../../services/features.service'
+import HorizontalScroll from '../../components/HorizontalScroll'
 import styles from './YouTubeSection.module.css'
 
 // Extend Window interface for YouTube API
@@ -204,7 +205,17 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
           </div>
         )}
 
-        <div className={styles.videosGrid}>
+        <HorizontalScroll
+          className={styles.horizontalScrollContainer}
+          showIndicators={true}
+          itemWidth={380}
+          gap={25}
+          visibleItems={{
+            desktop: 3,
+            tablet: 2,
+            mobile: 1.2
+          }}
+        >
           {filteredVideos.map((video) => (
             <div key={video.id} className={`${styles.videoCard} ${video.featured ? styles.featured : ''}`}>
               {video.featured && (
@@ -317,7 +328,7 @@ const YouTubeSection: React.FC<YouTubeSectionProps> = ({
               </div>
             </div>
           ))}
-        </div>
+        </HorizontalScroll>
 
         {filteredVideos.length === 0 && (
           <div className={styles.noVideos}>

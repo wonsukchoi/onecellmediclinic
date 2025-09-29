@@ -425,6 +425,7 @@ export interface PageBlock {
 export interface HeaderNavigation {
   id: string
   label: string
+  label_en?: string
   url?: string
   page_id?: string
   nav_type: NavType
@@ -650,4 +651,39 @@ export interface MemberPasswordUpdateFormData {
   currentPassword: string
   newPassword: string
   confirmPassword: string
+}
+
+// Hero Carousel Types
+export interface HeroCarousel {
+  id: string
+  title_kr: string
+  title_en: string
+  subtitle_kr: string
+  subtitle_en: string
+  description_kr: string
+  description_en: string
+  background_image_url: string
+  cta_text_kr: string
+  cta_text_en: string
+  cta_link: string
+  order_index: number
+  is_active: boolean
+  text_position: 'left' | 'center' | 'right'
+  overlay_opacity: number
+  created_at?: string
+  updated_at?: string
+}
+
+export interface HeroCarouselItem {
+  id: string
+  image: string
+  title: string
+  subtitle: string
+  description: string
+  cta: {
+    text: string
+    link: string
+  }
+  overlay: boolean
+  textPosition: 'left' | 'center' | 'right'
 }
