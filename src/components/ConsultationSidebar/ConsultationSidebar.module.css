@@ -28,7 +28,8 @@
 }
 
 .consultationSidebar.right.visible {
-  right: 20px;
+  right: calc(30px + var(--scrollbar-width, 16px));
+  margin-right: 16px; /* Additional margin to ensure no overlap */
 }
 
 .consultationSidebar.left.visible {
@@ -36,7 +37,8 @@
 }
 
 .consultationSidebar.expanded.right {
-  right: 20px;
+  right: calc(30px + var(--scrollbar-width, 16px));
+  margin-right: 16px; /* Additional margin to ensure no overlap */
 }
 
 .consultationSidebar.expanded.left {
@@ -389,17 +391,19 @@
     left: -250px;
   }
 
-  .consultationSidebar.right.visible {
-    right: 10px;
-  }
+.consultationSidebar.right.visible {
+  right: calc(20px + var(--scrollbar-width, 16px));
+  margin-right: 12px; /* Additional margin to ensure no overlap */
+}
 
-  .consultationSidebar.left.visible {
-    left: 10px;
-  }
+.consultationSidebar.left.visible {
+  left: 10px;
+}
 
-  .consultationSidebar.expanded.right {
-    right: 10px;
-  }
+.consultationSidebar.expanded.right {
+  right: calc(20px + var(--scrollbar-width, 16px));
+  margin-right: 12px; /* Additional margin to ensure no overlap */
+}
 
   .consultationSidebar.expanded.left {
     left: 10px;
@@ -476,13 +480,14 @@
     left: -230px;
   }
 
-  .consultationSidebar.right.visible {
-    right: 5px;
-  }
+.consultationSidebar.right.visible {
+  right: calc(15px + var(--scrollbar-width, 16px));
+  margin-right: 10px; /* Additional margin to ensure no overlap */
+}
 
-  .consultationSidebar.left.visible {
-    left: 5px;
-  }
+.consultationSidebar.left.visible {
+  left: 5px;
+}
 }
 
 /* Focus states for accessibility */

@@ -166,7 +166,7 @@
 .footerBottom {
   max-width: 1200px;
   margin: 2rem auto 0;
-  padding: 1.5rem 1rem 0;
+  padding: 1.5rem 1rem 100px; /* Added bottom padding to prevent overlap with sticky bar */
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
@@ -211,6 +211,7 @@
 .copyright {
   font-weight: 500;
   color: #64748b;
+  padding-bottom: 40px; /* Add extra space below copyright text */
 }
 
 /* Mobile Responsive */
@@ -276,7 +277,7 @@
 
   .footerBottom {
     margin-top: 1.5rem;
-    padding-top: 1rem;
+    padding: 1rem 1rem 120px; /* Increased bottom padding for mobile */
     text-align: center;
   }
 
@@ -287,6 +288,10 @@
 
   .footerMeta {
     font-size: 0.75rem;
+  }
+  
+  .copyright {
+    padding-bottom: 50px; /* Add even more space on mobile */
   }
 }
 
@@ -316,5 +321,9 @@
 
   .separator {
     display: none;
+  }
+  
+  .copyright {
+    padding-bottom: 60px; /* Add even more space on small mobile */
   }
 }

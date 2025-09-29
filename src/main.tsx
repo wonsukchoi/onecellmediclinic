@@ -18,7 +18,9 @@ function setScrollbarWidth() {
   const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
   document.body.removeChild(scrollDiv)
   
-  document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`)
+  // Ensure a minimum value for scrollbar width to prevent overlap issues
+  const effectiveScrollbarWidth = Math.max(scrollbarWidth, 16)
+  document.documentElement.style.setProperty('--scrollbar-width', `${effectiveScrollbarWidth}px`)
 }
 
 // Set scrollbar width on load

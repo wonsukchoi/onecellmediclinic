@@ -26,6 +26,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <ErrorBoundary>
           <Footer />
         </ErrorBoundary>
+        <ErrorBoundary>
+          <ConsultationSidebar position="right" />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <StickyScrollBar />
+        </ErrorBoundary>
       </div>
     </ErrorBoundary>
   );

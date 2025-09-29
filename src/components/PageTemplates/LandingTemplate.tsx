@@ -82,16 +82,7 @@ const LandingTemplate: React.FC<LandingTemplateProps> = ({ page, className }) =>
         </div>
       </footer>
 
-      {/* Floating Action Button */}
-      <div className={styles.floatingActions}>
-        <a
-          href="/consultation"
-          className={styles.floatingButton}
-          aria-label="빠른 상담"
-        >
-          💬
-        </a>
-      </div>
+      {/* Floating Action Button removed in favor of ConsultationSidebar */}
     </div>
   );
 };

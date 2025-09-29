@@ -289,7 +289,6 @@ const StickyScrollBar: React.FC<StickyScrollBarProps> = ({ className }) => {
                 </>
               ) : (
                 <>
-                  <Icon name="medical" size="sm" />
                   <span>예약하기</span>
                 </>
               )}
