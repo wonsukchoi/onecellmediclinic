@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getAuthHeadersFast, getFunctionsUrl, getSessionCached } from '../utils/fast-auth';
 
 export interface ConsultationRequest {
   patientName: string;
@@ -36,25 +37,16 @@ class ConsultationService {
   private readonly functionsUrl: string;
 
   constructor() {
-    // Get the Supabase URL and construct the Edge Functions URL
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://weqqkknwpgremfugcbvz.supabase.co';
-    this.functionsUrl = `${supabaseUrl}/functions/v1`;
+    // Use centralized functions URL
+    this.functionsUrl = getFunctionsUrl();
   }
 
   /**
-   * Get auth headers for authenticated requests
+   * Get auth headers for authenticated requests (optimized with fast localStorage access)
    */
-  private async getAuthHeaders(): Promise<HeadersInit> {
-    const { data: { session } } = await supabase.auth.getSession();
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-
-    if (session?.access_token) {
-      headers['Authorization'] = `Bearer ${session.access_token}`;
-    }
-
-    return headers;
+  private getAuthHeaders(): HeadersInit {
+    // Use centralized auth helper
+    return getAuthHeadersFast();
   }
 
   /**
@@ -64,7 +56,7 @@ class ConsultationService {
     try {
       const response = await fetch(`${this.functionsUrl}/consultation-request`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify(requestData),
       });
 
@@ -93,14 +85,15 @@ class ConsultationService {
     error?: string;
   }> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      // Use cached getSession for better performance
+      const { data: { session } } = await getSessionCached(supabase);
+      if (!session?.user) {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?patientEmail=${encodeURIComponent(user.email!)}`, {
+      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?patientEmail=${encodeURIComponent(session.user.email!)}`, {
         method: 'GET',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -128,7 +121,7 @@ class ConsultationService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?id=${id}`, {
         method: 'GET',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -156,7 +149,7 @@ class ConsultationService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'get_tracking',
           consultationId
@@ -204,7 +197,7 @@ class ConsultationService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'update',
           consultationId: id,
@@ -245,7 +238,7 @@ class ConsultationService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'convert_to_appointment',
           consultationId,
@@ -286,7 +279,7 @@ class ConsultationService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'get_stats'
         }),

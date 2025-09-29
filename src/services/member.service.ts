@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
+import { getAuthHeadersFast, SUPABASE_CONFIG } from '../utils/fast-auth';
 import type {
-  MemberProfile,
+  UserProfile,
   MedicalRecord,
   Prescription,
   PaymentHistory,
@@ -14,7 +15,7 @@ import type {
 
 export class MemberService {
   // Authentication methods
-  static async signUp(formData: MemberSignupFormData): Promise<ApiResponse<any>> {
+  static async signUp(formData: MemberSignupFormData): Promise<ApiResponse<{ user: unknown; session: unknown }>> {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -25,7 +26,7 @@ export class MemberService {
             phone: formData.phone,
             date_of_birth: formData.dateOfBirth,
             gender: formData.gender,
-            role: 'member'
+            role: 'patient'
           },
           emailRedirectTo: `${window.location.origin}/member/verify-email`
         }
@@ -38,7 +39,7 @@ export class MemberService {
         await this.createMemberProfile({
           id: data.user.id,
           email: formData.email,
-          name: formData.name,
+          full_name: formData.name,
           phone: formData.phone,
           date_of_birth: formData.dateOfBirth,
           gender: formData.gender,
@@ -50,7 +51,7 @@ export class MemberService {
 
       return { success: true, data };
     } catch (error) {
-      console.error('Error signing up:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -58,7 +59,7 @@ export class MemberService {
     }
   }
 
-  static async signIn(formData: MemberLoginFormData): Promise<ApiResponse<any>> {
+  static async signIn(formData: MemberLoginFormData): Promise<ApiResponse<{ user: unknown; session: unknown }>> {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
@@ -69,7 +70,7 @@ export class MemberService {
 
       return { success: true, data };
     } catch (error) {
-      console.error('Error signing in:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -83,7 +84,7 @@ export class MemberService {
       if (error) throw error;
       return { success: true };
     } catch (error) {
-      console.error('Error signing out:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -101,7 +102,7 @@ export class MemberService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error resetting password:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -119,7 +120,7 @@ export class MemberService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error updating password:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -128,19 +129,29 @@ export class MemberService {
   }
 
   // Member profile methods
-  static async createMemberProfile(profileData: Partial<MemberProfile>): Promise<ApiResponse<MemberProfile>> {
+  static async createMemberProfile(profileData: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
     try {
-      const { data, error } = await supabase
-        .from('member_profiles')
-        .insert(profileData)
-        .select()
-        .single();
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'create_profile',
+            profileData
+          })
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true, data };
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create member profile');
+      }
+
+      return result;
     } catch (error) {
-      console.error('Error creating member profile:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -148,19 +159,29 @@ export class MemberService {
     }
   }
 
-  static async getMemberProfile(memberId: string): Promise<ApiResponse<MemberProfile>> {
+  static async getMemberProfile(memberId: string): Promise<ApiResponse<UserProfile>> {
     try {
-      const { data, error } = await supabase
-        .from('member_profiles')
-        .select('*')
-        .eq('id', memberId)
-        .single();
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'get_profile',
+            userId: memberId
+          })
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true, data };
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get member profile');
+      }
+
+      return result;
     } catch (error) {
-      console.error('Error fetching member profile:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -168,20 +189,30 @@ export class MemberService {
     }
   }
 
-  static async updateMemberProfile(memberId: string, profileData: Partial<MemberProfile>): Promise<ApiResponse<MemberProfile>> {
+  static async updateMemberProfile(memberId: string, profileData: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
     try {
-      const { data, error } = await supabase
-        .from('member_profiles')
-        .update(profileData)
-        .eq('id', memberId)
-        .select()
-        .single();
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'update_profile',
+            userId: memberId,
+            profileData
+          })
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
 
-      return { success: true, data };
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update member profile');
+      }
+
+      return result;
     } catch (error) {
-      console.error('Error updating member profile:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -226,7 +257,7 @@ export class MemberService {
 
       return { success: true, data: dashboardData };
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -240,28 +271,28 @@ export class MemberService {
     options: { limit?: number; upcoming?: boolean } = {}
   ): Promise<ApiResponse<Appointment[]>> {
     try {
-      let query = supabase
-        .from('appointments')
-        .select('*')
-        .eq('patient_email', (await this.getMemberProfile(memberId)).data?.email);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'get_member_appointments',
+            userId: memberId,
+            options
+          })
+        }
+      );
 
-      if (options.upcoming) {
-        query = query.gte('preferred_date', new Date().toISOString().split('T')[0]);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get member appointments');
       }
 
-      if (options.limit) {
-        query = query.limit(options.limit);
-      }
-
-      query = query.order('preferred_date', { ascending: true });
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      return { success: true, data: data || [] };
+      return result;
     } catch (error) {
-      console.error('Error fetching member appointments:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -275,27 +306,28 @@ export class MemberService {
     options: { limit?: number } = {}
   ): Promise<ApiResponse<MedicalRecord[]>> {
     try {
-      let query = supabase
-        .from('medical_records')
-        .select(`
-          *,
-          provider:providers(*)
-        `)
-        .eq('member_id', memberId);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'get_medical_records',
+            userId: memberId,
+            options
+          })
+        }
+      );
 
-      if (options.limit) {
-        query = query.limit(options.limit);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get medical records');
       }
 
-      query = query.order('visit_date', { ascending: false });
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      return { success: true, data: data || [] };
+      return result;
     } catch (error) {
-      console.error('Error fetching medical records:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -309,31 +341,28 @@ export class MemberService {
     options: { status?: string; limit?: number } = {}
   ): Promise<ApiResponse<Prescription[]>> {
     try {
-      let query = supabase
-        .from('prescriptions')
-        .select(`
-          *,
-          provider:providers(*)
-        `)
-        .eq('member_id', memberId);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'get_prescriptions',
+            userId: memberId,
+            options
+          })
+        }
+      );
 
-      if (options.status) {
-        query = query.eq('status', options.status);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get prescriptions');
       }
 
-      if (options.limit) {
-        query = query.limit(options.limit);
-      }
-
-      query = query.order('prescribed_date', { ascending: false });
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      return { success: true, data: data || [] };
+      return result;
     } catch (error) {
-      console.error('Error fetching prescriptions:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -347,24 +376,28 @@ export class MemberService {
     options: { limit?: number } = {}
   ): Promise<ApiResponse<PaymentHistory[]>> {
     try {
-      let query = supabase
-        .from('payment_history')
-        .select('*')
-        .eq('member_id', memberId);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'get_payment_history',
+            userId: memberId,
+            options
+          })
+        }
+      );
 
-      if (options.limit) {
-        query = query.limit(options.limit);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get payment history');
       }
 
-      query = query.order('payment_date', { ascending: false });
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      return { success: true, data: data || [] };
+      return result;
     } catch (error) {
-      console.error('Error fetching payment history:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -378,27 +411,28 @@ export class MemberService {
     options: { limit?: number } = {}
   ): Promise<ApiResponse<ConsultationNote[]>> {
     try {
-      let query = supabase
-        .from('consultation_notes')
-        .select(`
-          *,
-          provider:providers(*)
-        `)
-        .eq('member_id', memberId);
+      const response = await fetch(
+        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
+        {
+          method: 'POST',
+          headers: getAuthHeadersFast(),
+          body: JSON.stringify({
+            action: 'get_consultation_notes',
+            userId: memberId,
+            options
+          })
+        }
+      );
 
-      if (options.limit) {
-        query = query.limit(options.limit);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to get consultation notes');
       }
 
-      query = query.order('consultation_date', { ascending: false });
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-
-      return { success: true, data: data || [] };
+      return result;
     } catch (error) {
-      console.error('Error fetching consultation notes:', error);
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -436,22 +470,22 @@ export class MemberService {
   }
 
   // Current user helper
-  static async getCurrentMember(): Promise<ApiResponse<MemberProfile | null>> {
+  static async getCurrentMember(): Promise<ApiResponse<UserProfile | null>> {
     try {
       const { data: { user }, error } = await supabase.auth.getUser();
 
       if (error) throw error;
       if (!user) return { success: true, data: null };
 
-      // Check if user has member role
-      if (user.user_metadata?.role !== 'member') {
+      // Check if user has patient role
+      if (user.user_metadata?.role !== 'patient') {
         return { success: true, data: null };
       }
 
       const profileResult = await this.getMemberProfile(user.id);
       return profileResult;
     } catch (error) {
-      console.error('Error getting current member:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -477,7 +511,7 @@ export class MemberService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error resending verification email:', error);
+      
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'

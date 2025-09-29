@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getAuthHeadersFast, getFunctionsUrl, getSessionCached } from '../utils/fast-auth';
 
 export interface BookAppointmentRequest {
   patientName: string;
@@ -50,25 +51,16 @@ class BookingService {
   private readonly functionsUrl: string;
 
   constructor() {
-    // Get the Supabase URL and construct the Edge Functions URL
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://weqqkknwpgremfugcbvz.supabase.co';
-    this.functionsUrl = `${supabaseUrl}/functions/v1`;
+    // Use centralized functions URL
+    this.functionsUrl = getFunctionsUrl();
   }
 
   /**
-   * Get auth headers for authenticated requests
+   * Get auth headers for authenticated requests (optimized with fast localStorage access)
    */
-  private async getAuthHeaders(): Promise<HeadersInit> {
-    const { data: { session } } = await supabase.auth.getSession();
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-
-    if (session?.access_token) {
-      headers['Authorization'] = `Bearer ${session.access_token}`;
-    }
-
-    return headers;
+  private getAuthHeaders(): HeadersInit {
+    // Use centralized auth helper
+    return getAuthHeadersFast();
   }
 
   /**
@@ -78,7 +70,7 @@ class BookingService {
     try {
       const response = await fetch(`${this.functionsUrl}/book-appointment`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify(appointmentData),
       });
 
@@ -118,7 +110,7 @@ class BookingService {
 
       const response = await fetch(`${this.functionsUrl}/get-availability?${searchParams}`, {
         method: 'GET',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
       });
 
       const data = await response.json();
@@ -144,14 +136,15 @@ class BookingService {
    */
   async getUserAppointments(): Promise<{ success: boolean; appointments?: any[]; error?: string }> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      // Use cached getSession for better performance
+      const { data: { session } } = await getSessionCached(supabase);
+      if (!session?.user) {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const response = await fetch(`${this.functionsUrl}/manage-appointments?patientEmail=${encodeURIComponent(user.email!)}`, {
+      const response = await fetch(`${this.functionsUrl}/manage-appointments?patientEmail=${encodeURIComponent(session.user.email!)}`, {
         method: 'GET',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -180,7 +173,7 @@ class BookingService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-appointments`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'cancel',
           appointmentId,
@@ -239,7 +232,7 @@ class BookingService {
 
       const response = await fetch(`${this.functionsUrl}/manage-appointments`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'reschedule',
           appointmentId,
@@ -274,7 +267,7 @@ class BookingService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-providers`, {
         method: 'GET',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -300,7 +293,7 @@ class BookingService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-procedures`, {
         method: 'GET',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -326,7 +319,7 @@ class BookingService {
     try {
       const response = await fetch(`${this.functionsUrl}/manage-procedures`, {
         method: 'POST',
-        headers: await this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           action: 'list_categories'
         }),

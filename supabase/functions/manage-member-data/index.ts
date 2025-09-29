@@ -95,7 +95,7 @@ async function getDashboardData(supabaseClient: any, memberId: string) {
   try {
     // Get member profile
     const { data: profile, error: profileError } = await supabaseClient
-      .from('member_profiles')
+      .from('user_profiles')
       .select('*')
       .eq('id', memberId)
       .single()
@@ -104,7 +104,7 @@ async function getDashboardData(supabaseClient: any, memberId: string) {
 
     // Get upcoming appointments
     const { data: memberProfile } = await supabaseClient
-      .from('member_profiles')
+      .from('user_profiles')
       .select('email')
       .eq('id', memberId)
       .single()
@@ -184,7 +184,7 @@ async function getDashboardData(supabaseClient: any, memberId: string) {
 async function updateMemberProfile(supabaseClient: any, memberId: string, updateData: any) {
   try {
     const { data, error } = await supabaseClient
-      .from('member_profiles')
+      .from('user_profiles')
       .update({
         ...updateData,
         updated_at: new Date().toISOString()

@@ -260,7 +260,7 @@ async function sendAutomatedNotifications(supabaseClient: any) {
       for (const appointment of tomorrowAppointments) {
         // Get member profile by email
         const { data: memberProfile } = await supabaseClient
-          .from('member_profiles')
+          .from('user_profiles')
           .select('id')
           .eq('email', appointment.patient_email)
           .single()

@@ -1,6 +1,7 @@
-import { supabase } from "./supabase";
 // Import the public client for non-authenticated access
 import { SupabaseService } from "./supabase";
+// Import fast auth utilities for better performance
+import { getAuthHeadersFast } from "../utils/fast-auth";
 
 // TypeScript interfaces for API responses
 interface VideoShort {
@@ -244,17 +245,10 @@ const getAuthHeaders = async () => {
   };
 };
 
-// Get authentication headers for logged-in users
-const getAuthHeadersLoggedin = async () => {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const authToken = session?.access_token || supabaseAnonKey;
-
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${authToken}`,
-  };
+// Get authentication headers for logged-in users (optimized with fast localStorage access)
+const getAuthHeadersLoggedin = () => {
+  // Use fast auth helper instead of slow async getSession()
+  return getAuthHeadersFast();
 };
 
 // Generic API call function for public endpoints
@@ -334,7 +328,7 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
 // Generic API call function for authenticated endpoints
 const authenticatedApiCall = async (endpoint: string, options: RequestInit = {}) => {
   try {
-    const authHeaders = await getAuthHeadersLoggedin();
+    const authHeaders = getAuthHeadersLoggedin();
     const response = await fetch(endpoint, {
       headers: {
         ...authHeaders,
