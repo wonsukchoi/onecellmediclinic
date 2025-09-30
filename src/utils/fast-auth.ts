@@ -6,6 +6,9 @@
  * to supabase.auth.getSession(). Includes cached getSession for performance.
  */
 
+import { STORAGE_KEY } from "../services/supabase";
+import type { SupabaseClient, Session as SupabaseSession, AuthError } from "@supabase/supabase-js";
+
 interface User {
   id: string;
   email?: string;
@@ -34,7 +37,17 @@ interface AuthState {
 }
 
 interface CachedSession {
-  session: Session | null;
+  session: SupabaseSession | null;
+  timestamp: number;
+}
+
+interface CachedUser {
+  user: User | null;
+  timestamp: number;
+}
+
+interface CachedAuthHeaders {
+  headers: { [key: string]: string };
   timestamp: number;
 }
 
@@ -45,17 +58,19 @@ export const SUPABASE_CONFIG = {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcXFra253cGdyZW1mdWdjYnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzAwNTAsImV4cCI6MjA3NDQ0NjA1MH0.llYPWCVtWr6OWI_zRFYkeYMzGqaw9nfAQKU3VUV-Fgg",
 } as const;
 
-// Session cache with 5-minute TTL
+// Cache with 5-minute TTL
 let sessionCache: CachedSession | null = null;
-const SESSION_CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+let userCache: CachedUser | null = null;
+let authHeadersCache: CachedAuthHeaders | null = null;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 /**
  * Get the localStorage key for Supabase auth tokens
  * Format: sb-<project-ref>-auth-token
  */
-function getSupabaseAuthKey(): string {
+export function getSupabaseAuthKey(): string {
   // Extract project ref from the centralized Supabase URL
-  return "onecell-clinic-auth-token";
+  return STORAGE_KEY;
 }
 
 /**
@@ -154,7 +169,6 @@ export function getUserFast(): User | null {
  */
 export function isAdminFast(): boolean {
   const user = getUserFast();
-  console.log("user", user);
   if (!user) return false;
 
   return (
@@ -165,32 +179,43 @@ export function isAdminFast(): boolean {
 }
 
 /**
- * Get authentication headers for API calls using fast localStorage access
+ * Get authentication headers for API calls with caching
  * Fallback to anonymous key if no valid token
  */
-export function getAuthHeadersFast(): { [key: string]: string } {
-  const accessToken = getAccessTokenFast();
+export function getAuthHeaders(): { [key: string]: string } {
+  if (
+    authHeadersCache &&
+    Date.now() - authHeadersCache.timestamp < CACHE_TTL
+  ) {
+    return authHeadersCache.headers;
+  }
 
-  return {
+  const accessToken = getAccessTokenFast();
+  const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${accessToken || SUPABASE_CONFIG.anonKey}`,
   };
+
+  authHeadersCache = {
+    headers,
+    timestamp: Date.now(),
+  };
+
+  return headers;
 }
 
 /**
  * Cached getSession implementation for performance optimization
  * Only calls the actual getSession once every 5 minutes
- * Note: Using 'any' type for supabaseClient to maintain compatibility with various Supabase client versions
  */
-
 export async function getSessionCached(
-  supabaseClient: any
-): Promise<{ data: { session: any }; error: any }> {
+  supabaseClient: SupabaseClient
+): Promise<{ data: { session: SupabaseSession | null }; error: AuthError | null }> {
   try {
     // Check if we have a valid cached session
     if (
       sessionCache &&
-      Date.now() - sessionCache.timestamp < SESSION_CACHE_TTL
+      Date.now() - sessionCache.timestamp < CACHE_TTL
     ) {
       return { data: { session: sessionCache.session }, error: null };
     }
@@ -218,19 +243,76 @@ export async function getSessionCached(
     }
 
     return { data, error };
-  } catch (error) {
+  } catch {
     // Clear cache on any error
     sessionCache = null;
-    return { data: { session: null }, error: error as Error };
+    return { data: { session: null }, error: null };
   }
+}
+
+/**
+ * Cached getUser implementation for performance optimization
+ * Only calls the actual getUser once every 5 minutes
+ */
+export async function getUserCached(
+  supabaseClient: SupabaseClient
+): Promise<{ data: { user: User | null }; error: AuthError | null }> {
+  try {
+    // Check if we have a valid cached user
+    if (
+      userCache &&
+      Date.now() - userCache.timestamp < CACHE_TTL
+    ) {
+      return { data: { user: userCache.user }, error: null };
+    }
+
+    // Fast check from localStorage first
+    const authState = getAuthStateFast();
+    if (!authState.accessToken || authState.isExpired) {
+      // Clear cache and return null user
+      userCache = null;
+      return { data: { user: null }, error: null };
+    }
+
+    // Only call getUser if localStorage indicates we should have a user
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (!error && data.user) {
+      // Cache the user
+      userCache = {
+        user: data.user as unknown as User,
+        timestamp: Date.now(),
+      };
+    } else {
+      // Clear cache on error or no user
+      userCache = null;
+    }
+
+    return { data: { user: data.user as User | null }, error };
+  } catch {
+    // Clear cache on any error
+    userCache = null;
+    return { data: { user: null }, error: null };
+  }
+}
+
+/**
+ * Clear all auth caches
+ * Should be called when user logs out or auth state changes
+ */
+export function clearAuthCache(): void {
+  sessionCache = null;
+  userCache = null;
+  authHeadersCache = null;
 }
 
 /**
  * Clear the session cache
  * Should be called when user logs out or auth state changes
+ * @deprecated Use clearAuthCache instead
  */
 export function clearSessionCache(): void {
-  sessionCache = null;
+  clearAuthCache();
 }
 
 /**
@@ -241,7 +323,7 @@ export function getFunctionsUrl(): string {
 }
 
 /**
- * Clear authentication data from localStorage and session cache
+ * Clear authentication data from localStorage and all caches
  * Use this when user explicitly logs out
  */
 export function clearAuthFast(): void {
@@ -250,8 +332,8 @@ export function clearAuthFast(): void {
       const authKey = getSupabaseAuthKey();
       localStorage.removeItem(authKey);
     }
-    // Also clear the session cache
-    clearSessionCache();
+    // Also clear all auth caches
+    clearAuthCache();
   } catch {
     // Silent fail - best effort to clear auth
   }

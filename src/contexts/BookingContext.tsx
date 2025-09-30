@@ -1,5 +1,6 @@
-import { supabase } from './supabase';
-import { getAuthHeadersFast, getFunctionsUrl, getSessionCached } from '../utils/fast-auth';
+import React, { createContext, useContext, type ReactNode } from "react";
+import { getAuthHeaders as getAuthHeadersUtil, getFunctionsUrl, getSessionCached } from "../utils/fast-auth";
+import { useSupabase } from "./SupabaseContext";
 
 export interface BookAppointmentRequest {
   patientName: string;
@@ -47,30 +48,42 @@ export interface AppointmentResponse {
   confirmationCode?: string;
 }
 
-class BookingService {
-  private readonly functionsUrl: string;
+interface BookingContextType {
+  bookAppointment: (appointmentData: BookAppointmentRequest) => Promise<AppointmentResponse>;
+  getAvailability: (params: {
+    providerId?: number;
+    procedureId?: number;
+    startDate: string;
+    endDate?: string;
+    durationMinutes?: number;
+  }) => Promise<AvailabilityResponse>;
+  getUserAppointments: () => Promise<{ success: boolean; appointments?: any[]; error?: string }>;
+  cancelAppointment: (appointmentId: number, cancellationReason?: string) => Promise<{ success: boolean; error?: string }>;
+  rescheduleAppointment: (appointmentId: number, newDate: string, newTime: string, providerId?: number) => Promise<{ success: boolean; error?: string }>;
+  getProviders: () => Promise<{ success: boolean; providers?: any[]; error?: string }>;
+  getProcedures: () => Promise<{ success: boolean; procedures?: any[]; error?: string }>;
+  getProcedureCategories: () => Promise<{ success: boolean; categories?: any[]; error?: string }>;
+}
 
-  constructor() {
-    // Use centralized functions URL
-    this.functionsUrl = getFunctionsUrl();
-  }
+const BookingContext = createContext<BookingContextType | undefined>(undefined);
 
-  /**
-   * Get auth headers for authenticated requests (optimized with fast localStorage access)
-   */
-  private getAuthHeaders(): HeadersInit {
-    // Use centralized auth helper
-    return getAuthHeadersFast();
-  }
+interface BookingProviderProps {
+  children: ReactNode;
+}
 
-  /**
-   * Book an appointment
-   */
-  async bookAppointment(appointmentData: BookAppointmentRequest): Promise<AppointmentResponse> {
+export const BookingProvider: React.FC<BookingProviderProps> = ({ children }) => {
+  const { client } = useSupabase();
+  const functionsUrl = getFunctionsUrl();
+
+  const getAuthHeaders = (): HeadersInit => {
+    return getAuthHeadersUtil();
+  };
+
+  const bookAppointment = async (appointmentData: BookAppointmentRequest): Promise<AppointmentResponse> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/book-appointment`, {
+      const response = await fetch(`${functionsUrl}/book-appointment`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify(appointmentData),
       });
 
@@ -82,24 +95,20 @@ class BookingService {
 
       return data;
     } catch (error) {
-      console.error('Error booking appointment:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to book appointment',
       };
     }
-  }
+  };
 
-  /**
-   * Get provider availability
-   */
-  async getAvailability(params: {
+  const getAvailability = async (params: {
     providerId?: number;
     procedureId?: number;
     startDate: string;
     endDate?: string;
     durationMinutes?: number;
-  }): Promise<AvailabilityResponse> {
+  }): Promise<AvailabilityResponse> => {
     try {
       const searchParams = new URLSearchParams();
       if (params.providerId) searchParams.append('providerId', params.providerId.toString());
@@ -108,9 +117,9 @@ class BookingService {
       if (params.endDate) searchParams.append('endDate', params.endDate);
       if (params.durationMinutes) searchParams.append('durationMinutes', params.durationMinutes.toString());
 
-      const response = await fetch(`${this.functionsUrl}/get-availability?${searchParams}`, {
+      const response = await fetch(`${functionsUrl}/get-availability?${searchParams}`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
       });
 
       const data = await response.json();
@@ -121,7 +130,6 @@ class BookingService {
 
       return data;
     } catch (error) {
-      console.error('Error getting availability:', error);
       return {
         success: false,
         availability: [],
@@ -129,22 +137,18 @@ class BookingService {
         error: error instanceof Error ? error.message : 'Failed to get availability',
       };
     }
-  }
+  };
 
-  /**
-   * Get appointments for the current user
-   */
-  async getUserAppointments(): Promise<{ success: boolean; appointments?: any[]; error?: string }> {
+  const getUserAppointments = async (): Promise<{ success: boolean; appointments?: any[]; error?: string }> => {
     try {
-      // Use cached getSession for better performance
-      const { data: { session } } = await getSessionCached(supabase);
+      const { data: { session } } = await getSessionCached(client);
       if (!session?.user) {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const response = await fetch(`${this.functionsUrl}/manage-appointments?patientEmail=${encodeURIComponent(session.user.email!)}`, {
+      const response = await fetch(`${functionsUrl}/manage-appointments?patientEmail=${encodeURIComponent(session.user.email!)}`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -155,25 +159,21 @@ class BookingService {
 
       return { success: true, appointments: result.appointments || [] };
     } catch (error) {
-      console.error('Error getting user appointments:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get appointments',
       };
     }
-  }
+  };
 
-  /**
-   * Cancel an appointment
-   */
-  async cancelAppointment(
+  const cancelAppointment = async (
     appointmentId: number,
     cancellationReason?: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-appointments`, {
+      const response = await fetch(`${functionsUrl}/manage-appointments`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'cancel',
           appointmentId,
@@ -191,27 +191,22 @@ class BookingService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error cancelling appointment:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to cancel appointment',
       };
     }
-  }
+  };
 
-  /**
-   * Reschedule an appointment
-   */
-  async rescheduleAppointment(
+  const rescheduleAppointment = async (
     appointmentId: number,
     newDate: string,
     newTime: string,
     providerId?: number
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
-      // Check availability for the new time slot
       if (providerId) {
-        const availability = await this.getAvailability({
+        const availability = await getAvailability({
           providerId,
           startDate: newDate,
           endDate: newDate,
@@ -230,9 +225,9 @@ class BookingService {
         }
       }
 
-      const response = await fetch(`${this.functionsUrl}/manage-appointments`, {
+      const response = await fetch(`${functionsUrl}/manage-appointments`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'reschedule',
           appointmentId,
@@ -252,22 +247,18 @@ class BookingService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error rescheduling appointment:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to reschedule appointment',
       };
     }
-  }
+  };
 
-  /**
-   * Get all providers
-   */
-  async getProviders(): Promise<{ success: boolean; providers?: any[]; error?: string }> {
+  const getProviders = async (): Promise<{ success: boolean; providers?: any[]; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-providers`, {
+      const response = await fetch(`${functionsUrl}/manage-providers`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -278,22 +269,18 @@ class BookingService {
 
       return { success: true, providers: result.providers || [] };
     } catch (error) {
-      console.error('Error getting providers:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get providers',
       };
     }
-  }
+  };
 
-  /**
-   * Get all procedures
-   */
-  async getProcedures(): Promise<{ success: boolean; procedures?: any[]; error?: string }> {
+  const getProcedures = async (): Promise<{ success: boolean; procedures?: any[]; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-procedures`, {
+      const response = await fetch(`${functionsUrl}/manage-procedures`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -304,22 +291,18 @@ class BookingService {
 
       return { success: true, procedures: result.procedures || [] };
     } catch (error) {
-      console.error('Error getting procedures:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get procedures',
       };
     }
-  }
+  };
 
-  /**
-   * Get procedure categories
-   */
-  async getProcedureCategories(): Promise<{ success: boolean; categories?: any[]; error?: string }> {
+  const getProcedureCategories = async (): Promise<{ success: boolean; categories?: any[]; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-procedures`, {
+      const response = await fetch(`${functionsUrl}/manage-procedures`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'list_categories'
         }),
@@ -333,13 +316,37 @@ class BookingService {
 
       return { success: true, categories: result.categories || [] };
     } catch (error) {
-      console.error('Error getting procedure categories:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get procedure categories',
       };
     }
-  }
-}
+  };
 
-export const bookingService = new BookingService();
+  const value: BookingContextType = {
+    bookAppointment,
+    getAvailability,
+    getUserAppointments,
+    cancelAppointment,
+    rescheduleAppointment,
+    getProviders,
+    getProcedures,
+    getProcedureCategories,
+  };
+
+  return (
+    <BookingContext.Provider value={value}>
+      {children}
+    </BookingContext.Provider>
+  );
+};
+
+export const useBooking = (): BookingContextType => {
+  const context = useContext(BookingContext);
+  if (context === undefined) {
+    throw new Error("useBooking must be used within a BookingProvider");
+  }
+  return context;
+};
+
+export default BookingContext;

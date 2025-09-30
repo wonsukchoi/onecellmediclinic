@@ -13,11 +13,12 @@ import type {
 } from "../types";
 import {
   getAuthStateFast,
-  getAuthHeadersFast,
+  getAuthHeaders,
   SUPABASE_CONFIG,
   clearSessionCache,
 } from "../utils/fast-auth";
 
+export const STORAGE_KEY = "onecell-clinic-user-profile";
 // Singleton pattern for Supabase client
 export class SupabaseService {
   private static instance: SupabaseClient | null = null;
@@ -35,7 +36,7 @@ export class SupabaseService {
             detectSessionInUrl: true,
             storage:
               typeof window !== "undefined" ? window.localStorage : undefined,
-            storageKey: "onecell-clinic-auth-token",
+            storageKey: STORAGE_KEY,
             flowType: "pkce",
           },
         }
@@ -424,7 +425,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "get_all",
             table,
@@ -457,7 +458,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "get_by_id",
             table,
@@ -490,7 +491,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "create",
             table,
@@ -524,7 +525,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "update",
             table,
@@ -558,7 +559,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "delete",
             table,
@@ -589,7 +590,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "get_admin_stats",
           }),
@@ -653,7 +654,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "bulk_delete",
             table,
@@ -686,7 +687,7 @@ export class AdminService {
         `${SUPABASE_CONFIG.url}/functions/v1/admin-operations`,
         {
           method: "POST",
-          headers: getAuthHeadersFast(),
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             action: "bulk_update",
             table,

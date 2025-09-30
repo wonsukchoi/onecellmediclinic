@@ -45,7 +45,7 @@ export interface UserProfile {
   member_since?: string
   last_visit?: string
   total_visits?: number
-  role?: 'patient' | 'admin' | 'provider' | 'staff'
+  role?: 'patient' | 'member' | 'admin' | 'provider' | 'staff'
   created_at?: string
   updated_at?: string
 }

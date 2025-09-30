@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ContentFeaturesService } from '../../services/features.service'
+import { useFeatures } from '../../contexts/FeaturesContext'
 import styles from './ClinicFeaturesSection.module.css'
 
 interface ClinicFeature {
@@ -28,6 +28,7 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
   maxItems = 8
 }) => {
   const { t } = useTranslation()
+  const { getClinicFeatures } = useFeatures()
   const [features, setFeatures] = useState<ClinicFeature[]>([])
   const [filteredFeatures, setFilteredFeatures] = useState<ClinicFeature[]>([])
   const [activeCategory, setActiveCategory] = useState<string>('all')
@@ -98,7 +99,7 @@ const ClinicFeaturesSection: React.FC<ClinicFeaturesProps> = ({
   const fetchFeatures = async () => {
     try {
       setLoading(true)
-      const data = await ContentFeaturesService.getClinicFeatures()
+      const data = await getClinicFeatures()
       setFeatures(data)
       setError(null)
     } catch (error) {

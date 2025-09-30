@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ContentFeaturesService } from "../../services/features.service";
+import { useFeatures } from "../../contexts/FeaturesContext";
 import HorizontalScroll from "../../components/HorizontalScroll";
 import styles from "./VideoShortsSection.module.css";
 
@@ -26,6 +26,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
   showCategories = true,
 }) => {
   const { t } = useTranslation();
+  const { getVideoShorts } = useFeatures();
   const [videos, setVideos] = useState<VideoShort[]>([]);
   const [filteredVideos, setFilteredVideos] = useState<VideoShort[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -60,7 +61,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
   const fetchVideos = async () => {
     try {
       setLoading(true);
-      const data = await ContentFeaturesService.getVideoShorts();
+      const data = await getVideoShorts();
       setVideos(data);
       setError(null);
     } catch (error) {

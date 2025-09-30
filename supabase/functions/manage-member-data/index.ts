@@ -103,16 +103,18 @@ async function getDashboardData(supabaseClient: any, memberId: string) {
     if (profileError) throw profileError
 
     // Get upcoming appointments
-    const { data: memberProfile } = await supabaseClient
-      .from('user_profiles')
-      .select('email')
-      .eq('id', memberId)
-      .single()
+    // Get the user's email from auth.users
+    const { data: authUser, error: authUserError } = await supabaseClient.auth.admin.getUserById(memberId)
+
+    if (authUserError) throw authUserError
+    if (!authUser || !authUser.user) throw new Error('User not found')
+
+    const userEmail = authUser.user.email
 
     const { data: upcomingAppointments } = await supabaseClient
       .from('appointments')
       .select('*')
-      .eq('patient_email', memberProfile?.email)
+      .eq('patient_email', userEmail)
       .gte('preferred_date', new Date().toISOString().split('T')[0])
       .order('preferred_date', { ascending: true })
       .limit(5)

@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { getAuthHeadersFast, SUPABASE_CONFIG } from '../utils/fast-auth';
+import { getAuthHeaders, SUPABASE_CONFIG } from '../utils/fast-auth';
 import type {
   ApiResponse,
   DynamicPage,
@@ -23,8 +23,8 @@ async function callEdgeFunction(
   data?: Record<string, unknown>
 ): Promise<ApiResponse<unknown>> {
   try {
-    // Use fast auth helper instead of slow async getSession()
-    const headers = getAuthHeadersFast();
+    // Use cached auth headers for better performance
+    const headers = getAuthHeaders();
 
     const response = await fetch(
       `${SUPABASE_CONFIG.url}/functions/v1/${functionName}`,

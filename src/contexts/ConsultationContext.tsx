@@ -1,5 +1,6 @@
-import { supabase } from './supabase';
-import { getAuthHeadersFast, getFunctionsUrl, getSessionCached } from '../utils/fast-auth';
+import React, { createContext, useContext, ReactNode } from "react";
+import { getAuthHeaders as getAuthHeadersUtil, getFunctionsUrl, getSessionCached } from "../utils/fast-auth";
+import { useSupabase } from "./SupabaseContext";
 
 export interface ConsultationRequest {
   patientName: string;
@@ -33,30 +34,63 @@ export interface ConsultationTracking {
   createdBy?: string;
 }
 
-class ConsultationService {
-  private readonly functionsUrl: string;
+interface ConsultationContextType {
+  submitConsultationRequest: (requestData: ConsultationRequest) => Promise<ConsultationResponse>;
+  getUserConsultationRequests: () => Promise<{
+    success: boolean;
+    consultations?: any[];
+    error?: string;
+  }>;
+  getConsultationRequest: (id: number) => Promise<{ success: boolean; consultation?: any; error?: string }>;
+  getConsultationTracking: (consultationId: number) => Promise<{ success: boolean; tracking?: ConsultationTracking[]; error?: string }>;
+  updateConsultationRequest: (id: number, updates: {
+    status?: string;
+    assignedProviderId?: number;
+    responseNotes?: string;
+    estimatedCostRange?: string;
+    recommendedProcedures?: string[];
+    followUpRequired?: boolean;
+  }) => Promise<{ success: boolean; error?: string }>;
+  convertToAppointment: (consultationId: number, appointmentData: {
+    procedureId?: number;
+    providerId?: number;
+    preferredDate: string;
+    preferredTime: string;
+    appointmentType?: string;
+    notes?: string;
+  }) => Promise<{ success: boolean; appointmentId?: number; error?: string }>;
+  getConsultationStats: () => Promise<{
+    success: boolean;
+    stats?: {
+      total: number;
+      newRequests: number;
+      inProgress: number;
+      completed: number;
+      urgentRequests: number;
+    };
+    error?: string;
+  }>;
+}
 
-  constructor() {
-    // Use centralized functions URL
-    this.functionsUrl = getFunctionsUrl();
-  }
+const ConsultationContext = createContext<ConsultationContextType | undefined>(undefined);
 
-  /**
-   * Get auth headers for authenticated requests (optimized with fast localStorage access)
-   */
-  private getAuthHeaders(): HeadersInit {
-    // Use centralized auth helper
-    return getAuthHeadersFast();
-  }
+interface ConsultationProviderProps {
+  children: ReactNode;
+}
 
-  /**
-   * Submit a consultation request
-   */
-  async submitConsultationRequest(requestData: ConsultationRequest): Promise<ConsultationResponse> {
+export const ConsultationProvider: React.FC<ConsultationProviderProps> = ({ children }) => {
+  const { client } = useSupabase();
+  const functionsUrl = getFunctionsUrl();
+
+  const getAuthHeaders = (): HeadersInit => {
+    return getAuthHeadersUtil();
+  };
+
+  const submitConsultationRequest = async (requestData: ConsultationRequest): Promise<ConsultationResponse> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/consultation-request`, {
+      const response = await fetch(`${functionsUrl}/consultation-request`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify(requestData),
       });
 
@@ -68,32 +102,27 @@ class ConsultationService {
 
       return data;
     } catch (error) {
-      console.error('Error submitting consultation request:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to submit consultation request',
       };
     }
-  }
+  };
 
-  /**
-   * Get consultation requests for the current user
-   */
-  async getUserConsultationRequests(): Promise<{
+  const getUserConsultationRequests = async (): Promise<{
     success: boolean;
     consultations?: any[];
     error?: string;
-  }> {
+  }> => {
     try {
-      // Use cached getSession for better performance
-      const { data: { session } } = await getSessionCached(supabase);
+      const { data: { session } } = await getSessionCached(client);
       if (!session?.user) {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?patientEmail=${encodeURIComponent(session.user.email!)}`, {
+      const response = await fetch(`${functionsUrl}/manage-consultation-requests?patientEmail=${encodeURIComponent(session.user.email!)}`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -104,24 +133,20 @@ class ConsultationService {
 
       return { success: true, consultations: result.consultations || [] };
     } catch (error) {
-      console.error('Error getting user consultation requests:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get consultation requests',
       };
     }
-  }
+  };
 
-  /**
-   * Get consultation request by ID
-   */
-  async getConsultationRequest(
+  const getConsultationRequest = async (
     id: number
-  ): Promise<{ success: boolean; consultation?: any; error?: string }> {
+  ): Promise<{ success: boolean; consultation?: any; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests?id=${id}`, {
+      const response = await fetch(`${functionsUrl}/manage-consultation-requests?id=${id}`, {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
       });
 
       const result = await response.json();
@@ -132,24 +157,20 @@ class ConsultationService {
 
       return { success: true, consultation: result.consultation };
     } catch (error) {
-      console.error('Error getting consultation request:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get consultation request',
       };
     }
-  }
+  };
 
-  /**
-   * Get consultation tracking history
-   */
-  async getConsultationTracking(
+  const getConsultationTracking = async (
     consultationId: number
-  ): Promise<{ success: boolean; tracking?: ConsultationTracking[]; error?: string }> {
+  ): Promise<{ success: boolean; tracking?: ConsultationTracking[]; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+      const response = await fetch(`${functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'get_tracking',
           consultationId
@@ -172,18 +193,14 @@ class ConsultationService {
 
       return { success: true, tracking: formattedTracking };
     } catch (error) {
-      console.error('Error getting consultation tracking:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get consultation tracking',
       };
     }
-  }
+  };
 
-  /**
-   * Update consultation request (for staff)
-   */
-  async updateConsultationRequest(
+  const updateConsultationRequest = async (
     id: number,
     updates: {
       status?: string;
@@ -193,11 +210,11 @@ class ConsultationService {
       recommendedProcedures?: string[];
       followUpRequired?: boolean;
     }
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+      const response = await fetch(`${functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'update',
           consultationId: id,
@@ -213,18 +230,14 @@ class ConsultationService {
 
       return { success: true };
     } catch (error) {
-      console.error('Error updating consultation request:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to update consultation request',
       };
     }
-  }
+  };
 
-  /**
-   * Convert consultation to appointment
-   */
-  async convertToAppointment(
+  const convertToAppointment = async (
     consultationId: number,
     appointmentData: {
       procedureId?: number;
@@ -234,11 +247,11 @@ class ConsultationService {
       appointmentType?: string;
       notes?: string;
     }
-  ): Promise<{ success: boolean; appointmentId?: number; error?: string }> {
+  ): Promise<{ success: boolean; appointmentId?: number; error?: string }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+      const response = await fetch(`${functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'convert_to_appointment',
           consultationId,
@@ -254,18 +267,14 @@ class ConsultationService {
 
       return { success: true, appointmentId: result.appointmentId };
     } catch (error) {
-      console.error('Error converting consultation to appointment:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to convert consultation to appointment',
       };
     }
-  }
+  };
 
-  /**
-   * Get consultation statistics (for admin dashboard)
-   */
-  async getConsultationStats(): Promise<{
+  const getConsultationStats = async (): Promise<{
     success: boolean;
     stats?: {
       total: number;
@@ -275,11 +284,11 @@ class ConsultationService {
       urgentRequests: number;
     };
     error?: string;
-  }> {
+  }> => {
     try {
-      const response = await fetch(`${this.functionsUrl}/manage-consultation-requests`, {
+      const response = await fetch(`${functionsUrl}/manage-consultation-requests`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'get_stats'
         }),
@@ -296,13 +305,36 @@ class ConsultationService {
         stats: result.stats,
       };
     } catch (error) {
-      console.error('Error getting consultation stats:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get consultation statistics',
       };
     }
-  }
-}
+  };
 
-export const consultationService = new ConsultationService();
+  const value: ConsultationContextType = {
+    submitConsultationRequest,
+    getUserConsultationRequests,
+    getConsultationRequest,
+    getConsultationTracking,
+    updateConsultationRequest,
+    convertToAppointment,
+    getConsultationStats,
+  };
+
+  return (
+    <ConsultationContext.Provider value={value}>
+      {children}
+    </ConsultationContext.Provider>
+  );
+};
+
+export const useConsultation = (): ConsultationContextType => {
+  const context = useContext(ConsultationContext);
+  if (context === undefined) {
+    throw new Error("useConsultation must be used within a ConsultationProvider");
+  }
+  return context;
+};
+
+export default ConsultationContext;
