@@ -101,7 +101,7 @@ const HeroSection: React.FC = () => {
       <ProfessionalCarousel
         items={carouselData}
         autoplay={true}
-        autoplayDelay={6000}
+        autoplayDelay={5000}
         effect="fade"
         showNavigation={true}
         showPagination={true}

@@ -9,6 +9,10 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
   background: var(--color-background-white);
+  
+  /* Override Swiper pagination colors */
+  --swiper-theme-color: #ffffff;
+  --swiper-pagination-color: #ffffff;
 }
 
 .mainSwiper {
@@ -191,27 +195,21 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--color-primary);
+  width: 80px;
+  height: 80px;
+  background: transparent;
+  color: white;
   border: none;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--animation-normal) var(--easing-ease-in-out);
   z-index: 10;
-  backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-md);
 }
 
 .navButton:hover {
-  background: var(--color-primary);
-  color: var(--color-text-white);
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: var(--shadow-lg);
+  color: white;
 }
 
 .navButton:disabled {
@@ -232,23 +230,30 @@
 .pagination {
   position: absolute;
   bottom: var(--spacing-lg);
-  left: 50%;
-  transform: translateX(-50%);
+  left: auto !important;
+  right: var(--spacing-lg) !important;
   display: flex;
-  gap: var(--spacing-sm);
+  flex-direction: row;
+  gap: 8px;
   z-index: 10;
+  padding: var(--spacing-sm);
+  justify-content: flex-end !important;
+  width: auto !important;
+  
+  /* Override Swiper pagination colors */
+  --swiper-theme-color: #ffffff !important;
+  --swiper-pagination-color: #ffffff !important;
 }
 
 .paginationBullet {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   background: rgba(255, 255, 255, 0.5);
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: 50%;
   cursor: pointer;
   transition: all var(--animation-normal) var(--easing-ease-in-out);
   position: relative;
-  overflow: hidden;
 }
 
 .paginationBullet:hover {
@@ -257,23 +262,23 @@
 }
 
 .paginationBullet.swiper-pagination-bullet-active {
-  background: var(--color-accent);
-  transform: scale(1.3);
+  background: #ffffff !important;
+  width: 12px !important;
+  height: 12px !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  border: none;
+  /* Override any potential color from theme variables */
+  background-color: #ffffff !important;
+  color: #ffffff !important;
+  --swiper-theme-color: #ffffff !important;
+  --swiper-pagination-color: #ffffff !important;
+  margin: 0 2px;
 }
 
-.bulletProgress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 100%;
-  background: var(--color-primary);
-  border-radius: inherit;
-  transition: width var(--animation-slow) linear;
-}
-
-.paginationBullet.swiper-pagination-bullet-active .bulletProgress {
-  width: 100%;
+.paginationHorizontal {
+  text-align: right !important;
+  display: flex !important;
+  justify-content: flex-end !important;
 }
 
 /* Thumbnail Navigation */
@@ -346,26 +351,7 @@
   opacity: 0;
 }
 
-/* Progress Bar */
-.progressContainer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  z-index: 10;
-}
-
-.progressBar {
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--color-primary) 0%,
-    var(--color-accent) 100%
-  );
-  transition: width var(--animation-normal) var(--easing-ease-in-out);
-}
+/* Pagination dots are now on the right side */
 
 /* Animations */
 @keyframes slideContentFadeIn {
@@ -422,8 +408,8 @@
   }
 
   .navButton {
-    width: 40px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
   }
 
   .navPrev {
@@ -436,6 +422,8 @@
 
   .pagination {
     bottom: var(--spacing-md);
+    left: auto !important;
+    right: var(--spacing-md) !important;
   }
 
   .thumbsContainer {
@@ -483,8 +471,8 @@
   }
 
   .navButton {
-    width: 36px;
-    height: 36px;
+    width: 60px;
+    height: 60px;
   }
 
   .navPrev,
@@ -511,8 +499,8 @@
 /* Large screens */
 @media (min-width: 1200px) {
   .navButton {
-    width: 60px;
-    height: 60px;
+    width: 90px;
+    height: 90px;
   }
 
   .navPrev {
@@ -540,7 +528,7 @@
   }
 
   .navButton {
-    border: 2px solid var(--color-primary);
+    background: rgba(0, 0, 0, 0.3);
   }
 }
 

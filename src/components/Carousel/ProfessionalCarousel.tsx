@@ -109,10 +109,9 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
           el: `.${styles.pagination}`,
           clickable: true,
           renderBullet: (index, className) => {
-            return `<button class="${className} ${styles.paginationBullet}" aria-label="Go to slide ${index + 1}">
-              <span class="${styles.bulletProgress}"></span>
-            </button>`
-          }
+            return `<button class="${className} ${styles.paginationBullet}" aria-label="Go to slide ${index + 1}"></button>`
+          },
+          horizontalClass: styles.paginationHorizontal
         } : false}
         thumbs={showThumbs && thumbsSwiper ? { swiper: thumbsSwiper } : undefined}
         onSlideChange={handleSlideChange}
@@ -198,22 +197,22 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
       {showNavigation && (
         <>
           <button className={`${styles.navButton} ${styles.navPrev}`} aria-label="Previous slide">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
               <path
                 d="M15 18L9 12L15 6"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
           </button>
           <button className={`${styles.navButton} ${styles.navNext}`} aria-label="Next slide">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
               <path
                 d="M9 18L15 12L9 6"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -270,15 +269,7 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
         </div>
       )}
 
-      {/* Progress Bar */}
-      <div className={styles.progressContainer}>
-        <div
-          className={styles.progressBar}
-          style={{
-            width: `${((activeIndex + 1) / items.length) * 100}%`
-          }}
-        />
-      </div>
+      {/* No progress bar - using dot pagination instead */}
     </div>
   )
 }
