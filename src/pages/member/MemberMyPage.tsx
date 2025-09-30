@@ -28,6 +28,7 @@ const MemberMyPage: React.FC = () => {
         return;
       }
 
+      console.log("currentMember", currentMember);
       // Load dashboard data
       const result = await MemberService.getMemberDashboardData(
         currentMember.data.id

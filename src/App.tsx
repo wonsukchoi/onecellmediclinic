@@ -35,6 +35,7 @@ import PatientsRightsPage from "./pages/PatientsRightsPage";
 
 // Context imports
 import { SupabaseProvider } from "./contexts/SupabaseContext";
+import { AuthStateProvider } from "./contexts/AuthStateContext";
 import { DatabaseProvider } from "./contexts/DatabaseContext";
 import { BookingProvider } from "./contexts/BookingContext";
 import { CMSProvider } from "./contexts/CMSContext";
@@ -84,13 +85,14 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <SupabaseProvider>
-        <DatabaseProvider>
-          <BookingProvider>
-            <CMSProvider>
-              <ConsultationProvider>
-                <FeaturesProvider>
-                  <AdminProvider>
-                    <MemberProvider>
+        <AuthStateProvider>
+          <DatabaseProvider>
+            <BookingProvider>
+              <CMSProvider>
+                <ConsultationProvider>
+                  <FeaturesProvider>
+                    <AdminProvider>
+                      <MemberProvider>
                       <Router>
                         <LanguageRouter>
               <Routes>
@@ -578,13 +580,14 @@ const App: React.FC = () => {
               </Routes>
                         </LanguageRouter>
                       </Router>
-                    </MemberProvider>
-                  </AdminProvider>
-                </FeaturesProvider>
-              </ConsultationProvider>
-            </CMSProvider>
-          </BookingProvider>
-        </DatabaseProvider>
+                      </MemberProvider>
+                    </AdminProvider>
+                  </FeaturesProvider>
+                </ConsultationProvider>
+              </CMSProvider>
+            </BookingProvider>
+          </DatabaseProvider>
+        </AuthStateProvider>
       </SupabaseProvider>
     </ErrorBoundary>
   );

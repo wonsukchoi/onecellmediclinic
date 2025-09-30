@@ -258,15 +258,14 @@ async function sendAutomatedNotifications(supabaseClient: any) {
     // Send reminder notifications
     if (tomorrowAppointments) {
       for (const appointment of tomorrowAppointments) {
-        // Get member profile by email
-        const { data: memberProfile } = await supabaseClient
-          .from('user_profiles')
-          .select('id')
-          .eq('email', appointment.patient_email)
-          .single()
+        // Get member ID from auth.users by email
+        const { data: authUsers, error: authError } = await supabaseClient.auth.admin.listUsers()
 
-        if (memberProfile) {
-          await sendNotification(supabaseClient, memberProfile.id, {
+        if (!authError && authUsers?.users) {
+          const member = authUsers.users.find((u: any) => u.email === appointment.patient_email)
+
+          if (member) {
+            await sendNotification(supabaseClient, member.id, {
             title: '내일 예약 알림',
             message: `${appointment.preferred_date} ${appointment.preferred_time}에 ${appointment.service_type} 예약이 있습니다.`,
             type: 'appointment',
@@ -276,6 +275,7 @@ async function sendAutomatedNotifications(supabaseClient: any) {
               reminderType: 'day_before'
             }
           })
+          }
         }
       }
     }

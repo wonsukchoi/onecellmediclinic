@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { DatabaseService, AdminService, supabase } from "../services/supabase";
+import { DatabaseService, AdminService } from "../services/supabase";
 import type { AdminContextType, AdminStats } from "../types/admin";
 import type { UserProfile } from "../types";
 import {
@@ -8,6 +8,7 @@ import {
   getAuthStateFast,
   clearAuthFast,
 } from "../utils/fast-auth";
+import { useAuthState } from "./AuthStateContext";
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
@@ -40,6 +41,7 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   });
   const [loading, setLoading] = useState(!initialIsAdmin); // Start with false if already authenticated
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const authState = useAuthState();
 
   const checkAuthStatus = async () => {
     try {
@@ -182,42 +184,39 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Check if we already have valid auth from initialization
-    const currentAuthState = getAuthStateFast();
-    const hasValidAuth =
-      currentAuthState.user && !currentAuthState.isExpired && isAdminFast();
+    // Subscribe to unified auth state changes
+    const unsubscribe = authState.onAuthEvent((event, session, user) => {
+      if (event === "SIGNED_IN" && session && user) {
+        // Check if signed in user is admin
+        const isAdmin =
+          user.email === "admin@onecellclinic.com" ||
+          user.user_metadata?.role === "admin" ||
+          user.email?.includes("admin");
 
-    // Only check auth status if we don't already have valid auth
-    if (!hasValidAuth) {
-      checkAuthStatus();
-    } else {
-      // Already authenticated - load stats in background
-      loadStats().catch((error) => {
-        console.error("Error loading initial stats:", error);
-      });
-    }
-
-    // Listen for auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        // User signed in - verify admin role using fast auth first
-        const authState = getAuthStateFast();
-
-        if (authState.user && !authState.isExpired && isAdminFast()) {
-          // Fast path - user is already authenticated as admin
+        if (isAdmin) {
+          // Transform auth user to UserProfile
           const userData: UserProfile = {
-            id: authState.user.id,
-            email: authState.user.email || "",
-            full_name: (authState.user.user_metadata?.name ||
-              authState.user.user_metadata?.full_name) as string | undefined,
-            phone: authState.user.user_metadata?.phone as string | undefined,
+            id: user.id,
+            email: user.email || "",
+            full_name: (user.user_metadata?.name ||
+              user.user_metadata?.full_name) as string | undefined,
+            phone: user.user_metadata?.phone as string | undefined,
             role: "admin",
-            created_at: authState.user.created_at as string | undefined,
+            created_at: user.created_at as string | undefined,
           };
           setUser(userData);
           setIsAuthenticated(true);
+          setLoading(false);
+
+          // Load stats in the background
+          loadStats().catch((error) => {
+            console.error("Error loading stats after sign in:", error);
+          });
+        } else {
+          // Not an admin - clear state
+          setUser(null);
+          setIsAuthenticated(false);
+          setStats(null);
           setLoading(false);
         }
       } else if (event === "SIGNED_OUT") {
@@ -225,17 +224,80 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
         setIsAuthenticated(false);
         setStats(null);
         setLoading(false);
-      } else if (event === "TOKEN_REFRESHED" && session) {
+      } else if (event === "TOKEN_REFRESHED" && session && user) {
         // Session refreshed - ensure we're still an admin
-        const authState = getAuthStateFast();
-        if (authState.user && !authState.isExpired && isAdminFast()) {
+        const isAdmin =
+          user.email === "admin@onecellclinic.com" ||
+          user.user_metadata?.role === "admin" ||
+          user.email?.includes("admin");
+
+        if (isAdmin) {
+          setLoading(false);
+        } else {
+          // Lost admin privileges - sign out
+          setUser(null);
+          setIsAuthenticated(false);
+          setStats(null);
           setLoading(false);
         }
       }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    // Initialize with current auth state if available
+    if (authState.isInitialized) {
+      if (authState.session?.user) {
+        const user = authState.session.user;
+        const isAdmin =
+          user.email === "admin@onecellclinic.com" ||
+          user.user_metadata?.role === "admin" ||
+          user.email?.includes("admin");
+
+        if (isAdmin) {
+          const userData: UserProfile = {
+            id: user.id,
+            email: user.email || "",
+            full_name: (user.user_metadata?.name ||
+              user.user_metadata?.full_name) as string | undefined,
+            phone: user.user_metadata?.phone as string | undefined,
+            role: "admin",
+            created_at: user.created_at as string | undefined,
+          };
+          setUser(userData);
+          setIsAuthenticated(true);
+
+          // Load stats in the background
+          loadStats().catch((error) => {
+            console.error("Error loading initial stats:", error);
+          });
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+          setStats(null);
+        }
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+        setStats(null);
+      }
+      setLoading(false);
+    } else {
+      // Fallback to fast auth check if unified auth not ready
+      const currentAuthState = getAuthStateFast();
+      const hasValidAuth =
+        currentAuthState.user && !currentAuthState.isExpired && isAdminFast();
+
+      if (!hasValidAuth) {
+        checkAuthStatus();
+      } else {
+        // Already authenticated - load stats in background
+        loadStats().catch((error) => {
+          console.error("Error loading initial stats:", error);
+        });
+      }
+    }
+
+    return unsubscribe;
+  }, [authState]);
 
   const value: AdminContextType = {
     isAuthenticated,

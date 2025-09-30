@@ -14,8 +14,6 @@ const MemberProtectedRoute: React.FC<MemberProtectedRouteProps> = ({
   const { member, loading } = useMember();
   const location = useLocation();
 
-  console.log("Member Protected Route:", member, loading);
-
   // Show loading spinner while checking authentication
   if (loading) {
     return (

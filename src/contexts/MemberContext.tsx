@@ -4,11 +4,10 @@ import type { UserProfile, ApiResponse } from "../types";
 import {
   getAuthStateFast,
   clearAuthFast,
-  getFunctionsUrl,
-  getAuthHeaders,
   getUserCached,
 } from "../utils/fast-auth";
 import { useSupabase } from "./SupabaseContext";
+import { useAuthState } from "./AuthStateContext";
 
 interface MemberContextType {
   member: UserProfile | null;
@@ -39,27 +38,39 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const supabaseContext = useSupabase();
   const supabase = supabaseContext?.client;
+  const authState = useAuthState();
 
   useEffect(() => {
     if (!supabase) return;
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
-      if (session?.user) {
+    // Subscribe to unified auth state changes
+    const unsubscribe = authState.onAuthEvent((event, session, user) => {
+      if (event === 'SIGNED_IN' && session?.user) {
         void loadMemberProfile(session.user.id, session.access_token);
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         setMember(null);
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        // Optionally refresh member profile on token refresh
+        void loadMemberProfile(session.user.id, session.access_token);
       }
       setLoading(false);
     });
 
-    void refreshMemberData();
+    // Initialize with current auth state if available
+    if (authState.isInitialized) {
+      if (authState.session?.user) {
+        void loadMemberProfile(authState.session.user.id, authState.session.access_token);
+      } else {
+        setMember(null);
+      }
+      setLoading(false);
+    } else {
+      // Fallback to fast auth for immediate initialization
+      void refreshMemberData();
+    }
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
+    return unsubscribe;
+  }, [supabase, authState]);
 
   const refreshMemberData = async () => {
     setLoading(true);
@@ -108,41 +119,8 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
   };
 
 
-  const createMemberProfile = async (
-    profileData: any
-  ): Promise<ApiResponse<UserProfile>> => {
-    try {
-      const headers = getAuthHeaders();
-      const response = await fetch(`${getFunctionsUrl()}/member-operations`, {
-        method: "POST",
-        headers: {
-          ...headers,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "create_profile",
-          profileData,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.error || "Failed to create member profile",
-        };
-      }
-
-      return { success: true, data: data.profile };
-    } catch (error: any) {
-      return {
-        success: false,
-        error:
-          error.message || "An error occurred while creating member profile",
-      };
-    }
-  };
+  // Profile creation is now handled via user metadata during signup
+  // No separate edge function call is needed
 
   const signIn = async (
     email: string,
@@ -202,6 +180,7 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
       if (error) throw error;
 
       if (data.user) {
+        // Profile data is already stored in user metadata during signup
         const profileData = {
           id: data.user.id,
           email: signupData.email,
@@ -213,7 +192,7 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
           member_since: new Date().toISOString(),
           total_visits: 0,
         };
-        await createMemberProfile(profileData);
+        // No need to call createMemberProfile - user metadata is already set
         setMember(profileData);
       }
 

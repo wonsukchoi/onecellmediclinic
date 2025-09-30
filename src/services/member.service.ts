@@ -36,20 +36,8 @@ export class MemberService {
 
       if (error) throw error;
 
-      // Create member profile
-      if (data.user) {
-        await this.createMemberProfile({
-          id: data.user.id,
-          email: formData.email,
-          full_name: formData.name,
-          phone: formData.phone,
-          date_of_birth: formData.dateOfBirth,
-          gender: formData.gender,
-          membership_type: "basic",
-          member_since: new Date().toISOString(),
-          total_visits: 0,
-        });
-      }
+      // Profile is created via user metadata during signup
+      // No separate profile creation needed
 
       return { success: true, data };
     } catch (error) {
@@ -127,37 +115,8 @@ export class MemberService {
     }
   }
 
-  // Member profile methods
-  static async createMemberProfile(
-    profileData: Partial<UserProfile>
-  ): Promise<ApiResponse<UserProfile>> {
-    try {
-      const response = await fetch(
-        `${SUPABASE_CONFIG.url}/functions/v1/member-operations`,
-        {
-          method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify({
-            action: "create_profile",
-            profileData,
-          }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to create member profile");
-      }
-
-      return result;
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
+  // Profile creation is now handled via user metadata during signup
+  // The createMemberProfile method has been removed
 
 
   static async updateMemberProfile(
