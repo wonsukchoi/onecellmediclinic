@@ -44,10 +44,10 @@
 
 .categoryButton {
   padding: 12px 24px;
-  border: 2px solid #e1e5e9;
-  background: white;
-  color: #666;
-  border-radius: 30px;
+  border: none;
+  background: #333333;
+  color: white;
+  border-radius: 8px;
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
@@ -56,31 +56,14 @@
   overflow: hidden;
 }
 
-.categoryButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(233, 30, 99, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.categoryButton:hover::before {
-  left: 100%;
-}
-
 .categoryButton:hover {
-  border-color: #e91e63;
-  color: #e91e63;
+  background: #444444;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(233, 30, 99, 0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .categoryButton.active {
   background: #e91e63;
-  border-color: #e91e63;
   color: white;
   box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
 }
@@ -298,6 +281,7 @@
   .categoryButton {
     padding: 10px 16px;
     font-size: 0.75rem;
+    border-radius: 6px;
   }
 
   .videosContainer {
@@ -341,6 +325,9 @@
   .categoryButton {
     white-space: nowrap;
     flex-shrink: 0;
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    border-radius: 6px;
   }
 
   .videosContainer {

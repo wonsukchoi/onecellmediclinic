@@ -72,26 +72,27 @@
   flex: 1;
   white-space: nowrap;
   padding: 12px 20px;
-  background: transparent;
+  background: #333333;
   border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #6b7280;
+  color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   min-width: max-content;
 }
 
 .tabButton:hover {
-  color: #374151;
-  background: #f9fafb;
+  background: #444444;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .tabButton.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
 }
 
 /* Tab Content */
@@ -826,6 +827,7 @@
   .tabButton {
     font-size: 12px;
     padding: 10px 16px;
+    border-radius: 6px;
   }
 
   .statsGrid {
