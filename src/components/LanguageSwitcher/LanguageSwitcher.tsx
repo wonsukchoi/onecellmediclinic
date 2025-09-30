@@ -5,7 +5,7 @@ import styles from './LanguageSwitcher.module.css';
 
 interface LanguageSwitcherProps {
   className?: string;
-  variant?: 'dropdown' | 'toggle';
+  variant?: 'dropdown' | 'toggle' | 'slide';
 }
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
@@ -65,6 +65,71 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
             <span className={styles.label}>{language.toUpperCase()}</span>
           </button>
         ))}
+      </div>
+    );
+  }
+  
+  if (variant === 'slide') {
+    return (
+      <div className={`${styles.languageSlider} ${className}`}>
+        <button
+          className={styles.sliderTrigger}
+          onClick={toggleDropdown}
+          onKeyDown={(e) => handleKeyDown(e)}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-label={t('language_switcher.change_language')}
+        >
+          <span className={styles.flag}>{getLanguageFlag(currentLanguage)}</span>
+          <span className={styles.currentLanguage}>
+            {getLanguageLabel(currentLanguage)}
+          </span>
+        </button>
+
+        <div 
+          className={`${styles.sliderPanel} ${isOpen ? styles.open : ''}`}
+          role="listbox"
+          aria-label={t('language_switcher.change_language')}
+        >
+          <button 
+            className={styles.closeButton}
+            onClick={() => setIsOpen(false)}
+            aria-label={t('common.close')}
+          >
+            &times;
+          </button>
+          <div className={styles.sliderHeader}>
+            {t('language_switcher.languages')}
+          </div>
+          {SUPPORTED_LANGUAGES.map((language) => (
+            <button
+              key={language}
+              className={`${styles.sliderItem} ${
+                currentLanguage === language ? styles.selected : ''
+              }`}
+              onClick={() => handleLanguageChange(language)}
+              onKeyDown={(e) => handleKeyDown(e, language)}
+              role="option"
+              aria-selected={currentLanguage === language}
+            >
+              <span className={styles.flag}>{getLanguageFlag(language)}</span>
+              <span className={styles.label}>{getLanguageLabel(language)}</span>
+              {currentLanguage === language && (
+                <span className={styles.checkmark} aria-hidden="true">
+                  ✓
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {isOpen && (
+          <div
+            className={styles.overlay}
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
+        )}
       </div>
     );
   }

@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
 
           <LanguageSwitcher
             className={styles.languageSwitcher}
-            variant="dropdown"
+            variant="slide"
           />
         </div>
       </div>

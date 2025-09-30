@@ -394,7 +394,8 @@
   "language_switcher": {
     "korean": "한국어",
     "english": "English",
-    "change_language": "Change Language"
+    "change_language": "Change Language",
+    "languages": "Languages"
   },
   "patients_rights": {
     "title": "Patients' Rights Charter",

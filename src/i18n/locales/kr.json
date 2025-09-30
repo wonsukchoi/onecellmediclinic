@@ -394,7 +394,8 @@
   "language_switcher": {
     "korean": "한국어",
     "english": "English",
-    "change_language": "언어 변경"
+    "change_language": "언어 변경",
+    "languages": "언어 선택"
   },
   "patients_rights": {
     "title": "환자권리장전",
