@@ -75,7 +75,7 @@
   height: 100%;
   display: flex;
   align-items: flex-end; /* Changed from center to flex-end to align at bottom */
-  justify-content: flex-start; /* Changed from center to flex-start to align at left */
+  justify-content: center; /* Center the content container */
   padding: var(--spacing-xl);
 }
 
@@ -88,18 +88,31 @@
 }
 
 .contentInner {
-  max-width: 600px;
-  text-align: left; /* Changed from center to left */
+  width: 100%;
+  max-width: 1400px; /* Match navbar width */
+  margin: 0 auto;
+  padding: 0 20px; /* Match navbar padding */
+  text-align: left;
   animation: slideContentFadeIn 0.8s var(--easing-ease-out);
   padding-bottom: var(--spacing-lg); /* Added padding at the bottom for better spacing */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .contentLeft .contentInner {
   text-align: left;
+  align-items: flex-start;
 }
 
 .contentRight .contentInner {
   text-align: right;
+  align-items: flex-end;
+}
+
+.contentCenter .contentInner {
+  text-align: center;
+  align-items: center;
 }
 
 .slideSubtitle {
@@ -122,7 +135,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Added subtle text shadow for better readability */
   opacity: 0;
   animation: slideTextUp 0.8s var(--easing-ease-out) 0.4s forwards;
-  max-width: 90%; /* Limit width for better readability */
+  max-width: 800px; /* Limit width for better readability */
 }
 
 .slideDescription {
@@ -134,7 +147,7 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Added subtle text shadow for better readability */
   opacity: 0;
   animation: slideTextUp 0.8s var(--easing-ease-out) 0.6s forwards;
-  max-width: 80%; /* Limit width for better readability */
+  max-width: 700px; /* Limit width for better readability */
 }
 
 .slideCta {
@@ -379,6 +392,9 @@
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
+  .contentInner {
+    padding: 0 16px; /* Match navbar mobile padding */
+  }
   .professionalCarousel {
     height: 50vh;
     min-height: 350px;
