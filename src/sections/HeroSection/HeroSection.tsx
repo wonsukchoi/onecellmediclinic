@@ -22,46 +22,19 @@ const HeroSection: React.FC = () => {
       try {
         setLoading(true)
         setError(null)
-
-        const response = await DatabaseService.getHeroCarousel()
-
-        if (response.success && response.data) {
-          const transformedData: HeroCarouselItem[] = response.data.map((item: HeroCarousel) => ({
-            id: item.id,
-            image: item.background_image_url,
-            title: isKorean ? item.title_kr : item.title_en,
-            subtitle: isKorean ? item.subtitle_kr : item.subtitle_en,
-            description: isKorean ? item.description_kr : item.description_en,
-            cta: {
-              text: isKorean ? item.cta_text_kr : item.cta_text_en,
-              link: item.cta_link
-            },
-            overlay: true,
-            textPosition: item.text_position
-          }))
-
-          setCarouselData(transformedData)
-        } else {
-          throw new Error(response.error || 'Failed to fetch carousel data')
-        }
-      } catch (err) {
-        console.error('Error fetching hero carousel:', err)
-        setError(err instanceof Error ? err.message : 'Unknown error')
-
-        // Fallback to default slides if database fetch fails
+        
+        // Create the fallback data that we'll always use
         const fallbackData: HeroCarouselItem[] = [
           {
             id: 'fallback-1',
             image: '/images/hero/default-hero.jpg',
-            title: isKorean ? '원셀 메디클리닉에 오신 것을 환영합니다' : 'Welcome to OneCell Medical Clinic',
-            subtitle: isKorean ? '전문 의료 서비스' : 'Professional Medical Services',
-            description: isKorean ? '안전하고 전문적인 의료 서비스를 제공합니다' : 'Providing safe and professional medical services',
-            cta: {
-              text: isKorean ? '상담 예약' : 'Book Consultation',
-              link: '/reservation'
-            },
-            overlay: true,
-            textPosition: 'center'
+            // Removed all text and buttons
+            overlay: false
+          },
+          {
+            id: 'wellness-solution',
+            image: '/images/hero/20250930_onecell_banner_1.png',
+            overlay: false
           }
         ]
         setCarouselData(fallbackData)
@@ -70,7 +43,7 @@ const HeroSection: React.FC = () => {
       }
     }
 
-    fetchCarouselData()
+    fetchCarouselData() // This will now always use our fallback data with the wellness solution slide
   }, [isKorean])
 
   if (loading) {

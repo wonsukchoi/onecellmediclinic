@@ -334,20 +334,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
         {children}
       </div>
 
-      {/* Scroll Indicators */}
-      {showIndicators && maxScroll > 0 && (
-        <div className={styles.scrollIndicators}>
-          <div className={styles.progressTrack}>
-            <div
-              className={styles.progressBar}
-              style={{ width: `${scrollProgress}%` }}
-            />
-          </div>
-          <div className={styles.scrollInfo}>
-            <span>{Math.round(scrollProgress)}%</span>
-          </div>
-        </div>
-      )}
+      {/* Scroll Indicators removed */}
     </div>
   )
 }

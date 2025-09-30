@@ -4,6 +4,7 @@
   padding: 0 60px; /* Space for navigation arrows */
 }
 
+/* Shadow effects removed */
 .horizontalScrollWrapper::before,
 .horizontalScrollWrapper::after {
   content: '';
@@ -14,16 +15,7 @@
   pointer-events: none;
   z-index: 5;
   transition: opacity 0.3s ease;
-}
-
-.horizontalScrollWrapper::before {
-  left: 60px;
-  background: linear-gradient(to right, var(--fade-color, #ffffff), transparent);
-}
-
-.horizontalScrollWrapper::after {
-  right: 60px;
-  background: linear-gradient(to left, var(--fade-color, #ffffff), transparent);
+  background: transparent; /* Removed gradient background */
 }
 
 .scrollContainer {
@@ -96,56 +88,7 @@
   right: 10px;
 }
 
-/* Scroll Indicators */
-.scrollIndicators {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 20px;
-  padding: 0 60px;
-}
-
-.progressTrack {
-  flex: 1;
-  height: 4px;
-  background: #e1e5e9;
-  border-radius: 2px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progressBar {
-  height: 100%;
-  background: linear-gradient(90deg, #e91e63, #c2185b);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-  position: relative;
-}
-
-.progressBar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: progressShimmer 2s ease-in-out infinite;
-}
-
-@keyframes progressShimmer {
-  0%, 100% { transform: translateX(-100%); }
-  50% { transform: translateX(100%); }
-}
-
-.scrollInfo {
-  font-size: 0.875rem;
-  color: #666;
-  font-weight: 500;
-  min-width: 40px;
-  text-align: center;
-}
+/* Scroll Indicators - removed */
 
 /* Touch Support */
 @media (hover: none) and (pointer: coarse) {
@@ -162,9 +105,7 @@
     padding: 0; /* Remove arrow padding on touch devices */
   }
 
-  .scrollIndicators {
-    padding: 0;
-  }
+  /* Scroll indicators removed */
 }
 
 /* Responsive Design */
@@ -205,14 +146,7 @@
     right: 5px;
   }
 
-  .scrollIndicators {
-    gap: 12px;
-    margin-top: 16px;
-  }
-
-  .scrollInfo {
-    font-size: 0.8rem;
-  }
+  /* Scroll indicators removed */
 }
 
 @media (max-width: 480px) {

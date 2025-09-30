@@ -44,7 +44,7 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
   showThumbs = false,
   showNavigation = true,
   showPagination = true,
-  height = '60vh',
+  height = 'auto',
   className,
   onSlideChange
 }) => {
@@ -121,7 +121,7 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
         speed={600}
       >
         {items.map((item, index) => (
-          <SwiperSlide key={item.id} className={styles.slide}>
+          <SwiperSlide key={item.id} className={styles.slide} data-slide-id={item.id}>
             <div className={styles.slideContainer}>
               <div className={styles.imageContainer}>
                 <img
@@ -133,61 +133,7 @@ const ProfessionalCarousel: React.FC<ProfessionalCarouselProps> = ({
                 {item.overlay && <div className={styles.slideOverlay} />}
               </div>
 
-              {(item.title || item.subtitle || item.description || item.cta) && (
-                <div
-                  className={`${styles.slideContent} ${
-                    styles[`content-${item.textPosition || 'center'}`]
-                  }`}
-                >
-                  <div className={styles.contentInner}>
-                    {item.subtitle && (
-                      <BlurText 
-                        text={item.subtitle}
-                        delay={150}
-                        animateBy="words"
-                        direction="top"
-                        className={styles.slideSubtitle}
-                      />
-                    )}
-                    {item.title && (
-                      <BlurText 
-                        text={item.title}
-                        delay={200}
-                        animateBy="words"
-                        direction="top"
-                        className={styles.slideTitle}
-                      />
-                    )}
-                    {item.description && (
-                      <BlurText 
-                        text={item.description}
-                        delay={250}
-                        animateBy="words"
-                        direction="top"
-                        className={styles.slideDescription}
-                      />
-                    )}
-                    {item.cta && (
-                      <button
-                        className={styles.slideCta}
-                        onClick={() => handleCTAClick(item.cta)}
-                        type="button"
-                      >
-                        <span>{item.cta.text}</span>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                          <path
-                            d="M4.16675 10H15.8334M15.8334 10L10.8334 5M15.8334 10L10.8334 15"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
+              {/* Text content removed */}
             </div>
           </SwiperSlide>
         ))}

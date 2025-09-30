@@ -128,7 +128,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
 
         <HorizontalScroll
           className={styles.horizontalScrollContainer}
-          showIndicators={true}
+          showIndicators={false}
           itemWidth={300}
           gap={20}
           visibleItems={{
