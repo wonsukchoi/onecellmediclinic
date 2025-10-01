@@ -4,6 +4,21 @@ import type { VideoShort } from '../types/admin';
 import { Icon } from '../components/icons';
 import styles from './VideoShortsPage.module.css';
 
+// Add global style for filter buttons
+const globalStyle = document.createElement('style');
+globalStyle.innerHTML = `
+  .filter-button {
+    border: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+  }
+`;
+document.head.appendChild(globalStyle);
+
 const VideoShortsPage: React.FC = () => {
   const [videos, setVideos] = useState<VideoShort[]>([]);
   const [filteredVideos, setFilteredVideos] = useState<VideoShort[]>([]);
@@ -100,7 +115,7 @@ const VideoShortsPage: React.FC = () => {
       <div className={styles.container}>
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>비디오 쇼츠</h1>
+            <h1 className={styles.heroTitle}>원셀 쇼츠</h1>
             <p className={styles.heroDescription}>
               짧고 임팩트 있는 영상으로 만나는 원셀의료의원
             </p>
@@ -109,14 +124,27 @@ const VideoShortsPage: React.FC = () => {
 
         <section className={styles.filters}>
           <div className={styles.filtersContent}>
-            <div className={styles.filterButtons}>
+            <div className={styles.filterButtons} style={{ display: 'flex', width: '100%', maxWidth: '600px', margin: '0 auto', gap: 0 }}>
               {categories.map((category) => (
                 <button
                   key={category.value}
-                  className={`${styles.filterButton} ${
-                    selectedCategory === category.value ? styles.active : ''
-                  }`}
+                  className="filter-button"
                   onClick={() => setSelectedCategory(category.value)}
+                  style={{
+                    border: 'none !important',
+                    background: 'transparent !important',
+                    backgroundColor: 'transparent !important',
+                    color: '#000 !important',
+                    boxShadow: 'none !important',
+                    borderRadius: '0 !important',
+                    padding: '10px 16px !important',
+                    fontWeight: selectedCategory === category.value ? '600 !important' : '500 !important',
+                    outline: 'none !important',
+                    textDecoration: 'none !important',
+                    appearance: 'none !important',
+                    WebkitAppearance: 'none !important',
+                    MozAppearance: 'none !important'
+                  }}
                 >
                   {category.label}
                 </button>
@@ -139,15 +167,28 @@ const VideoShortsPage: React.FC = () => {
     <div className={styles.container} onKeyDown={handleKeyDown} tabIndex={0}>
       <section className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.title}>비디오 쇼츠</h1>
-          <div className={styles.filterButtons}>
+          <h1 className={styles.title}>원셀 쇼츠</h1>
+          <div className={styles.filterButtons} style={{ display: 'flex', width: '100%', maxWidth: '600px', margin: '0 auto', gap: 0 }}>
             {categories.map((category) => (
               <button
                 key={category.value}
-                className={`${styles.filterButton} ${
-                  selectedCategory === category.value ? styles.active : ''
-                }`}
+                className="filter-button"
                 onClick={() => setSelectedCategory(category.value)}
+                style={{
+                  border: 'none !important',
+                  background: 'transparent !important',
+                  backgroundColor: 'transparent !important',
+                  color: '#000 !important',
+                  boxShadow: 'none !important',
+                  borderRadius: '0 !important',
+                  padding: '10px 16px !important',
+                  fontWeight: selectedCategory === category.value ? '600 !important' : '500 !important',
+                  outline: 'none !important',
+                  textDecoration: 'none !important',
+                  appearance: 'none !important',
+                  WebkitAppearance: 'none !important',
+                  MozAppearance: 'none !important'
+                }}
               >
                 {category.label}
               </button>

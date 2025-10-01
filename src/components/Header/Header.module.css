@@ -201,6 +201,18 @@
   font-size: 0.8rem;
   box-shadow: none;
   white-space: nowrap;
+  gap: 4px;
+}
+
+.globeIcon {
+  color: #000;
+  stroke-width: 0;
+  fill: #000;
+  width: 0.8rem;
+  height: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btnCta:hover {

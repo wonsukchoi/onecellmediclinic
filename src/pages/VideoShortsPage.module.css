@@ -41,8 +41,8 @@
 
 .filters {
   padding: 40px 20px;
-  background: #fafafa;
-  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+  border-bottom: none;
 }
 
 .filtersContent {
@@ -90,31 +90,53 @@
 
 .filterButtons {
   display: flex;
-  gap: 0.5rem;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .filterButton {
-  padding: 6px 16px;
-  border: 1px solid #333;
-  background: transparent;
-  color: #ccc;
-  border-radius: 20px;
+  all: unset;
+  padding: 10px 16px;
+  color: #000;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
 }
 
+.filterButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+/* Remove border styling for first and last buttons */
+
 .filterButton:hover {
-  border-color: #9c88ff;
-  color: #9c88ff;
+  color: #000;
+}
+
+.filterButton:hover::after {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .filterButton.active {
-  background: #9c88ff;
-  border-color: #9c88ff;
-  color: white;
+  color: #000;
+  font-weight: 600;
+}
+
+.filterButton.active::after {
+  background: #000;
 }
 
 .videoSection {
@@ -388,7 +410,7 @@
   }
 
   .filterButtons {
-    justify-content: center;
+    max-width: 100%;
   }
 
   .videoContainer {

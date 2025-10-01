@@ -52,35 +52,58 @@
 .categoryFilter {
   display: flex;
   justify-content: center;
-  gap: 16px;
   margin-bottom: 50px;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 50px;
 }
 
 .categoryButton {
-  padding: 14px 28px;
+  padding: 12px 24px;
   border: none;
-  background: #333333;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
+  background: transparent;
+  color: #000;
+  border-radius: 0;
+  font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: none;
+}
+
+.categoryButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background-color 0.3s ease;
 }
 
 .categoryButton:hover {
-  background: #444444;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.categoryButton:hover::after {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .categoryButton.active {
-  background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-  color: white;
-  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.categoryButton.active::after {
+  background: #000;
 }
 
 .horizontalScrollContainer {

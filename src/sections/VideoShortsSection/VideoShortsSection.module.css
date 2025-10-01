@@ -37,35 +37,58 @@
 .categoryFilter {
   display: flex;
   justify-content: center;
-  gap: 12px;
   margin-bottom: 40px;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 40px;
 }
 
 .categoryButton {
   padding: 12px 24px;
   border: none;
-  background: #333333;
-  color: white;
-  border-radius: 8px;
+  background: transparent;
+  color: #000;
+  border-radius: 0;
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: none;
 }
 
 .categoryButton:hover {
-  background: #444444;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
 }
 
 .categoryButton.active {
-  background: #e91e63;
-  color: white;
-  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.categoryButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.categoryButton:hover::after {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.categoryButton.active::after {
+  background: #000;
 }
 
 .horizontalScrollContainer {
@@ -284,14 +307,19 @@
   }
 
   .categoryFilter {
-    gap: 8px;
     margin-bottom: 30px;
+    width: 100%;
+    max-width: 600px;
   }
 
   .categoryButton {
     padding: 10px 16px;
     font-size: 0.75rem;
-    border-radius: 6px;
+    border-radius: 0;
+    background: transparent;
+    color: #000;
+    border: none;
+    box-shadow: none;
   }
 
   .videosContainer {
@@ -327,9 +355,11 @@
   }
 
   .categoryFilter {
-    justify-content: flex-start;
+    justify-content: center;
     overflow-x: auto;
     padding-bottom: 8px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .categoryButton {
@@ -337,7 +367,11 @@
     flex-shrink: 0;
     padding: 8px 14px;
     font-size: 0.7rem;
-    border-radius: 6px;
+    border-radius: 0;
+    background: transparent;
+    color: #000;
+    border: none;
+    box-shadow: none;
   }
 
   .videosContainer {

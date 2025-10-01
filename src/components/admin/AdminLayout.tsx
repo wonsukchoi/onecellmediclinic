@@ -61,7 +61,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       path: '',
       icon: 'video' as IconName,
       children: [
-        { label: '짧은 동영상', path: '/admin/video-shorts' },
+        { label: '원셀 쇼츠', path: '/admin/video-shorts' },
         { label: '유튜브 동영상', path: '/admin/youtube-videos' },
         { label: '셀피 리뷰', path: '/admin/selfie-reviews' },
       ],

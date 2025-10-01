@@ -49,35 +49,58 @@
 .categoryFilter {
   display: flex;
   justify-content: center;
-  gap: 16px;
   margin-bottom: 50px;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 50px;
 }
 
 .categoryButton {
-  padding: 14px 28px;
+  padding: 12px 24px;
   border: none;
-  background: #333333;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
+  background: transparent;
+  color: #000;
+  border-radius: 0;
+  font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: none;
 }
 
 .categoryButton:hover {
-  background: #444444;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
 }
 
 .categoryButton.active {
-  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
-  color: white;
-  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.categoryButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.categoryButton:hover::after {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.categoryButton.active::after {
+  background: #000;
 }
 
 .featuresGrid {
@@ -377,14 +400,19 @@
   }
 
   .categoryFilter {
-    gap: 12px;
     margin-bottom: 40px;
+    width: 100%;
+    max-width: 600px;
   }
 
   .categoryButton {
-    padding: 12px 20px;
+    padding: 10px 16px;
     font-size: 0.875rem;
-    border-radius: 6px;
+    border-radius: 0;
+    background: transparent;
+    color: #000;
+    border: none;
+    box-shadow: none;
   }
 
   .featuresGrid {
@@ -426,17 +454,23 @@
   }
 
   .categoryFilter {
-    justify-content: flex-start;
+    justify-content: center;
     overflow-x: auto;
     padding-bottom: 8px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .categoryButton {
     white-space: nowrap;
     flex-shrink: 0;
-    padding: 10px 16px;
+    padding: 8px 14px;
     font-size: 0.8rem;
-    border-radius: 6px;
+    border-radius: 0;
+    background: transparent;
+    color: #000;
+    border: none;
+    box-shadow: none;
   }
 
   .cardInner {

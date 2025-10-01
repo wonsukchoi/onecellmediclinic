@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Navigation from "../Navigation/Navigation";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { useMember } from "../../contexts/MemberContext";
+import { Icon } from "../icons";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
@@ -92,6 +93,7 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
                     window.scrollTo(0, 0);
                   }}
                 >
+                  <Icon name="globe" size="sm" className={styles.globeIcon} />
                   {t("member.login")} | {t("member.signup")}
                 </Link>
               </div>
