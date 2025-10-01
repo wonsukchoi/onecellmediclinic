@@ -8,7 +8,7 @@
   overflow: hidden;
   border-radius: 0; /* Kept border-radius removed for full-width display */
   box-shadow: none; /* Kept shadow removed for cleaner look */
-  background: var(--color-background-white);
+  background: #000000; /* Changed to black background */
   
   /* Override Swiper pagination colors */
   --swiper-theme-color: #ffffff;
@@ -53,10 +53,12 @@
   transition: transform var(--animation-slow) var(--easing-ease-in-out);
 }
 
-/* Special style for the wellness banner to prevent cropping */
-.slide[data-slide-id="wellness-solution"] .slideImage {
+/* Special style for the slides to prevent cropping */
+.slide[data-slide-id="slide-1"] .slideImage,
+.slide[data-slide-id="slide-2"] .slideImage,
+.slide[data-slide-id="slide-3"] .slideImage {
   object-fit: contain;
-  background-color: #f0f8ff; /* Light blue background to match the image */
+  background-color: #000000; /* Black background */
 }
 
 .slide:hover .slideImage {

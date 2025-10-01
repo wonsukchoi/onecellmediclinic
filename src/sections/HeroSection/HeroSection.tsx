@@ -23,17 +23,21 @@ const HeroSection: React.FC = () => {
         setLoading(true)
         setError(null)
         
-        // Create the fallback data that we'll always use
+        // Create the fallback data with exactly 3 slides
         const fallbackData: HeroCarouselItem[] = [
           {
-            id: 'fallback-1',
+            id: 'slide-1',
             image: '/images/hero/default-hero.jpg',
-            // Removed all text and buttons
             overlay: false
           },
           {
-            id: 'wellness-solution',
+            id: 'slide-2',
             image: '/images/hero/20250930_onecell_banner_1.png',
+            overlay: false
+          },
+          {
+            id: 'slide-3',
+            image: '/images/hero/default-hero.jpg', // Using the same image for the third slide
             overlay: false
           }
         ]
@@ -43,7 +47,7 @@ const HeroSection: React.FC = () => {
       }
     }
 
-    fetchCarouselData() // This will now always use our fallback data with the wellness solution slide
+    fetchCarouselData() // This will now always use our fallback data with exactly 3 slides
   }, [isKorean])
 
   if (loading) {
