@@ -5,6 +5,7 @@ interface HorizontalScrollProps {
   children: ReactNode
   className?: string
   showIndicators?: boolean
+  showNavigation?: boolean // Added this prop to control navigation arrows visibility
   itemWidth?: number
   gap?: number
   backgroundColor?: string
@@ -23,6 +24,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
   children,
   className = '',
   showIndicators = true,
+  showNavigation = true, // Default to showing navigation arrows
   itemWidth = 300,
   gap = 20,
   backgroundColor = '#ffffff',
@@ -269,7 +271,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
 
   return (
     <div
-      className={`${styles.horizontalScrollWrapper} ${className}`}
+      className={`${styles.horizontalScrollWrapper} ${className} ${!showNavigation ? styles.noNavigation : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleFocus}
@@ -278,40 +280,44 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
         '--fade-color': backgroundColor
       } as React.CSSProperties}
     >
-      {/* Navigation Arrows */}
-      <button
-        className={`${styles.navButton} ${styles.navPrev} ${!canScrollLeft ? styles.disabled : ''}`}
-        onClick={scrollPrev}
-        disabled={!canScrollLeft}
-        aria-label="Scroll left"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M15 18l-6-6 6-6"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+      {/* Navigation Arrows - only shown if showNavigation is true */}
+      {showNavigation && (
+        <>
+          <button
+            className={`${styles.navButton} ${styles.navPrev} ${!canScrollLeft ? styles.disabled : ''}`}
+            onClick={scrollPrev}
+            disabled={!canScrollLeft}
+            aria-label="Scroll left"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
 
-      <button
-        className={`${styles.navButton} ${styles.navNext} ${!canScrollRight ? styles.disabled : ''}`}
-        onClick={scrollNext}
-        disabled={!canScrollRight}
-        aria-label="Scroll right"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M9 18l6-6-6-6"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+          <button
+            className={`${styles.navButton} ${styles.navNext} ${!canScrollRight ? styles.disabled : ''}`}
+            onClick={scrollNext}
+            disabled={!canScrollRight}
+            aria-label="Scroll right"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M9 18l6-6-6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </>
+      )}
 
       {/* Scroll Container */}
       <div

@@ -129,6 +129,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
         <HorizontalScroll
           className={styles.horizontalScrollContainer}
           showIndicators={false}
+          showNavigation={false} /* Hide navigation arrows */
           itemWidth={300}
           gap={20}
           visibleItems={{

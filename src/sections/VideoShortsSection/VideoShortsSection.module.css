@@ -72,6 +72,16 @@
   margin-bottom: 40px;
 }
 
+/* Hide navigation arrows for VideoShortsSection */
+.horizontalScrollContainer :global(.navButton) {
+  display: none !important;
+}
+
+/* Remove padding since arrows are hidden */
+.horizontalScrollContainer > div {
+  padding: 0 !important;
+}
+
 .videosContainer {
   margin-bottom: 40px;
   display: grid;
