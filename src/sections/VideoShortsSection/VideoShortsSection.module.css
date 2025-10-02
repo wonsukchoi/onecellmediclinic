@@ -6,9 +6,9 @@
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 30px;
   position: relative;
   z-index: 1;
 }
@@ -53,17 +53,12 @@
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   box-shadow: none;
 }
 
-.categoryButton:hover {
-  background: transparent;
-  transform: none;
-  box-shadow: none;
-}
+/* Hover effect removed */
 
 .categoryButton.active {
   background: transparent;
@@ -80,12 +75,9 @@
   right: 0;
   height: 2px;
   background: transparent;
-  transition: background-color 0.3s ease;
 }
 
-.categoryButton:hover::after {
-  background: rgba(0, 0, 0, 0.5);
-}
+/* Hover effect removed */
 
 .categoryButton.active::after {
   background: #000;
@@ -93,6 +85,8 @@
 
 .horizontalScrollContainer {
   margin-bottom: 40px;
+  padding: 0 5px;
+  width: 100%;
 }
 
 /* Hide navigation arrows for VideoShortsSection */
@@ -120,19 +114,15 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: none;
-  transition: all 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
-  width: 300px;
+  width: 230px;
   flex-shrink: 0;
 }
 
-.videoCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
+/* Hover effect removed */
 
 .videoWrapper {
   position: relative;
@@ -146,12 +136,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
 }
 
-.videoCard:hover .video {
-  transform: scale(1.02);
-}
+/* Hover effect removed */
 
 .videoWrapper::before {
   content: '';
@@ -194,10 +181,10 @@
 }
 
 .videoTitle {
-  font-size: 1.2rem; /* Reduced from 1.6rem */
+  font-size: 1.4rem; /* Increased from 1.2rem */
   font-weight: 700;
   color: white;
-  margin-bottom: 6px; /* Reduced from 8px */
+  margin-bottom: 3px; /* Reduced from 6px */
   line-height: 1.3;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
@@ -206,7 +193,7 @@
   font-size: 0.75rem; /* Reduced from 1rem */
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.4;
-  margin-top: 8px; /* Reduced from 10px */
+  margin-top: 4px; /* Reduced from 8px */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -255,12 +242,9 @@
   font-weight: 500;
   cursor: pointer;
   margin-top: 16px;
-  transition: background-color 0.3s ease;
 }
 
-.retryButton:hover {
-  background: #c2185b;
-}
+/* Hover effect removed */
 
 .noVideos {
   text-align: center;
@@ -270,6 +254,18 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1400px) {
+  .videosContainer {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 15px;
+    max-width: 900px;
+  }
+
+  .videoCard {
+    width: 220px;
+  }
+}
+
 @media (max-width: 1200px) {
   .videosContainer {
     grid-template-columns: repeat(3, 1fr);
@@ -278,7 +274,7 @@
   }
 
   .videoCard {
-    width: 280px;
+    width: 210px;
   }
 }
 
@@ -289,13 +285,17 @@
   }
 
   .videoCard {
-    width: 260px;
+    width: 200px;
   }
 }
 
 @media (max-width: 768px) {
   .section {
     padding: 60px 0;
+  }
+
+  .container {
+    padding: 0 20px;
   }
 
   .title {
@@ -329,7 +329,7 @@
   }
 
   .videoCard {
-    width: 240px;
+    width: 180px;
   }
 
   .videoInfo {
@@ -337,7 +337,7 @@
   }
 
   .videoTitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .videoDescription {
@@ -374,13 +374,17 @@
     box-shadow: none;
   }
 
+  .horizontalScrollContainer {
+    padding: 0;
+  }
+
   .videosContainer {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 
   .videoCard {
-    width: 200px;
+    width: 160px;
   }
 
   .videoWrapper {
@@ -388,7 +392,7 @@
   }
 
   .videoInfo {
-    padding: 20px;
+    padding: 15px;
     height: 45%;
   }
 
@@ -416,15 +420,9 @@
   height: 44px;
   border-radius: 50%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
 }
 
-.swiper :global(.swiper-button-next:hover),
-.swiper :global(.swiper-button-prev:hover) {
-  background: #e91e63;
-  color: white;
-  transform: scale(1.1);
-}
+/* Hover effect removed */
 
 .swiper :global(.swiper-button-next::after),
 .swiper :global(.swiper-button-prev::after) {

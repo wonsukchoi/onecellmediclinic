@@ -130,11 +130,11 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
           className={styles.horizontalScrollContainer}
           showIndicators={false}
           showNavigation={false} /* Hide navigation arrows */
-          itemWidth={300}
-          gap={20}
+          itemWidth={230}
+          gap={16}
           visibleItems={{
-            desktop: 3,
-            tablet: 2,
+            desktop: 6,
+            tablet: 3,
             mobile: 1.5,
           }}
           autoScroll={true}
@@ -153,7 +153,6 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
                   className={styles.video}
                 />
 
-                <div className={styles.brandTag}>BRAUN</div>
 
                 <div className={styles.videoInfo}>
                   <h3 className={styles.videoTitle}>{video.title}</h3>
