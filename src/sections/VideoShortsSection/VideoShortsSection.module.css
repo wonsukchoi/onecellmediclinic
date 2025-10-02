@@ -127,7 +127,7 @@
 .videoWrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1/1.4;
+  aspect-ratio: 1/1.6; /* Increased from 1/1.4 to make items taller */
   overflow: hidden;
   background: #000;
 }
@@ -171,13 +171,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 18px; /* Reduced from 25px */
+  padding: 20px; /* Increased from 18px */
   color: white;
   z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 40%;
+  height: 50%; /* Increased from 40% to allow more space for description */
 }
 
 .videoTitle {
@@ -190,16 +190,17 @@
 }
 
 .videoDescription {
-  font-size: 0.75rem; /* Reduced from 1rem */
+  font-size: 0.85rem; /* Increased from 0.75rem for better readability */
   color: rgba(255, 255, 255, 0.9);
-  line-height: 1.4;
-  margin-top: 4px; /* Reduced from 8px */
+  line-height: 1.5;
+  margin-top: 6px; /* Increased from 4px */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3; /* Increased from 2 to show more lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.1em; /* Reduced from 2.8em */
+  height: auto; /* Changed from fixed height to auto */
+  max-height: 4.5em; /* 3 lines × 1.5 line height */
 }
 
 
@@ -333,7 +334,8 @@
   }
 
   .videoInfo {
-    padding: 16px;
+    padding: 18px;
+    height: 55%; /* Increased for mobile */
   }
 
   .videoTitle {
@@ -342,6 +344,8 @@
 
   .videoDescription {
     font-size: 0.8125rem;
+    -webkit-line-clamp: 3; /* Keep 3 lines on mobile */
+    max-height: 4.5em;
   }
 }
 
@@ -388,12 +392,12 @@
   }
 
   .videoWrapper {
-    aspect-ratio: 1/1.5;
+    aspect-ratio: 1/1.7; /* Increased from 1/1.5 */
   }
 
   .videoInfo {
     padding: 15px;
-    height: 45%;
+    height: 55%; /* Increased from 45% */
   }
 
   .videoTitle {
@@ -401,7 +405,9 @@
   }
 
   .videoDescription {
-    font-size: 0.7rem;
+    font-size: 0.75rem; /* Slightly increased from 0.7rem */
+    -webkit-line-clamp: 3;
+    max-height: 4.5em;
   }
 
   .brandTag {
