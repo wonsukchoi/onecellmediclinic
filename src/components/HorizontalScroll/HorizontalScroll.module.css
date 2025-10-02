@@ -179,7 +179,8 @@
 }
 
 .scrollContainer:not(.dragging) > *:hover {
-  transform: translateY(-4px);
+  /* Hover effect removed */
+  transform: none;
 }
 
 /* Scroll snap for better mobile experience */
