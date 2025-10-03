@@ -7,16 +7,28 @@
 }
 
 .container {
-  max-width: 1500px;
+  max-width: 1400px; /* Updated to match the header width */
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 0 20px; /* Updated to match the header padding */
   position: relative;
   z-index: 1;
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Changed from flex-start to center to align with title */
+  width: 100%;
+}
+
+.titleWrapper {
+  text-align: left;
+  flex: 1;
+  min-width: 300px;
 }
 
 .title {
@@ -31,22 +43,21 @@
   font-size: 1.125rem;
   color: #666;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0; /* Changed from 0 auto to 0 to align left */
   line-height: 1.6;
 }
 
 .categoryFilter {
   display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto 40px;
+  justify-content: flex-end; /* Right alignment */
+  flex-wrap: nowrap; /* Prevent wrapping to keep on same line */
+  margin: 0;
+  align-items: center;
+  padding-top: 0; /* Remove padding to align better with the title */
 }
 
 .categoryButton {
-  padding: 12px 24px;
+  padding: 8px 16px;
   border: none;
   background: transparent;
   color: #000;
@@ -304,6 +315,17 @@
     padding: 0 20px;
   }
 
+  .headerTop {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .titleWrapper {
+    flex: 1;
+    min-width: 200px;
+  }
+
   .title {
     font-size: 2rem;
   }
@@ -313,13 +335,15 @@
   }
 
   .categoryFilter {
-    margin-bottom: 30px;
-    width: 100%;
-    max-width: 600px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 50%;
+    padding-top: 0;
   }
 
   .categoryButton {
-    padding: 10px 16px;
+    padding: 8px 14px;
     font-size: 0.75rem;
     border-radius: 0;
     background: transparent;
@@ -364,17 +388,16 @@
   }
 
   .categoryFilter {
-    justify-content: center;
     overflow-x: auto;
     padding-bottom: 8px;
-    width: 100%;
     max-width: 100%;
+    justify-content: flex-end;
   }
 
   .categoryButton {
     white-space: nowrap;
     flex-shrink: 0;
-    padding: 8px 14px;
+    padding: 6px 12px;
     font-size: 0.7rem;
     border-radius: 0;
     background: transparent;

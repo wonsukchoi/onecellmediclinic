@@ -123,27 +123,31 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
     <section ref={sectionRef} className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>{title || t("videoShorts.title")}</h2>
-          <p className={styles.subtitle}>
-            {subtitle || t("videoShorts.subtitle")}
-          </p>
-        </div>
-
-        {showCategories && (
-          <div className={styles.categoryFilter}>
-            {categories.map((category) => (
-              <button
-                key={category.key}
-                className={`${styles.categoryButton} ${
-                  activeCategory === category.key ? styles.active : ""
-                }`}
-                onClick={() => setActiveCategory(category.key)}
-              >
-                {category.label}
-              </button>
-            ))}
+          <div className={styles.headerTop}>
+            <div className={styles.titleWrapper}>
+              <h2 className={styles.title}>{title || t("videoShorts.title")}</h2>
+              <p className={styles.subtitle}>
+                {subtitle || t("videoShorts.subtitle")}
+              </p>
+            </div>
+            
+            {showCategories && (
+              <div className={styles.categoryFilter}>
+                {categories.map((category) => (
+                  <button
+                    key={category.key}
+                    className={`${styles.categoryButton} ${
+                      activeCategory === category.key ? styles.active : ""
+                    }`}
+                    onClick={() => setActiveCategory(category.key)}
+                  >
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         <HorizontalScroll
           className={styles.horizontalScrollContainer}
