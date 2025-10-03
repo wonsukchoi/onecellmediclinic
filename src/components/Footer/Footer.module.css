@@ -1,5 +1,5 @@
 .siteFooter {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: #000000; /* Changed to solid black */
   color: white;
   padding: 3rem 0 1rem;
   margin-top: auto;
@@ -170,6 +170,7 @@
   margin: 2rem auto 0;
   padding: 1.5rem 1rem 100px; /* Added bottom padding to prevent overlap with sticky bar */
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000000; /* Ensure consistent black background */
 }
 
 .footerBottomContent {

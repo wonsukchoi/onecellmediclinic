@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   padding: 0 60px; /* Space for navigation arrows */
+  pointer-events: none; /* Let vertical scroll pass through the wrapper */
 }
 
 /* No navigation arrows style */
@@ -26,10 +27,13 @@
 .scrollContainer {
   display: flex;
   overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
+  overflow-y: visible; /* Changed from hidden to visible to not block vertical scroll */
+  scroll-behavior: auto; /* Changed from smooth to auto for better stability */
   gap: var(--gap, 20px);
   padding: 10px 0 20px 0; /* Bottom padding for indicators */
+  -webkit-overflow-scrolling: touch; /* Improved touch scrolling */
+  pointer-events: auto; /* Re-enable pointer events for the container */
+  touch-action: pan-x; /* Only allow horizontal panning, not vertical */
 
   /* Hide scrollbar but keep functionality */
   scrollbar-width: none; /* Firefox */

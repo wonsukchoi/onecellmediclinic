@@ -2,7 +2,8 @@
   padding: 80px 0;
   background: #ffffff;
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible to allow vertical scrolling */
+  touch-action: pan-y !important; /* Explicitly allow vertical scrolling */
 }
 
 .container {
@@ -87,6 +88,7 @@
   margin-bottom: 40px;
   padding: 0 5px;
   width: 100%;
+  pointer-events: none !important; /* Completely disable pointer events */
 }
 
 /* Hide navigation arrows for VideoShortsSection */
@@ -120,6 +122,9 @@
   position: relative;
   width: 230px;
   flex-shrink: 0;
+  touch-action: manipulation; /* Allow all scrolling through the card */
+  pointer-events: auto !important; /* Force the card to receive events */
+  z-index: 1; /* Ensure cards are above the container */
 }
 
 /* Hover effect removed */

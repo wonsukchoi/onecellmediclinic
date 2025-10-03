@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useFeatures } from "../../contexts/FeaturesContext";
 import HorizontalScroll from "../../components/HorizontalScroll";
@@ -32,6 +32,25 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  // Add effect to fix vertical scrolling
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    
+    // Make sure vertical scrolling works by preventing default on wheel events
+    const handleWheel = (e: WheelEvent) => {
+      // If it's primarily a vertical scroll, don't interfere
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        // Don't prevent default - let the page scroll vertically
+        return;
+      }
+    };
+    
+    section.addEventListener('wheel', handleWheel, { passive: true });
+    return () => section.removeEventListener('wheel', handleWheel);
+  }, []);
 
   const categories = [
     { key: "all", label: t("videoShorts.categories.all") },
@@ -101,7 +120,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
   }
 
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={styles.section}>
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>{title || t("videoShorts.title")}</h2>
@@ -137,7 +156,7 @@ const VideoShortsSection: React.FC<VideoShortsProps> = ({
             tablet: 3,
             mobile: 1.5,
           }}
-          autoScroll={true}
+          autoScroll={false} /* Disabled auto-scroll to improve stability */
           autoScrollInterval={4000}
           pauseOnHover={true}
           pauseOnInteraction={true}

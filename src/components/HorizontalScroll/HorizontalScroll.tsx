@@ -69,21 +69,17 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
     return () => window.removeEventListener('resize', updateScrollMetrics)
   }, [children, visibleItems])
 
-  // Handle mouse wheel to horizontal scroll
+  // Handle mouse wheel to horizontal scroll - modified to not interfere with vertical scrolling
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return
 
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return // Already horizontal scroll
+    // We're completely removing the wheel event handler to allow normal vertical scrolling
+    // This will prevent the horizontal scroll component from interfering with the page's vertical scroll
 
-      e.preventDefault()
-      const scrollAmount = e.deltaY * 0.5
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
-    }
+    // No event listener added
 
-    container.addEventListener('wheel', handleWheel, { passive: false })
-    return () => container.removeEventListener('wheel', handleWheel)
+    return () => {}
   }, [])
 
   // Auto-scroll functionality
@@ -114,10 +110,10 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
             nextPosition = 0
           }
 
-          // Smooth scroll to next position
+          // Scroll to next position (using auto instead of smooth for better stability)
           scrollContainerRef.current.scrollTo({
             left: nextPosition,
-            behavior: 'smooth'
+            behavior: 'auto'
           })
         }
       }, autoScrollInterval)
@@ -176,7 +172,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
 
     e.preventDefault()
     const x = e.pageX
-    const walk = (x - dragStart.x) * 2
+    const walk = (x - dragStart.x) * 1 // Reduced multiplier from 2 to 1 for more stable scrolling
     scrollContainerRef.current.scrollLeft = dragStart.scrollLeft - walk
   }
 
@@ -198,7 +194,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
     if (!isDragging || !scrollContainerRef.current) return
 
     const x = e.touches[0].pageX
-    const walk = (x - dragStart.x) * 2
+    const walk = (x - dragStart.x) * 1 // Reduced multiplier from 2 to 1 for more stable scrolling
     scrollContainerRef.current.scrollLeft = dragStart.scrollLeft - walk
   }
 
@@ -210,7 +206,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
   // Navigation functions
   const scrollToPosition = (position: number) => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo({ left: position, behavior: 'smooth' })
+      scrollContainerRef.current.scrollTo({ left: position, behavior: 'auto' }) // Changed from smooth to auto for better stability
     }
   }
 
@@ -324,13 +320,6 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
         ref={scrollContainerRef}
         className={`${styles.scrollContainer} ${isDragging ? styles.dragging : ''}`}
         onScroll={handleScroll}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         style={{
           '--item-width': `${itemWidth}px`,
           '--gap': `${gap}px`,
